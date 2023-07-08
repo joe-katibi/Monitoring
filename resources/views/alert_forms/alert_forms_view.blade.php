@@ -191,7 +191,7 @@
                     console.log(result);
                     $.each(result, function (key, value) {
                         $("#agent").append('<option value="' + value
-                            .id + '">' + value.name + '</option>');
+                            .user_id + '">' + value.name + '</option>');
                     });
 
                 }

@@ -1,4 +1,5 @@
 <div class="card-body">
+    @include('sweetalert::alert')
     @if (Session::has('message') && !Session::has('module'))
     <div class="alert alert-{{ Session::has('message_type')? Session::get('message_type'): 'success' }}">
         {{ Session::get('message') }}
@@ -22,6 +23,15 @@
 
                     @if($errors->has('name'))
                     <span class="help-block">{{ $errors->first('name') }}</span>
+                    @endif
+                </div>
+
+                <div class="form-group {{ $errors->has('username')? 'has-error':''}}">
+                    {{ Form::label('username', 'Username*') }}
+                    {{ Form::text('username', old('username', $user->username), ['class' => 'form-control']) }}
+
+                    @if($errors->has('username'))
+                    <span class="help-block">{{ $errors->first('username') }}</span>
                     @endif
                 </div>
 
@@ -66,7 +76,7 @@
                     <legend>Roles & Security</legend>
                     <div class="form-group">
                         {{ Form::label('roles', 'Assigned Roles *') }}
-                        {{ Form::select('roles[]', $roles->pluck('description', 'name') , old('roles', $user->roles)  ,['class' => 'form-control select2', 'multiple' => true]) }}
+                        {{ Form::select('roles[]', $roles->pluck('description', 'id') , old('roles', $user->roles)  ,['class' => 'form-control select2', 'multiple' => true]) }}
                     </div>
 
                 </fieldset>
@@ -75,7 +85,7 @@
                 <fieldset>
                     <div class="form-group">
                         {{ Form::label('category', 'category *') }}
-                        {{ Form::select('category[]', $category->pluck('category_name', 'id') , old('name', $user->category)  ,['class' => 'form-control select2', 'multiple' => true ]) }}
+                        {{ Form::select('category[]', $category->pluck('category_name', 'id') , old('category_name', $user->category_name)  ,['class' => 'form-control select2', 'multiple' => true ]) }}
                     </div>
 
                 </fieldset>

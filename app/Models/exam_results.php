@@ -19,4 +19,14 @@ class exam_results extends Model
     protected $casts = [
         'created_at' => 'datetime:d-M-Y'
     ];
+    public function question()
+{
+    return $this->belongsTo(ExamsQuestions::class);
+}
+
+public function answer_key()
+{
+    return $this->belongsTo(AnswerKeys::class, 'answers_selected', 'id');
+}
+
 }

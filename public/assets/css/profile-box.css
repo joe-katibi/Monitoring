@@ -1,0 +1,36 @@
+.profile-section {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.country-service-box {
+    flex-basis: 50%;
+    border: 1px solid yellow;
+    padding: 10px;
+}
+
+.service-profile-box {
+    display: flex;
+}
+
+.profile-box {
+    margin-right: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+}
+
+.profile-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.profile-info {
+    margin-left: 10px;
+}
+
+.audio-player {
+    margin-top: 10px;
+}

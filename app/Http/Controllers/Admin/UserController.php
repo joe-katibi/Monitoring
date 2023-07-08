@@ -45,11 +45,18 @@ class UserController extends Controller
         //             ->get();
 
         $user = User::select('users.id','users.name','users.email','users.country','users.services','users.category','users.user_status','users.created_at',
-                             'users.position','services.service_name','countries.country_name','departments.department_name')
+                             'users.position','services.service_name','countries.country_name','departments.department_name',
+                             //'roles.description',
+                             //'user_categories.category_id','categories.category_name',
+                             //'model_has_roles.role_id'
+                             )
                             ->join('countries','countries.id','=','users.country')
                             ->join('services','services.id','=','users.services')
                             ->join('departments','departments.id','=','users.department_id')
-                            //->join('roles','roles.id')
+                           // ->join('user_categories','user_categories.user_id','=','users.id')
+                           // ->join('categories','categories.id','=','user_categories.category_id')
+                            // ->join('model_has_roles','model_has_roles.model_id','=','users.id')
+                         //    ->join('roles','roles.id','=','model_has_roles.role_id')
                           ->get();
 
                         //   if ($user->roles()) {
@@ -58,7 +65,7 @@ class UserController extends Controller
                         //     $user->roles = new Collection();
                         // }
 
-           // print_pre($user ,true);
+           //print_pre($user->roles,true);
 
 
 
@@ -185,6 +192,7 @@ class UserController extends Controller
         /** @var User $user */
         $user = User::findOrFail($id);
 
+
         if ($user->roles()) {
             $user->roles = $user->roles()->get()->pluck('name');
         } else {
@@ -194,14 +202,18 @@ class UserController extends Controller
         $permissions = Permission::all();
         $department = Departments::all();
         $service = Services::all();
-        $category = UserCategory::all();
+        $category = Categories::all();
+        // $category = UserCategory::select('user_categories.user_id','user_categories.category_id','categories.category_name')
+        //                                 ->join('categories','categories.id','=','user_categories.category_id')->get();
         $country = Countries::all();
+
+
         return view('settings.users.edit', [
             'user' => $user,
             'department' => $department,
             'service' => $service,
             'country' => $country,
-            'category' => UserCategory::all(),
+            'category' => $category,
             'roles' => Role::all(),
             'permission_modules' => Permission::modules(),
             'permissions' => $permissions,
@@ -229,19 +241,22 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
 
-        if ($validator->fails()) {
-            $data = $request->all();
-            toast($validator->errors() , 'error')->position('top-end');
-            return redirect()->back()->withInput(array_merge($user->toArray(), $data));
-        }
+        // if ($validator->fails()) {
+        //     $data = $request->all();
+        //     toast($validator->errors() , 'error')->position('top-end');
+        //     return redirect()->back()->withInput(array_merge($user->toArray(), $data));
+        // }
 
         $user->name = $request->input('name');
+        $user->username = $request->input('username');
         $user->email = $request->input('email');
         $user->department_id = $request->input('department');
         $user->country = $request->input('country');
         $user->services = $request->input('service');
 
-        $user->save();
+         $user->save();
+
+        //print_pre($user ,true);
 
         $roles = $request->input('roles');
 
@@ -260,7 +275,7 @@ class UserController extends Controller
 
             $category_user->user_id = $id;
             $category_user->category_id = $value;
-            $category_user->created_by =1;
+            $category_user->created_by = Auth::user()->id;
             $category_user->save();
 
         }

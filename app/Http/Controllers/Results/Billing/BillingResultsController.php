@@ -28,10 +28,18 @@ class BillingResultsController extends Controller
      */
     public function index($id)
     {
+        // $agentId = Role::select('roles.id',)->where('name', '=', 'Agent')
+        //                         ->join('model_has_roles','model_has_roles.role_id','=','roles.id')
+        //                        ->first();
+        // $supervisorId
+        // $qualityId
+
+
         // Find a record in the Result model with the given $id value, and join it with two other tables
         $question_v = Result::find($id)
                                 ->join('question_results', 'question_results.results', '=', 'results.id')
                                 ->join('fiber_welcome_questions', 'fiber_welcome_questions.id', '=', 'question_results.question_no')
+                                ->join('users','users.id','=','results.agent_name')
 
                                 // Select specific columns from the joined tables
                                 ->select('question_results.results', 'question_results.marks', 'results.id', 'results.supervisor', 'results.agent_name', 'results.quality_analysts',
@@ -43,6 +51,21 @@ class BillingResultsController extends Controller
                                 // Filter the joined records by question_results.results = $id
                                 ->where('question_results.results', '=', $id)
                                 ->get();
+
+                                foreach($question_v as $key => $value)
+                                {
+
+                                    $agentName = User::where('id','=', $value['agent_name'])->first();
+                                    $value['agentName'] =  isset($agentName)  ?  $agentName->name : '';
+
+                                    $SupervisorName = User::where('id','=', $value['supervisor'])->first();
+                                    $value['SupervisorName'] =  isset($SupervisorName)  ?  $SupervisorName->name : '';
+
+                                    $qualityName = User::where('id','=', $value['quality_analysts'])->first();
+                                    $value['qualityName'] =  isset($qualityName)  ?  $qualityName->name : '';
+                                }
+
+                                //print_pre($question_v, true);
 
         // Create an associative array $data that contains the question_v array
         $data['question_v'] = $question_v;

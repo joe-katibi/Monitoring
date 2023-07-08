@@ -15,6 +15,9 @@ use App\Models\exam_results;
 use App\Models\Categories;
 use App\Models\ReportType;
 use App\Models\LiveCalls;
+use App\Models\LiveCalls_results;
+use App\Models\livecalls_summary;
+use App\Models\GapSummaries;
 use Datatables;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -97,22 +100,27 @@ class LiveCallReportController extends Controller
         $end_date = $start_end_date[1];
 
 
-        $livecallreport = LiveCalls::select('live_calls.account_number','live_calls.recording_id','live_calls.date','live_calls.quality_analysts','live_calls.category','live_calls.supervisor',
-                                            'live_calls.agent','live_calls.strength_summary','live_calls.gaps_summary','live_calls.voc_summary','categories.category_name','categories.service_id',
-                                            'services.service_name','users.name','users.country','countries.country_name','gap_summaries.gap_name','summaries.summary_name','services.id as s_id',)
+        $livecallreport = LiveCalls::select('live_calls.id','live_calls.account_number','live_calls.recording_id','live_calls.date','live_calls.quality_analysts','live_calls.category','live_calls.supervisor',
+                                            'live_calls.agent','live_calls.strength_summary','live_calls.gaps_summary','live_calls.voc_summary','live_calls.created_at','categories.category_name','categories.service_id',
+                                            'services.service_name','users.name','users.country','countries.country_name',
+                                            'gap_summaries.gap_name','summaries.summary_name','services.id as s_id',
+                                            'live_calls_results.summary_id as gapSummary','livecalls_summaries.summary_id as strengthSummary',
+        )
                                             ->join('categories','categories.id','=','live_calls.category')
                                             ->join('services','services.id','=','categories.service_id')
                                             ->join('user_categories','user_categories.category_id','=','live_calls.category')
                                             ->join('users','users.id','=','user_categories.user_id')
                                             ->join('countries','countries.id','=','users.country')
-                                            ->join('gap_summaries','gap_summaries.id','=','live_calls.gaps_summary')
-                                             ->join('summaries','summaries.id','=','live_calls.strength_summary')
+                                            ->join('livecalls_summaries','livecalls_summaries.livecall_id','=','live_calls.id')
+                                            ->join('live_calls_results','live_calls_results.livecall_id','=','live_calls.id')
+                                            ->join('gap_summaries','gap_summaries.id','=','live_calls_results.summary_id')
+                                            ->join('summaries','summaries.id','=','livecalls_summaries.summary_id')
                                             ->where('users.country','=',$countryname)
                                             ->where('users.services','=',$service )
                                             ->where('live_calls.category','=',$categoryname )
                                             ->where('live_calls.agent','=',$agent )
-                                            ->where('live_calls.date','>=',$start_date)
-                                            ->where('live_calls.date','<=',$end_date)
+                                           ->where('live_calls.created_at','>=',$start_date)
+                                           ->where('live_calls.created_at','<=',$end_date)
                                             ->get();
 
 
@@ -139,14 +147,29 @@ class LiveCallReportController extends Controller
 
         }
 
+        $gapName = livecalls_summary::select('summary_id','gap_summaries.gap_name','livecall_id')
+                                         ->join('live_calls','live_calls.id','=','livecalls_summaries.livecall_id')
+                                         ->join('gap_summaries','gap_summaries.id','=','summary_id')
+                                       // ->where('livecall_id','=',$id)
+                                          ->get();
+
+
+        $strengthName = LiveCalls_results::select('summary_id','summaries.summary_name','livecall_id')
+                                              ->join('live_calls','live_calls.id','=','live_calls_results.livecall_id')
+                                              ->join('summaries','summaries.id','=','summary_id')
+                                            // ->where('livecall_id','=',$id)
+                                               ->get();
+
 
                                             $data['services']= $services;
                                             $data['livecallreport']= $livecallreport;
                                             $data['country']= $country;
                                             $data['category']= $category;
+                                            $data['gapName']= $gapName;
+                                            $data['strengthName']= $strengthName;
 
 
-        // print_pre([$livecallreport] , true);
+         //print_pre([ $gapName ] , true);
 
         return view('reports/livecallsreports')->with($data);
     }

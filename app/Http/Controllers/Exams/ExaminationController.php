@@ -98,7 +98,7 @@ class ExaminationController extends Controller
                                             $data['questions'] = $questions;
                                             //$data['exam'] = $exam;
                                             $data['start_time'] = $start_time;
-                                            $data['end_time'] = $end_time;
+                                            $data['end_time'] = $end_time->format('Y-m-d H:i:s');
                                             $data['timeRemaining'] = $timeRemaining;
                                             $data['reporttype'] = $reporttype;
 
@@ -178,79 +178,117 @@ class ExaminationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $input =$request->all();
-        $string = implode(', ', $input['question-answer-']);
-        $schedule = implode(', ', $input['schedule']);
+    // public function store(Request $request)
+    // {
+    //     $input =$request->all();
+    //     $string = implode(', ', $input['question-answer-']);
+    //     $schedule = implode(', ', $input['schedule']);
 
+    //     dd($input);
 
-       //dd($input);
-
-         //print_pre([ $input] , true);
-         //exit;
-
-         try {
+    //      try {
 
 
 
-            foreach($input['question-answer-'] as $key => $value){
+    //         foreach($input['question-answer-'] as $key => $value){
 
-                 $examresults = new exam_results();
-                 $answer_key = AnswerKeys::whereIn('id', $input['question-answer-'] )->where('question_weight','>',0)
-                                          ->select('question_weight')
-                                         //->sum('question_weight')
-                                           ->get();
+    //              $examresults = new exam_results();
+    //              $answer_key = AnswerKeys::whereIn('id', $input['question-answer-'] )->where('question_weight','>',0)
+    //                                       ->select('question_weight')
+    //                                      //->sum('question_weight')
+    //                                        ->get();
 
-                //$examresults->answers_selected = $string;
-                foreach($string as $key =>$values){
-
-
-                }
-
-                 dd($values);
+    //             //$examresults->answers_selected = $string;
+    //             foreach($string as $key =>$values){
 
 
-                $examresults->question_id =  $schedule ;
-                $examresults->marks_achieved =  $answer_key;
-                $examresults->conduct_id =  isset($input['conduct_id']) ? $input['conduct_id']:"";
-                $examresults->Created_by =  isset($input['created_by']) ? $input['created_by']:"";
-                $examresults->report_type_id = isset($input['reporttype']) ? $input['reporttype'] :"";
+    //             }
+
+    //              dd($values);
 
 
-                // dd($examresults);
-
-                $examresults->save();
-
-                DB::commit();
-                toast('Exam Completed successfully','success')->position('top-end');
-                return view('exams/view_exam_results'.$examresults->id);
+    //             $examresults->question_id =  $schedule ;
+    //             $examresults->marks_achieved =  $answer_key;
+    //             $examresults->conduct_id =  isset($input['conduct_id']) ? $input['conduct_id']:"";
+    //             $examresults->Created_by =  isset($input['created_by']) ? $input['created_by']:"";
+    //             $examresults->report_type_id = isset($input['reporttype']) ? $input['reporttype'] :"";
 
 
+    //             // dd($examresults);
 
-             }
+    //             $examresults->save();
 
-
-         } catch (\Throwable $e) {
-
-
-            DB::rollBack();
-            Log::info($e->getMessage() );
-            throw $e;
-
-         }
+    //             DB::commit();
+    //             toast('Exam Completed successfully','success')->position('top-end');
+    //             return view('exams/view_exam_results'.$examresults->id);
 
 
 
+    //          }
 
 
-        // print_pre([$answer_key,] , true);
-        // exit;
+    //      } catch (\Throwable $e) {
+
+
+    //         DB::rollBack();
+    //         Log::info($e->getMessage() );
+    //         throw $e;
+
+    //      }
+
+
+    // }
+
+
+public function store(Request $request)
+{
+    $input = $request->all();
+
+ //   dd($input);
+
+   // print_pre([$input], true);
 
 
 
+    try {
+        foreach ($input['question-answer-'] as $question_id => $answer_id) {
 
+            $answer_key = AnswerKeys::where('id', $answer_id )->select('question_weight')->first();
+
+            //dd($answer_key);
+
+            //print_pre([$answer_key], true);
+
+
+
+            $exam_results = new exam_results();
+
+            $exam_results->question_id = $question_id;
+            $exam_results->answers_selected = $answer_id;
+            $exam_results->marks_achieved =  $answer_key->question_weight;
+            $exam_results->conduct_id = isset($input['conduct_id']) ? $input['conduct_id'] : null;
+            $exam_results->created_by = isset($input['created_by']) ? $input['created_by'] : null;
+            $exam_results->report_type_id = isset($input['reporttype']) ? $input['reporttype'] : null;
+
+           // print_pre([$exam_results], true);
+
+            $exam_results->save();
+        }
+
+        DB::commit();
+
+        toast('Exam completed successfully', 'success')->position('top-end');
+
+        return redirect('exams/view_results/'.$exam_results->conduct_id.'/'.$exam_results->created_by);
+
+    } catch (\Throwable $e) {
+        DB::rollBack();
+        Log::info($e->getMessage());
+        throw $e;
     }
+}
+
+
 
     /**
      * Display the specified resource.

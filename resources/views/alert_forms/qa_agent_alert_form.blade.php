@@ -27,7 +27,7 @@
             <!-- text input -->
             <div class="form-group">
               <label>Date</label>
-              <input readonly type="date" name="date_auto"  value="{{ $qa_alert['date_recorded'] }}" class="form-control"  >
+              <input readonly type="text" name="date_auto"  value="{{ $qa_alert->date_recorded }}" class="form-control"  >
             </div>
           </div>
           <div class="col-sm-3">
@@ -69,7 +69,7 @@
           </div>
         </div>
           <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-4">
               <!-- text input -->
               <div class="form-group">
                 <label>QA name</label>
@@ -80,62 +80,13 @@
             <div class="col-sm-3">
               <div class="form-group">
                 <label>Signature</label>
-
-                <canvas id="signature-pad" class="signature-pad" width=200 height=60 border-color="black"></canvas>
-
-
-
-                    {{-- <div id="signature-pad" class="signature-pad">
-                        <div class="signature-pad--body">
-                            <canvas></canvas>
-                        </div>
-                        <div class="signature-pad--footer">
-                            <div class="description">Sign above</div>
-                            <div class="signature-pad--actions">
-                                <div>
-                                    <button type="button" class="button clear" data-action="clear">Clear</button>
-                                    <button type="button" class="button save" data-action="save">Save</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                {{-- <input  type="text" name="qa_signature" class="form-control" placeholder="QA Signature ..." >
-
-                @if (!$AlertForm->hasBeenSigned())
-                   <form action="{{ $AlertForm->getSignatureRoute() }}" method="POST">
-                    @csrf
-
-                    <br/>
-                    <div id="signaturePad" ></div>
-                    <br/><br/>
-                    <button id="clear" class="btn btn-danger btn-sm">Clear</button>
-                    <textarea id="signature" name="signed" style="display: none"></textarea>
-                   </form>
-
-                      @endif --}}
-
+                        <canvas id="signature-pad-1" class="signature-pad" width="200" height="50" style="border: 1px solid black;"  {{ $status->auto_status == 0 ? '' : 'disabled="disabled"' }}></canvas>
+                        <input type="hidden" id="signature-1" name="signature1"  >
+                        <button type="button" onclick="clearSignaturePad(1)">Clear</button>
+                    </div>
               </div>
-            </div>
-            <div class="col-sm-3">
+            <div class="col-sm-4">
               <div class="form-group">
-
                 <label>Date</label>
                 <input readonly  name="date_by_qa" value="<?php echo date('Y-m-d H:i:s'); ?>" class="form-control"  >
               </div>
@@ -151,7 +102,7 @@
           </div>
 
           <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-4">
               <!-- text input -->
               <div class="form-group">
                 <label>Supervisor name</label>
@@ -162,18 +113,12 @@
             <div class="col-sm-3">
               <div class="form-group">
                 <label>Signature</label>
-                {{-- <input disabled type="text" name="supervisor_signature"  class="form-control" placeholder="Supervisor Signature ..." > --}}
-
-                <x-creagia-signature-pad
-    border-color="#eaeaea"
-    pad-classes="rounded-xl border-2"
-    button-classes="bg-gray-100 px-4 py-2 rounded-xl mt-4"
-    clear-name="Clear"
-
-/>
-              </div>
+                    <canvas id="signature-pad-2" class="signature-pad" width="200" height="50" style="border: 1px solid black;" {{ $status->auto_status == 1 ? '' : 'disabled="disabled"' }}></canvas>
+                    <input type="hidden" id="signature-2" name="signature2" >
+                    <button type="button" onclick="clearSignaturePad(2)">Clear</button>
+                    </div>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-4">
               <div class="form-group">
                 <label>Date</label>
                 <input readonly  name="date_by_supervisor" value="<?php echo date("d-m-Y H:i:s");?>" class="form-control"  >
@@ -186,7 +131,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-4">
               <!-- text input -->
               <div class="form-group">
                 <label>Agent name</label>
@@ -197,10 +142,12 @@
             <div class="col-sm-3">
               <div class="form-group">
                 <label>Signature</label>
-                <input readonly name="agent_signature" type="text" class="form-control" placeholder="Agent Signature ..." >
+                    <canvas id="signature-pad-3" class="signature-pad" width="200" height="50" style="border: 1px solid black;"  {{ $status->auto_status == 2 ? '' : 'disabled="disabled"' }}></canvas>
+                    <input type="hidden" id="signature-3" name="signature3" >
+                    <button type="button" onclick="clearSignaturePad(3)">Clear</button>
               </div>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-4">
               <div class="form-group">
                 <label>Date</label>
                 <input readonly  name="date_by_agent" value="<?php echo date("d-m-Y H:i:s");?>" class="form-control"  >
@@ -229,49 +176,35 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
 
-{{-- <script src="{{ asset('vendor/sign-pad/sign-pad.min.js') }}"></script> --}}
-{{-- <script type="text/javascript" src="http://keith-wood.name/js/jquery.signature.js"></script>
 
-<style>
-    .kbw-signature { width: 100%; height: 200px;}
-    #sig canvas{
-        width: 100% !important;
-        height: auto;
-    }
-</style> --}}
-
-{{--
-<script type="text/javascript">
-    var signaturePad = $('#sig').signature({syncField: '#signature64', syncFormat: 'PNG'});
-    $('#clear').click(function(e) {
-        e.preventDefault();
-        sig.signature('clear');
-        $("#signature64").val('');
-    });
-</script> --}}
-
-<script src="{{ asset('js/signature_pad.min.js') }}"></script>
 <script>
-    const canvas = document.querySelector('#signature-pad');
-    const signaturePad = new SignaturePad(canvas);
+    var signaturePad1 = new SignaturePad(document.getElementById('signature-pad-1'));
+    var signaturePad2 = new SignaturePad(document.getElementById('signature-pad-2'));
+    var signaturePad3 = new SignaturePad(document.getElementById('signature-pad-3'));
 
-    function resizeCanvas() {
-        const ratio =  Math.max(window.devicePixelRatio || 1, 1);
-        canvas.width = canvas.offsetWidth * ratio;
-        canvas.height = canvas.offsetHeight * ratio;
-        canvas.getContext("2d").scale(ratio, ratio);
-        signaturePad.clear();
+    function clearSignaturePad(padNumber) {
+        if (padNumber === 1) {
+            signaturePad1.clear();
+            document.getElementById('signature-1').value = '';
+        } else if (padNumber === 2) {
+            signaturePad2.clear();
+            document.getElementById('signature-2').value = '';
+        } else if (padNumber === 3) {
+            signaturePad3.clear();
+            document.getElementById('signature-3').value = '';
+        }
     }
-
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
 
     document.querySelector('form').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const input = document.querySelector('#signature-input');
-        input.value = signaturePad.toDataURL();
-        this.submit();
+        var signature1 = signaturePad1.toDataURL();
+        var signature2 = signaturePad2.toDataURL();
+        var signature3 = signaturePad3.toDataURL();
+
+        document.getElementById('signature-1').value = signature1;
+        document.getElementById('signature-2').value = signature2;
+        document.getElementById('signature-3').value = signature3;
     });
 </script>
+
 
 @stop

@@ -7,7 +7,7 @@
 @stop
 
 @section('content')
-<form method="" action="{{ route('qaresults.search') }}" accept-charset="UTF-8" class="form"><input name="_token" type="hidden" value="">
+<form method="GET" action="{{ route('qaresults.search') }}" >
          <div class="card card-success ">
             <div class="card-header">
                  <input readonly class="form-control" style="color: green" value="Audit Results">
@@ -17,20 +17,18 @@
                 <div class="col-md-4">
                     <label for="section">Supervisor</label>
                     <select class="form-control" required="required" id="supervisor" name="supervisor"><option selected="selected" value="">--Select Supervisor--</option>
-                     @foreach ($qa_results as $supervisor )
-                     <option value="{{$supervisor->supervisor}}">{{ $supervisor->SupervisorName }}</option>
+                     @foreach ($supervisors as $supervisor )
+                     <option value="{{$supervisor['id']}}">{{ $supervisor['name'] }}</option>
                      @endforeach
-                   </select>                    {{-- <input readonly class="form-control"  name="supervisor" value="{{ Auth::user()->name }}">
-                    <input  type="hidden" class="form-control" name="supervisor" value="{{ Auth::user()->id }}"> --}}
+                   </select>
                 </div>
             <div class="col-md-4">
                <label for="section">Select Ticket Status</label>
                 <div class="form-group">
            <select class="form-control" required="required" id="status" name="status"><option selected="selected" value="">--Select ticket Status--</option>
-
-                   <option value="1">Completed</option>
-                   <option value="2">Slipping</option>
-                   <option value="3">Pending</option>
+                @foreach ($ticketStatus as $tickets )
+                <option value="{{ $tickets['id'] }}">{{ $tickets['status_name']}}</option>
+                @endforeach
               </select>
             </div>
           </div>
@@ -70,6 +68,7 @@
           <th>Recording ID</th>
           <th>Percentage</th>
           <th>Ticket Status</th>
+          <th>Date</th>
           <th>Alert Form</th>
           <th>Action</th>
         </tr>
@@ -114,9 +113,10 @@
                 @endswitch
 
             </td>
+            <td>{{ $row['created_at'] }}</td>
               <td>
                 @foreach ( $row->autofails as $autofail)
-                @if ($autofail['results_id'] == $row['id'])
+                @if ($autofail['results_id'] === $row['id'])
                 <a disable class="badge badge-danger" >Auto-fail registered</a>
                 @else
                 <a disable class="badge badge-success" >No Auto-fail</a>
@@ -130,7 +130,12 @@
               <td class="text-right" >
                 <div class="btn-group btn-group-sm">
                     @can('view-results-audit-edit')
-                    <a href="{{ route('qaresults.edit',$row['id']) }}" class="btn btn-success"><i class="fas fa-edit"></i></a>
+                    @if($row['status'] == 3)
+                    <a style="display:none;"  href="{{ route('qaresults.edit',$row['id']) }}" class="btn btn-success"><i class="fas fa-edit"></i></a>
+
+                    @else
+                    <a  href="{{ route('qaresults.edit',$row['id']) }}" class="btn btn-success"><i class="fas fa-edit"></i></a>
+                    @endif
                     @endcan
                      @can('view-results-audit-delete')
                      <a href="{{ route('qaresults.show',$row['id']) }}" class="btn btn-info"><i class="fas fa-eye"></i></a>

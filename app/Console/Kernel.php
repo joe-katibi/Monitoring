@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new ExamStatusJob)->everyMinute();
         $schedule->job(new AuditJob)->everyMinute();
         $schedule->job(new AutoFailStatusJob)->everyMinute();
+        $schedule->command('exam:update-status')->daily();
     }
 
     /**
@@ -32,4 +33,9 @@ class Kernel extends ConsoleKernel
 
         require base_path('routes/console.php');
     }
+    protected $commands = [
+        // Other commands...
+        \App\Console\Commands\UpdateExamStatusCommand::class,
+    ];
+
 }

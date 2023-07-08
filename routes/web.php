@@ -67,6 +67,12 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::post('/home/store', [App\Http\Controllers\HomeController::class, 'store'])->name('home.store');
+Route::resource('home', HomeController::class);
+Route::post('/home/{id}/edit', [App\Http\Controllers\HomeController::class, 'edit'])->name('home.edit');
+Route::delete('/home/{id}/destroy', [App\Http\Controllers\HomeController::class, 'destroy'])->name('home.destroy');
+Route::get('home/{id}/activate', [App\Http\Controllers\HomeController::class, 'activate'])->name('home.activate');
+Route::get('home/{id}/deactivate',[App\Http\Controllers\HomeController::class,  'deactivate'])->name('home.deactivate');
 
 
 
@@ -168,6 +174,7 @@ Route::prefix('settings')->group(function () {
 
 /* Create parameters and Edit */
 Route::resource('parametor', fiberWelcomeEditController::class);
+Route::get('admin/edit_parametors/Fiber/{parametor}/show', [App\Http\Controllers\FiberQuestions\fiberWelcomeEditController::class, 'show'])->name('parametor.show');
 Route::post('admin/edit_parametors/Fiber/{parametors}/edit', [App\Http\Controllers\FiberQuestions\fiberWelcomeEditController::class, 'edit'])->name('parametor.edit');
 Route::get('admin/edit_parametors/Fiber/{parametors}/edit', [App\Http\Controllers\FiberQuestions\fiberWelcomeEditController::class, 'edit'])->name('parametor.edit');
 Route::post('admin/edit_parametors/Fiber/{parametors}/update', [App\Http\Controllers\FiberQuestions\fiberWelcomeEditController::class, 'update'])->name('parametor.update');
@@ -253,6 +260,9 @@ Route::get('exams/{conductexam}/view_conduct',[App\Http\Controllers\Exams\Conduc
 Route::get('exams/{conductexam}/edit_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'update'])->name('conductexam.update');
 Route::delete('exams/{conductexam}/view_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'destroy'])->name('conductexam.destroy');
 Route::post('exams/schedule_exam',[App\Http\Controllers\Exams\ConductExamController::class,'store'])->name('conductexam.store');
+Route::get('exams/conduct_exams/{id}/reactivate',[App\Http\Controllers\Exams\ConductExamController::class,'reactivate'])->name('conductexam.reactivate');
+// Route::post('exams/{conductexam}/edit_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'deactivate'])->name('conductexam.deactivate');
+
 
 Route::resource('examination',ExaminationController::class);
 Route::get('exams/{examination}/examination',[App\Http\Controllers\Exams\ExaminationController::class,'index'])->name('examination.index');
@@ -263,6 +273,7 @@ Route::get('exams/agent_examination',[App\Http\Controllers\Exams\ExaminationCont
 Route::resource('examresult',ExamsResultsController::class);
 Route::get('exams/exam_result',[App\Http\Controllers\Exams\ExamsResultsController::class, 'index'])->name('examresult.index');
 Route::get('/exams/view_exam_results/{examresult}',[App\Http\Controllers\Exams\ExamsResultsController::class, 'show'])->name('examresult.show');
+Route::get('exams/view_results/{conductid}/{examresult}',[App\Http\Controllers\Exams\ExamsResultsController::class, 'viewResults'])->name('examresult.viewResults');
 Route::post('exams/exam_result',[App\Http\Controllers\Exams\ExamsResultsController::class, 'store'])->name('examresult.store');
 
 Route::resource('exambank',ExamBankController::class);
@@ -376,8 +387,11 @@ Route::get('/alert_forms/alert_forms_view', [App\Http\Controllers\AlertForm\Aler
 /* Team Leader Routes */
 Route::resource('qaresults',agentActionResultsController::class);
 Route::get('team_leader/{qaresults}/Teamleader_action_results', [App\Http\Controllers\Leader\agentActionResultsController::class, 'edit'])->name('qaresults.edit');
+Route::Post('team_leader/Teamleader_action_results', [App\Http\Controllers\Leader\agentActionResultsController::class, 'update'])->name('qaresults.update');
+Route::get('team_leader/Teamleader_action_results/{qaresults}', [App\Http\Controllers\Leader\agentActionResultsController::class, 'index']);
 Route::get('team_leader/agents_actions_results', [App\Http\Controllers\Leader\agentActionResultsController::class, 'index'])->name('qaresults.index');
 Route::get('team_leader/{qaresults}/teamleader_view_results', [App\Http\Controllers\Leader\agentActionResultsController::class, 'show'])->name('qaresults.show');
+Route::get('team_leader/teamleader_view_results/{qaresults}', [App\Http\Controllers\Leader\agentActionResultsController::class, 'show'])->name('qaresults.show');
 Route::get('team_leader/agents_actions_results', [App\Http\Controllers\Leader\agentActionResultsController::class, 'search'])->name('qaresults.search');
 
 

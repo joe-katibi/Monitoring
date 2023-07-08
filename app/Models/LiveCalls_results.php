@@ -11,15 +11,13 @@ class LiveCalls_results extends Model
 
     protected $fillable=[
         'live_call_id',
-        'strength_id',
-        'gaps_summary_id',
-        'service',
-        'category',
+        'summary_id',
+        'category_id',
         'created by',
 
 
     ];
-    protected $casts = [
-        'created_at' => 'datetime:d-M-Y'
-    ];
+    // protected $casts = [
+    //     'created_at' => 'datetime:d-M-Y'
+    // ];
 }

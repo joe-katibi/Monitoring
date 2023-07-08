@@ -32,6 +32,8 @@ use Datatables;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Jobs\AuditJob;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AuditNotification;
 
 
 
@@ -150,9 +152,17 @@ class BillingCategoryController extends Controller
         // Retrieve all input data from the request and store it in the $input variable.
         $input = $request->all();
 
-        //  dd($input);
+        $agent = $request->input('agent_name');
 
-        //print_pre($input ,true);
+        $supervisor = $request->input('supervisor');
+
+        $qualityAnalysts = $request->input('quality_analysts');
+
+        $agentEmail = User::select('email','name')->where('id', '=', $agent)->first();
+
+        $supervisorEmail = User::select('email','name')->where('id', '=', $supervisor)->first();
+
+        $qualityAnalysts = User::select('email','name')->where('id', '=', $qualityAnalysts)->first();
 
 
         try {
@@ -166,7 +176,7 @@ class BillingCategoryController extends Controller
             $results->supervisor= isset($input['supervisor']) ? $input['supervisor'] : "";
             $results->category= isset($input['category']) ? $input['category'] : "";
             $results->agent_name= isset($input['agent_name']) ? $input['agent_name'] : "";
-            $results->quality_analysts= isset($input['quality_analysts']) ? $input['quality_analysts'] : "";
+            $results->quality_analysts = isset($input['quality_analysts']) ? $input['quality_analysts'] : "";
             $results->date_recorded = isset($input['date_recorded']) ? Carbon::parse($input['date_recorded'])->format('Y-m-d H:i:s') : Carbon::now()->format('Y-m-d H:i:s');
             $results->customer_account= isset($input['customer_account']) ? $input['customer_account'] : 0;
             $results->recording_id = isset($input['recording_id']) ? $input['recording_id'] : 0;
@@ -221,31 +231,33 @@ class BillingCategoryController extends Controller
           // $totals = QuestionResults::where('results' , '=',  $results->id )->sum('marks');
 
           // Query the QuestionResults model for the 'marks' column where 'results' equals $results->id
-               $total = QuestionResults::select('marks')->where('results', '=', $results->id)->get();
+               $total = QuestionResults::select('marks')->where('results', '=', $results->id)
+               //->where('marks', '=', 'Auto Fail')
+               ->get();
 
-               // Iterate through the results
-                foreach ($total as $result) {
-              // Check if the 'marks' value is "Auto Fail"
-                  if ($result->marks == "Auto Fail") {
+               foreach ($total as $result) {
+                // Check if the 'marks' value is "Auto Fail"
+                if ($result->marks == "Auto Fail") {
                     // Assign 5 to $result->marks if it's "Auto Fail"
-                        $result->marks = 5;
-                  } else {
-                   // If it's not "Auto Fail", sum up the 'marks' column where 'results' equals $results->id
-                 $result->marks = QuestionResults::where('results', '=', $results->id)->sum('marks');
-                  }
-               }
+                    $result->marks = 5;
+                } else {
+                    // If it's not "Auto Fail", sum up the 'marks' column where 'results' equals $results->id
+                    $result->marks = QuestionResults::where('results', '=', $results->id)->sum('marks');
+                }
+            }
 
 
             // Get the Result object for the results
             $results_update = Result::find($results->id);
 
             // Set the final_results property of the Result object to the total marks
-            $results_update->final_results  =  $result->marks;
+            $results_update->final_results =  $result->marks;
 
-           // dd($result->marks);
 
             // Update the Result object in the database
-            $results_update->update();
+            $results_update->save();
+
+          //  print_pre($results_update->final_results , true);
 
             // Log the update of the Result object
             log::channel('billing_category')->info('Billing Category Updated : ------> ', ['200' , $results_update->toArray() ] );
@@ -254,19 +266,42 @@ class BillingCategoryController extends Controller
             DB::commit();
 
             // Check if the total marks are 0
-            if($result->marks == 5){
-
+            if ($results_update->final_results == 5) {
                 // Display a warning message if the total marks are 0
-                toast('Auto Fail generated','warning')->position('top-end');
+
+
+
+                    $result = new Result();
+                    $result->agentEmail = $agentEmail;
+                    $result->supervisorEmail = $supervisorEmail;
+                    $result->qualityAnalysts = $qualityAnalysts;
+
+
+                    $notification = new AuditNotification($result, 'results');
+                    Mail::to($agentEmail->email)
+                        ->cc($supervisorEmail->email)->send($notification);
+
+                toast('Auto Fail generated', 'warning')->position('top-end');
                 return redirect()->to('/quality_analyst/qa_agent_alert_form/'.$results->id);
-
             } else {
-
                 // Display a success message if the total marks are not 0
-                toast('Agent Audited successfully','success')->position('top-end');
-                return redirect('results/billing/billing_results/'.$results->id);
+                $result = new Result();
+                $result->marks = $results->marks;
+                $result->qualityAnalysts = $qualityAnalysts;
+                $result->agentEmail = $agentEmail;
+                $result->supervisorEmail = $supervisorEmail;
 
+                $notification = new AuditNotification($result, 'results');
+                Mail::to($agentEmail->email)
+                    ->cc($supervisorEmail->email)->send($notification);
+
+                toast('Agent Audited successfully', 'success')->position('top-end');
+                return redirect('results/billing/billing_results/'.$results->id);
             }
+
+
+
+
 
             // Debugging statement (commented out)
             // print_pre([$results , $totals] , true);

@@ -33,10 +33,10 @@ class ConductExamController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware(['role:super-admin|admin|moderator|developer|quality-analysts|trainer']);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware(['role:super-admin|admin|moderator|developer|quality-analysts|trainer']);
+    // }
     /**
      * Display a listing of the resource.
      *
@@ -46,7 +46,7 @@ class ConductExamController extends Controller
     {
 
         $data['conduct'] = ConductExam::select('conduct_exams.id','conduct_exams.schedule_name','conduct_exams.time','conduct_exams.course',
-                                      'conduct_exams.exam_name','conduct_exams.service','conduct_exams.category','conduct_exams.trainer_qa','conduct_exams.start_date','conduct_exams.completion_date','conduct_exams.created_at','exam_statuses.schedule_id','courses.course_name','users.name','categories.category_name','exam_statuses.status','user_categories.category_id')
+                                      'conduct_exams.exam_name','conduct_exams.service','conduct_exams.category','conduct_exams.trainer_qa','conduct_exams.start_date','conduct_exams.completion_date','conduct_exams.created_at','exam_statuses.schedule_id','courses.course_name','users.name','categories.category_name','exam_statuses.status','user_categories.category_id', 'exam_statuses.id as status_id')
                                       ->join('users','users.id','=','conduct_exams.trainer_qa')
                                       ->join('user_categories','user_categories.user_id','=','conduct_exams.trainer_qa')
                                       ->join('categories','categories.id','=','conduct_exams.category')
@@ -94,6 +94,25 @@ class ConductExamController extends Controller
         return view('exams/schedule_exam')->with($data);
     }
 
+    public function IDGenerator($model, $trow, $length = 5, $prefix)
+    {
+        $data = $model::orderBy('schedule_id', 'desc')->first();
+
+        if ($data) {
+            $code = substr($data->$trow, strlen($prefix) + 1);
+            $actual_last_number = intval($code);
+            $increment_last_number = $actual_last_number + 1;
+            $last_number_length = strlen($increment_last_number);
+            $og_length = $length - $last_number_length;
+            $last_number = str_repeat("0", $og_length) . $increment_last_number;
+        } else {
+            $og_length = $length - strlen($prefix) - 1;
+            $last_number = str_repeat("0", $og_length) . "1";
+        }
+
+        return $prefix . '-' . $last_number;
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -102,73 +121,55 @@ class ConductExamController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->all();
+      $input = $request->all();
 
-         //dd($input);
+      try {
+        DB::beginTransaction();
 
+        // Create a new ConductExam object
+        $schedule = new ConductExam();
+        $schedule->schedule_name = isset($input['schedule_name']) ? $input['schedule_name'] : "";
+        $schedule->time = isset($input['time']) ? $input['time'] : "";
+        $schedule->course = isset($input['course']) ? $input['course'] : "";
+        $schedule->exam_name = isset($input['exam_name']) ? $input['exam_name'] : "";
+        $schedule->service = isset($input['service']) ? $input['service'] : "";
+        $schedule->category = isset($input['category']) ? $input['category'] : "";
+        $schedule->trainer_qa = isset($input['trainer_qa']) ? $input['trainer_qa'] : "";
+        $schedule->start_date = isset($input['start_date']) ? $input['start_date'] : "";
+        $schedule->completion_date = isset($input['completion_date']) ? $input['completion_date'] : "";
+        $schedule->created_by = isset($input['created_by']) ? $input['created_by'] : "";
 
-        try{
+        $schedule->save();
 
-            DB::beginTransaction();
-            $schedule = new ConductExam();
-            $schedule->schedule_name =isset($input['schedule_name']) ? $input['schedule_name']:"";
-            $schedule->time =isset($input['time']) ? $input['time']:"";
-            $schedule->course =isset($input['course']) ? $input['course']:"";
-            $schedule->exam_name =isset($input['exam_name']) ? $input['exam_name']:"";
-            $schedule->service =isset($input['service']) ? $input['service']:"";
-            $schedule->category =isset($input['category']) ? $input['category']:"";
-            $schedule->trainer_qa =isset($input['trainer_qa']) ? $input['trainer_qa']:"";
-            $schedule->start_date =isset($input['start_date']) ? $input['start_date']:"";
-            $schedule->completion_date =isset($input['completion_date']) ? $input['completion_date']:"";
-            $schedule->created_by= isset($input['created_by']) ? $input['created_by']:"";
+        log::channel('schedule')->info('schedule exam Created : ------> ', ['200', $schedule->toArray()]);
 
-          // dd($schedule, $input);
-
-
-
-
-           $schedule->save();
-
-            log::channel('schedule')->info('schedule exam Created : ------> ', ['200' , $schedule->toArray() ] );
-
-            $schedule_id =ExamStatus::IdGenerator(new ConductExam, ' schedule->id ',5,'EXM');
-
-            //$schedule_id = IdGenerator::generate(['table' => 'exam_statuses', ' schedule->id ','length' => 5, 'prefix' =>'EXM-']);
-
-            $examstatus = new ExamStatus();
-            $examstatus->schedule_id = $schedule_id;
-            $examstatus->exam_id = $schedule->id;
-            $examstatus->created_by = $schedule->created_by;
-            $examstatus->status = '1';
-            $examstatus->start_time = now();
-            $examstatus->end_time = now()->addMinutes(30);
-
-            log::channel('examstatus')->info('exam status Created : ------> ', ['200' , $examstatus->toArray() ] );
-
-            $examstatus->save();
-
-            // print( $examstatus);
-
-            // dd($examstatus);
-
-            DB::commit();
-            toast('Exam Scheduled successfully','success')->position('top-end');
-            return redirect('exams/conduct_exam');
+        // Generate unique schedule code
+        //$schedule_id = self::IDGenerator(new ConductExam(), 'id', 5, 'EXM');
+        $schedule_id = $this->IDGenerator(new ExamStatus, 'schedule_id', 5, 'EXM');
 
 
-            // dd($examstatus);
+        // Create a new ExamStatus object
+        $examstatus = new ExamStatus();
+        $examstatus->schedule_id = $schedule_id;
+        $examstatus->exam_id = $schedule->id;
+        $examstatus->created_by = $schedule->created_by;
+        $examstatus->status = '1';
+        $examstatus->start_time = Carbon::now();
+        $examstatus->end_time = Carbon::now()->addMinutes($schedule->time);
 
-        //    print_pre( $examstatus , true  );
+        log::channel('examstatus')->info('exam status Created : ------> ', ['200', $examstatus->toArray()]);
 
-            // exit;
+        $examstatus->save();
 
+        DB::commit();
 
-        }catch (\Throwable $e) {
-
-            DB::rollBack();
-            Log::info($e->getMessage() );
-            throw $e;
-        }
+        toast('Exam Scheduled successfully', 'success')->position('top-end');
+        return redirect('exams/conduct_exam');
+      } catch (\Throwable $e) {
+        DB::rollBack();
+        Log::info($e->getMessage());
+        throw $e;
+      }
     }
 
     /**
@@ -252,6 +253,47 @@ class ConductExamController extends Controller
 
         return view('exams/edit_conduct')->with($data);
     }
+
+    public function reactivate($id)
+{
+
+    dd($id);
+    // Find the row in the exam_statuses table with the given ID
+    $row = DB::table('exam_statuses')->where('id', $id)->first();
+
+    // Update the status column to 1
+    DB::table('exam_statuses')->where('id', $id)->update(['status' => 1]);
+
+    // Return a response to indicate that the row was successfully activated
+    return response()->json(['message' => 'Row activated!']);
+}
+
+    public function activate($id)
+    {
+        /** @var ExamStatus $ExamStatus */
+        $examstatus = ExamStatus::findOrFail($id);
+
+        $examstatus->status = 1;
+
+        $examstatus->save();
+
+        return back();
+    }
+
+
+    public function deactivate($id)
+    {
+        /** @var ExamStatus $ExamStatus */
+
+        $examstatus = ExamStatus::findOrFail($id);
+
+        $examstatus->status = 0;
+
+        $examstatus->save();
+
+        return back();
+    }
+
 
     /**
      * Update the specified resource in storage.

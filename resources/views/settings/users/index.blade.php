@@ -67,7 +67,7 @@
                                       @endif
 
                                 </td>
-                                <td>{{$row['position']}}</td>
+                                <td>{{$row['description']}}</td>
                                 <td>{{$row->department_name}}</td>
                                 {{-- <td>{{$row->code}}</td> --}}
                                 <td>

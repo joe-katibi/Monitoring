@@ -8,7 +8,7 @@
 
 @section('content')
 @include('sweetalert::alert')
-<form action="#" method="POST" name="listForm">
+<form action="#"  name="listForm">
     @csrf
     <div class="card card-success">
         <div class="card-header">
@@ -36,6 +36,7 @@
                       <th>Trainier/QA</th>
                       <th>Department</th>
                       <th>Status</th>
+                      <th>Re-activate</th>
                       <th>Created Date</th>
                       <th style="width: 10%">Action</th>
                   </tr>
@@ -52,7 +53,23 @@
                                <td>{{ $row->time }}</td>
                                <td>{{ $row->name }}</td>
                                <td>{{ $row->category_name }}</td>
-                               <td>Active</td>
+                               <td>
+                                @if ($row->status  == '1')
+                                <a disable class="badge badge-success" >Active</a>
+                                @else
+                                <a disable class="badge badge-warning" >Inactive</a>
+                                @endif
+                               </td>
+                               <td>
+                                @if ($row->status  == '0')
+                                <button data-url="{{ url('exams/conduct_exams/'. $row->id .'/reactivate') }}" data-row="{{ json_encode($row) }}" class="btn btn-warning .activate-button">
+                                    <i class="fas fa-recycle"></i>
+                                </button>
+
+                                @else
+                                <a disable class="badge badge-warning" ></a>
+                                @endif
+                               </td>
                                <td>{{ $row->created_at}}</td>
                                <td>
                                 @can('view-edit-view-delete-conduct--button')
@@ -89,4 +106,28 @@
     });
 
   </script>
+
+<script>
+    // Wait for the DOM to finish loading
+    window.addEventListener('DOMContentLoaded', function() {
+        // Add an event listener to the button
+        document.querySelector('.activate-button').addEventListener('click', function(event) {
+            // Get the URL from the button's data attribute
+            var url = event.target.getAttribute('data-url');
+
+            // Send a GET request to the server to reactivate the row
+            fetch(url).then(function(response) {
+                // Handle the response from the server
+                if (response.ok) {
+                    // The row was successfully reactivated
+                    console.log('Row reactivated!');
+                } else {
+                    // There was an error reactivating the row
+                    console.error('Error reactivating row:', response.statusText);
+                }
+            });
+        });
+    });
+</script>
+
 @stop

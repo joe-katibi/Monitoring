@@ -35,18 +35,26 @@ class QaAlertFormController extends Controller
                                    ->join('categories','categories.id','=','results.category')
                                    ->where('results.id','=',$id)
                                    ->first();
-         $agents =  Result::select('results.agent_name','users.name')->join('users','users.id','=','results.agent_name')->first();
 
-         $supervisor =  Result::select('results.supervisor','users.name')->join('users','users.id','=','results.supervisor')->first();
+         $agents = User::where('id','=', $qa_alert['agent_name'])->first();
+         $value['agentName'] =  isset($agentName)  ?  $agentName->name : '';
 
-         $qa =  Result::select('results.quality_analysts','users.name')->join('users','users.id','=','results.quality_analysts')->first();
+         $supervisor = User::where('id','=', $qa_alert['supervisor'])->first();
+         $value['SupervisorName'] =  isset($SupervisorName)  ?  $SupervisorName->name : '';
+
+         $qa = User::where('id','=', $qa_alert['quality_analysts'])->first();
+         $value['qualityName'] =  isset($qualityName)  ?  $qualityName->name : '';
+
+         $status = AlertForm::select('auto_status')->first();
+
+        // print_pre($qa_alert, true);
 
 
 
-        //  dd($qa_alert);
+       //  dd($status);
          // $data['qa_alert'] = $qa_alert
 
-        return view('alert_forms/qa_agent_alert_form',compact('qa_alert','agents','supervisor','qa'));
+        return view('alert_forms/qa_agent_alert_form',compact('qa_alert','agents','supervisor','qa','status'));
     }
 
     /**
@@ -60,7 +68,9 @@ class QaAlertFormController extends Controller
 
         $input = $request->all();
 
-           // print_pre( $input , true);
+        //dd($input['signature1']);
+
+            //print_pre( $input , true);
 
         try{
 
@@ -76,11 +86,11 @@ class QaAlertFormController extends Controller
             $agentalertfrom->description = isset($input['description']) ? $input['description']:"";
             $agentalertfrom->fatal_error =isset($input['fatal_error']) ? $input['fatal_error']:"";
             $agentalertfrom->supervisor_comment = isset($input['supervisor_comment']) ? $input['supervisor_comment']:"";
-            $agentalertfrom->qa_signature = isset($input['qa_signature']) ? $input['qa_signature']:"";
+            $agentalertfrom->qa_signature =  $input['signature1'];
             $agentalertfrom->date_by_qa = isset($input['date_by_qa']) ? Carbon::parse($input['date_by_qa'])->format('Y-m-d H:i:s') : Carbon::now()->format('Y-m-d H:i:s');
-            $agentalertfrom->supervisor_signature = isset($input['supervisor_signature']) ? $input['supervisor_signature']:"";
+            $agentalertfrom->supervisor_signature = $input['signature2'];
             $agentalertfrom->date_by_supervisor = isset($input['date_by_supervisor']) ? Carbon::parse($input['date_by_supervisor'])->format('Y-m-d H:i:s') : Carbon::now()->format('Y-m-d H:i:s');
-            $agentalertfrom->agent_signature = isset($input['agent_signature']) ? $input['agent_signature']:"";
+            $agentalertfrom->agent_signature = $input['signature3'];
             $agentalertfrom-> date_by_agent =isset($input['date_by_agent']) ? Carbon::parse($input['date_by_agent'])->format('Y-m-d H:i:s') : Carbon::now()->format('Y-m-d H:i:s');
             $agentalertfrom->results_id = isset($input['results_id']) ? $input['results_id']:"";
             $agentalertfrom->auto_status = '1';

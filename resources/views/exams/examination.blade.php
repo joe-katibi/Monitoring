@@ -10,8 +10,8 @@
 @include('sweetalert::alert')
 {{-- action="{{ route('examination.store') }}" --}}
     <form  method="POST" action="{{ route('examination.store',$conduct[0]->id) }}" name="listForm">
-        <input  type="hidden" name="conduct_id" value="{{ $conduct[0]->id}}">
-        <input  type="hidden" name="created_by" value="{{ Auth::user()->id }}">
+        <input  type="hidden" name="conduct_id"  id="conductId" data-conduct-id="{{ $conduct[0]->id}}" value="{{ $conduct[0]->id}}">
+        <input  type="hidden" name="created_by" id="createdBy" data-created-by="{{ Auth::user()->id  }}" value="{{ Auth::user()->id }}">
         <input type="hidden" name="reporttype" value="{{ $reporttype['type_id']}}">
 
         @if (session('status'))
@@ -21,6 +21,10 @@
         @endif
         @csrf
         <div class="card card-success">
+
+            <div id="alert-message" style="display: none;">
+                <p>Your time has elapsed. Exam submission in progress...</p>
+            </div>
             <div class="card-header">
                 <input readonly class="form-control" style="color: green" value="Examination">
             </div>
@@ -52,9 +56,13 @@
                     </div>
                     <div class="col-2">
                         <label>Duration (minutes) </label>
-                        <input readonly id="timer" type="text" class="form-control" placeholder="Durations"
-                            value="{{  $timeRemaining }}">
+                        {{-- <input readonly id="timer" type="text" class="form-control"
+                            value="{{  $timeRemaining }}"> --}}
+
+                            <input readonly id="timer" type="text" class="form-control" value="{{ $timeRemaining }}">
                     </div>
+{{--
+                    <p id="countdown">Loading countdown...</p> --}}
                 </div>
             </div>
             <div class="card-body">
@@ -75,38 +83,32 @@
 
                 <div class="container">
                     @if ($i = 1)
-                     <?php $num =1;?>
-                        @foreach ($questions as $key => $question)
-                            <div class="card card-warning ">
-                                <div class="card-header">
-                                 {!!  "Question ".  $num++ . ". ".  strip_tags( $question->question, '<p>')!!}
-                                </div>
-                                <div class="card-body">
-                                    {{-- <input  type="hidden" name="questions[{{ $question->course }}]"
-                                        value="{{ $question->course }}"> --}}
-                                        <input  type="hidden" name="schedule[{{ $question->id }}]"
+                    @foreach ($questions as $key => $question)
+                    <div class="card card-warning ">
+                        <div class="card-header">
+                            {!!  "Question ".  ($key+1) . ". " . strip_tags($question->question, '<p>') !!}
+                        </div>
+                        <div class="card-body">
+                            <input type="hidden" name="questions[{{ $question->course }}]" value="{{ $question->course }}">
+                            <input  type="hidden" name="schedule[{{ $question->id }}]"
                                         value="{{ $question->id  }}">
-                                    <div class="form-check">
-                                        <ol type="A">
-                                            @foreach ($question->choices as $k => $choice)
-                                            <li>
-                                                <input type="radio" id="question-{{ $choice->id }}"
-                                                    name="question-answer-[{{ $question->id }}]"
-                                                    value="{{ $choice->id }}">
-                                                <label for="examination">{!! $choice->choices !!}</label>
-                                                {{-- <input  type="hidden" name="questions-choice-[{{ $choice->id }}]"
-                                                value="{{ $choice->question_weight }}"> --}}
-
-                                            </li>
-                                            @endforeach
-                                        </ol>
-
-                                    </div>
-
-                                </div>
+                            <div class="form-check">
+                                <ol type="A">
+                                    @foreach ($question->choices as $k => $choice)
+                                        <li>
+                                            <input type="radio" id="choice-{{ $choice->id }}" name="question-answer-[{{ $question->id }}]"
+                                                   value="{{ $choice->id }}" required>
+                                            <label for="choice-{{ $choice->id }}">{!! $choice->choices !!}</label>
+                                            <input  type="hidden" name="questions-choice-[{{ $choice->id }}]"
+                                                value="{{ $choice->question_weight }}">
+                                        </li>
+                                    @endforeach
+                                </ol>
                             </div>
-                        @endforeach
-                    @endif
+                        </div>
+                    </div>
+                @endforeach
+            @endif
                     @can('view-saving-done-exam-button')
                     <div class="card-footer">
 
@@ -159,23 +161,77 @@
         });
     </script>
 
-    {{-- <script>
-        function deactivateExam() {
-            axios.post('{{ route('examination.show') }}')
-                .then(response => {
-                    window.location.reload();
-                });
-        }
+  <!-- Place this code inside your view file -->
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  var endTime = localStorage.getItem('countdownEndTime'); // Get the end time from local storage
 
-        let timeLeft = {{ $examEnd->diffInSeconds(Carbon::now()) }};
-        let timer = setInterval(() => {
-            if (timeLeft === 0) {
-                clearInterval(timer);
-                deactivateExam();
-            }
-            timeLeft--;
-        }, 1000);
-    </script> --}}
+  // Check if the end time is stored in local storage and is valid
+  if (endTime && !isNaN(endTime) && parseInt(endTime) > Date.now()) {
+    endTime = parseInt(endTime); // Parse the stored end time as an integer
+  } else {
+    // Set a new end time (e.g., 30 minutes from now)
+    endTime = Date.now() + (30 * 60 * 1000); // 30 minutes in milliseconds
+    localStorage.setItem('countdownEndTime', endTime); // Store the end time in local storage
+  }
+
+  // Update the countdown every second
+  var countdownInterval = setInterval(function() {
+    var now = Date.now(); // Get the current time in milliseconds
+    var distance = endTime - now; // Calculate the remaining time in milliseconds
+
+    // Check if the countdown has reached zero or less
+    if (distance <= 0) {
+      clearInterval(countdownInterval); // Stop the countdown
+      document.getElementById('timer').value = 'Time is up!'; // Display a message when the time is up
+
+      // Clear the stored end time from local storage
+      localStorage.removeItem('countdownEndTime');
+
+      // Make an AJAX request to store the selected answers
+      var formData = new FormData();
+      // Add your answer data to the formData object (e.g., formData.append('question1', 'answer1');)
+      // ...
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'examination.store', true);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          // The request was successful
+          // Redirect to the results view
+          var conductId = document.getElementById('conductId').getAttribute('data-conduct-id');
+          var createdBy = document.getElementById('createdBy').getAttribute('data-created-by');
+          window.location.href = "/exams/view_results/" + conductId + "/" + createdBy;
+        } else {
+          // There was an error in the request
+          console.error('Error storing answers:', xhr.statusText);
+        }
+      };
+      xhr.onerror = function() {
+        console.error('Error storing answers: Network error');
+      };
+      xhr.send(formData);
+    } else {
+      // Calculate the minutes and seconds
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      // Display the countdown in the input element with the ID 'timer'
+      document.getElementById('timer').value = minutes + ' minutes, ' + seconds + ' seconds';
+    }
+  }, 1000); // Update the countdown every second (1000 milliseconds)
+});
+
+  </script>
+
+{{-- <script>
+    // Show the results view after a delay (adjust the delay as needed)
+    setTimeout(function() {
+        window.location.href = '{{ url('exams/view_results/{conductid}/{examresult}') }}';
+    }, 3000); // 3 seconds delay
+</script>
+ --}}
+
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/countdown/2.6.0/countdown.min.js"></script>

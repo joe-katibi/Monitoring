@@ -336,6 +336,24 @@ return [
             'level' => 'debug',
             'days' => 30,
         ],
+        'strengthSummaryaudit' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/strengthSummaryaudit.log'),
+            'level' => 'debug',
+            'days' => 30,
+        ],
+        'gapSummaryaudit' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/gapSummaryaudit.log'),
+            'level' => 'debug',
+            'days' => 30,
+        ],
+        'brief' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/brief.log'),
+            'level' => 'debug',
+            'days' => 30,
+        ],
 
 
 

@@ -190,7 +190,7 @@
                     console.log(result);
                     $.each(result, function (key, value) {
                         $("#supervisor").append('<option value="' + value
-                            .id + '">' + value.name + '</option>');
+                            .model_id + '">' + value.name + '</option>');
                     });
 
                 }
@@ -227,7 +227,7 @@
                     console.log(result);
                     $.each(result, function (key, value) {
                         $("#agent").append('<option value="' + value
-                            .id + '">' + value.name + '</option>');
+                            .model_id + '">' + value.name + '</option>');
                     });
 
                 }

@@ -12,7 +12,7 @@
   @csrf
     <div class="card card-success " >
         <div class="card-header"> <input readonly class="form-control" style="color: green" name="category" value="Create"></div>
-        <input type="hidden" class="form-control" name="created_by" value="{{ Auth::user()->name }}">
+        <input type="hidden" class="form-control" name="created_by" value="{{ Auth::user()->id }}">
 
         <div class="card-body ">
             <div class="row">
@@ -25,10 +25,6 @@
                       @endforeach
                       </select>
                      </div>
-                {{-- <div class="col-md-3">
-                    <label>Question Weight</label>
-                  <input type="number" name="question_weight" class="form-control" placeholder="weightage" value="{{ old('question_weight') }}">
-                </div> --}}
                 <div class="col-md-3">
                     <label>Course</label>
                     <select class="custom-select"id="course" name="course" data-placeholder="select" value="{{ old('course') }}">
@@ -38,16 +34,6 @@
                     @endforeach
                     </select>
                 </div>
-                {{-- <div class="col-md-3">
-                    <label>Answer Key</label>
-                    <select class="custom-select"id="answer_key" name="answer_key" data-placeholder="select" value="{{ old('answer_key') }}">
-                        <option value="" disabled selected>Choose answer key</option>
-                        @foreach ($answer as $row)
-                    <option value="{{$row['id']}}">{{$row['answer_name']}}</option>
-                    @endforeach
-
-                    </select>
-                </div> --}}
             </div>
 
         </div>
@@ -63,64 +49,106 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col">
-                <label>Answer A</label>
-              <textarea id="answer_a"  name="answer_a" class="form-control float-center" rows="3" placeholder="Enter an answer ..." value="{{ old('answer_a') }}"></textarea>
-              <span style="color:red">@error('answer_a'){{ $message }}@enderror</span>
-            </div>
-            <div class="col-md-3">
-                <label>Answer Weight </label>
-              <input type="number" id="answer_a" name="question_weight_[{{ old('answer_a')}}]" class="form-control" placeholder="weightage" value="{{ old('question_weight.' . old('answer_a')) }}" >
-              <span style="color:red">@error('question_weight'){{ $message }}@enderror</span>
-            </div>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col">
-                    <label for="answer_b">Answer B</label>
-                    <textarea id="answer_b" name="answer_b" class="form-control" rows="3" placeholder="Enter an answer ..." value="{{ old('answer_b') }}" ></textarea>
-                    @error('answer_b')
-                        <span style="color:red">{{ $message }}</span>
-                    @enderror
+              <div class="col">
+                <label for="answer_a">Answer A</label>
+                <textarea id="answer_a" name="answer_a" class="form-control" rows="3" placeholder="Enter an answer ..." value="{{ old('answer_a') }}" ></textarea>
+                @error('answer_a')
+                  <span style="color:red">{{ $message }}</span>
+                @enderror
+              </div>
+              <div class="col-md-3">
+                <label for="question_weight_a">Answer Weight</label>
+                <input type="number" id="question_weight_a" name="question_weight_[{{ old('answer_a')}}]" class="form-control" placeholder="Weightage" value="{{ old('question_weight.' . old('answer_a')) }}">
+                @error('question_weight.a')
+                  <span style="color:red">{{ $message }}</span>
+                @enderror
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="radio" name="is_correct" value="answer_a" id="is_correct_answer_a" {{ old('is_correct_answer') == 'answer_a' ? 'checked' : '' }}>
+                  <label class="form-check-label" for="is_correct_answer_a">
+                    Correct Answer
+                  </label>
                 </div>
-                <div class="col-md-3">
-                    <label for="question_weight_b">Answer Weight</label>
-                    <input type="number" id="question_weight_b" name="question_weight_[{{ old('answer_b')}}]" class="form-control" placeholder="Weightage" value="{{ old('question_weight.' . old('answer_b')) }}">
-                    @error('question_weight.b')
-                        <span style="color:red">{{ $message }}</span>
-                    @enderror
-                </div>
+              </div>
+            </div>
+          </div>
 
-            </div>
-        </div>
-        <div class="card-body">
+          <div class="card-body">
             <div class="row">
-                <div class="col">
-                <label>Answer C</label>
-              <textarea id="answer_c"  name="answer_c" class="form-control float-center" rows="3" placeholder="Enter an answer ..." value="{{ old('answer_c') }}"></textarea>
-              <span style="color:red">@error('answer_c'){{ $message }}@enderror</span>
+              <div class="col">
+                <label for="answer_a">Answer B</label>
+                <textarea id="answer_b" name="answer_b" class="form-control" rows="3" placeholder="Enter an answer ..." value="{{ old('answer_b') }}" ></textarea>
+                @error('answer_a')
+                  <span style="color:red">{{ $message }}</span>
+                @enderror
+              </div>
+              <div class="col-md-3">
+                <label for="question_weight_b">Answer Weight</label>
+                <input type="number" id="question_weight_b" name="question_weight_[{{ old('answer_b')}}]" class="form-control" placeholder="Weightage" value="{{ old('question_weight.' . old('answer_b')) }}">
+                @error('question_weight.b')
+                  <span style="color:red">{{ $message }}</span>
+                @enderror
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="radio" name="is_correct" value="answer_b" id="is_correct_answer_b" {{ old('is_correct_answer') == 'answer_b' ? 'checked' : '' }}>
+                  <label class="form-check-label" for="is_correct_answer_a">
+                    Correct Answer
+                  </label>
+                </div>
+              </div>
             </div>
-            <div class="col-md-3">
-                <label>Answer Weight </label>
-              <input type="number" id="answer_c" name="question_weight_[{{ old('answer_c')}}]" class="form-control" placeholder="weightage" value="{{ old('question_weight.' . old('answer_c')) }}">
-              <span style="color:red">@error('question_weight'){{ $message }}@enderror</span>
-            </div>
-            </div>
-        </div>
-        <div class="card-body">
+          </div>
+
+
+          <div class="card-body">
             <div class="row">
-                <div class="col">
-                <label>Answer D</label>
-              <textarea id="answer_d"  name="answer_d" class="form-control float-center" rows="2" placeholder="Enter an answer ..." value="{{ old('answer_d') }}"></textarea>
-              <span style="color:red">@error('question'){{ $message }}@enderror</span>
+              <div class="col">
+                <label for="answer_a">Answer C</label>
+                <textarea id="answer_c" name="answer_c" class="form-control" rows="3" placeholder="Enter an answer ..." value="{{ old('answer_c') }}" ></textarea>
+                @error('answer_a')
+                  <span style="color:red">{{ $message }}</span>
+                @enderror
+              </div>
+              <div class="col-md-3">
+                <label for="question_weight_c">Answer Weight</label>
+                <input type="number" id="question_weight_c" name="question_weight_[{{ old('answer_c')}}]" class="form-control" placeholder="Weightage" value="{{ old('question_weight.' . old('answer_c')) }}">
+                @error('question_weight.c')
+                  <span style="color:red">{{ $message }}</span>
+                @enderror
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="radio" name="is_correct" value="answer_c" id="is_correct_answer_c" {{ old('is_correct_answer') == 'answer_c' ? 'checked' : '' }}>
+                  <label class="form-check-label" for="is_correct_answer_c">
+                    Correct Answer
+                  </label>
+                </div>
+              </div>
             </div>
-            <div class="col-md-3">
-                <label>Answer Weight </label>
-              <input type="number" id="answer_d" name="question_weight_[{{ old('answer_d')}}]" class="form-control" placeholder="weightage" value="{{ old('question_weight.' . old('answer_d')) }}" >
+          </div>
+
+
+          <div class="card-body">
+            <div class="row">
+              <div class="col">
+                <label for="answer_a">Answer D</label>
+                <textarea id="answer_d" name="answer_d" class="form-control" rows="3" placeholder="Enter an answer ..." value="{{ old('answer_d') }}" ></textarea>
+                @error('answer_a')
+                  <span style="color:red">{{ $message }}</span>
+                @enderror
+              </div>
+              <div class="col-md-3">
+                <label for="question_weight_d">Answer Weight</label>
+                <input type="number" id="question_weight_d" name="question_weight_[{{ old('answer_d')}}]" class="form-control" placeholder="Weightage" value="{{ old('question_weight.' . old('answer_d')) }}">
+                @error('question_weight.c')
+                  <span style="color:red">{{ $message }}</span>
+                @enderror
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="radio" name="is_correct" value="answer_d" id="is_correct_answer_d" {{ old('is_correct_answer') == 'answer_d' ? 'checked' : '' }}>
+                  <label class="form-check-label" for="is_correct_answer_d">
+                    Correct Answer
+                  </label>
+                </div>
+              </div>
             </div>
-            </div>
-        </div>
+          </div>
+
     </div>
         <div class="card-body">
             @can('view-create-question-button')

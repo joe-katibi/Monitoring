@@ -73,18 +73,37 @@
     <!-- /.card-body -->
 
                 <!-- form start -->
-                <form class="form-horizontal">
-                  <div class="card-body">
-                    <div class="form-group row">
+
+
                         <div class="col">
                             <label>Feedback From QC</label>
                             <input readonly  type="text" class="form-control float-center" rows="3" placeholder="Enter ..." value="{{$tlactions[0]['feedback_from_qc'] }}">
                           </div>
-                          <div class="col">
-                            <label>Feedback From Supervisor</label>
-                            <input  class="form-control float-center" rows="3" placeholder="Enter ...">
-                          </div>
-                  </div>
+
+                          <form  action="{{ route('qaresults.update') }}"  method="POST">
+                            @csrf
+                            @if ($supervisorlogged && $supervisorlogged->id === 5)
+
+                            <div class="col">
+                                <label>Feedback From Supervisor</label>
+                                <input type="text" name="supervisor_comment"  class="form-control float-center" rows="3" placeholder="Enter ...">
+                                <input type="hidden" name="id" value="{{$tlactions[0]['id']}}">
+                              </div>
+
+                            @elseif($agentlogged && $agentlogged->id === 4 && !empty($tlactions[0]['supervisor_comment']))
+                            <div class="col">
+                                <label>Feedback From Supervisor</label>
+                                <input readonly  type="text" class="form-control float-center" rows="3" placeholder="Enter ..." value="{{$tlactions[0]['supervisor_comment'] }}">
+                              </div>
+                              <div class="col">
+                                <label>Feedback From Agent</label>
+                                <input type="text" name="agent_comment" class="form-control float-center" rows="3" placeholder="Enter ..."value="">
+                                <input type="hidden" name="id" value="{{$tlactions[0]['id']}}">
+                      </div>
+
+                            @endif
+
+
                   <!-- /.card-body -->
                   <div class="card-footer">
                   <!--  <button type="submit" class="btn btn-success float-right">Save & Finish</button> -->
@@ -98,14 +117,13 @@
                   @endif
 
 
-                    <a type="submit" class="btn btn-success float-right"  > Save Comments</a>
-                  </div>
-                  <!-- /.card-footer -->
+                  <button type="submit" class="btn btn-success float-right">Submit</button>
                 </form>
-              </div>
-              <!-- /.card -->
+                  </div>
+
+
   </div>
-  <!-- /.card -->
+
 
 
 
@@ -113,7 +131,7 @@
 @stop
 
 @section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
+
 @stop
 
 @section('js')

@@ -30,6 +30,9 @@ use Datatables;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Jobs\AuditJob;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AuditNotification;
+
 
 class DthBillingCategoryController extends Controller
 {
@@ -139,27 +142,17 @@ class DthBillingCategoryController extends Controller
         // Retrieve all input data from the request and store it in the $input variable.
         $input = $request->all();
 
-        // dd($input);
+        $agent = $request->input('agent_name');
 
+        $supervisor = $request->input('supervisor');
 
-        $request->validate([
-            'supervisor'=>'required',
-            'category'=>'required',
-            'agent_name'=>'required',
-            'quality_analysts'=>'required',
-            'date_recorded'=>'required',
-            'customer_account'=>'required',
-            'recording_id'=>'required',
-            'qa_call_category'=>'required',
-            'qa_call_nature'=>'required',
-            'agent_call_category'=>'required',
-            'agent_call_nature'=>'required',
-            'issue_highlighted'=>'required',
-            'specific_issue'=>'required',
-            'agent_comment'=>'required',
-            'feedback_from_qc'=>'required',
+        $qualityAnalysts = $request->input('quality_analysts');
 
-        ]);
+        $agentEmail = User::select('email','name')->where('id', '=', $agent)->first();
+
+        $supervisorEmail = User::select('email','name')->where('id', '=', $supervisor)->first();
+
+        $qualityAnalysts = User::select('email','name')->where('id', '=', $qualityAnalysts)->first();
 
         try {
 
@@ -186,13 +179,14 @@ class DthBillingCategoryController extends Controller
             $results->supervisor_comment = isset($input['supervisor_comment']) ? $input['supervisor_comment'] : "";
             $results->agent_comment = isset($input['agent_comment']) ? $input['agent_comment'] : "";
             $results->feedback_from_qc = isset($input['feedback_from_qc']) ? $input['feedback_from_qc'] : "";
-            $results->ticket_status = isset($input['ticket_status']) ? $input['ticket_status'] : "";
             $results->percentage = isset($input['percentage']) ? $input['percentage'] : "";
             $results->results = isset($input['results']) ? $input['results'] : 0;
-            $results->totals = isset($input['totals']) ? $input['totals'] : 0;
             $results->date_updated = isset($input['date_recorded']) ?  Carbon::parse($input['date_recorded'])->format('Y-m-d H:i:s') :  Carbon::now()->format('Y-m-d H:i:s');
             $results->status = '1';
             $results->report_type_id = isset($input['reporttype']) ? $input['reporttype'] :"";
+
+
+            //dd($results);
 
 
              // Save the new results object to the database.
@@ -227,20 +221,23 @@ class DthBillingCategoryController extends Controller
               // Calculate the total marks for the results
             // $totals = QuestionResults::where('results' , '=',  $results->id )->sum('marks');
 
-                // Query the QuestionResults model for the 'marks' column where 'results' equals $results->id
-                $total = QuestionResults::select('marks')->where('results', '=', $results->id)->get();
 
-                // Iterate through the results
-                 foreach ($total as $result) {
-               // Check if the 'marks' value is "Auto Fail"
-                   if ($result->marks == "Auto Fail") {
-                     // Assign 5 to $result->marks if it's "Auto Fail"
-                         $result->marks = 5;
-                   } else {
+                   // Query the QuestionResults model for the 'marks' column where 'results' equals $results->id
+               $total = QuestionResults::select('marks')->where('results', '=', $results->id)
+               //->where('marks', '=', 'Auto Fail')
+               ->get();
+
+               foreach ($total as $result) {
+                // Check if the 'marks' value is "Auto Fail"
+                if ($result->marks == "Auto Fail") {
+                    // Assign 5 to $result->marks if it's "Auto Fail"
+                    $result->marks = 5;
+                } else {
                     // If it's not "Auto Fail", sum up the 'marks' column where 'results' equals $results->id
-                  $result->marks = QuestionResults::where('results', '=', $results->id)->sum('marks');
-                   }
+                    $result->marks = QuestionResults::where('results', '=', $results->id)->sum('marks');
                 }
+            }
+
 
               // Get the Result object for the results
               $results_update = Result::find($results->id);
@@ -249,7 +246,7 @@ class DthBillingCategoryController extends Controller
               $results_update->final_results  =  $result->marks ;
 
               // Update the Result object in the database
-              $results_update->update();
+              $results_update->save();
 
                // Log the update of the Result object
               log::channel('Dthbilling_category')->info('dthbilling Category Updated : ------> ', ['200' , $results_update->toArray() ] );
@@ -258,13 +255,36 @@ class DthBillingCategoryController extends Controller
              DB::commit();
 
              // Check if the total marks are 0
-             if($totals == 5){
+             if($results_update->final_results == 5){
+
+                $result = new Result();
+                $result->marks = $results->marks;
+                $result->agentEmail = $agentEmail;
+                $result->supervisorEmail = $supervisorEmail;
+                $result->qualityAnalysts = $qualityAnalysts;
+
+
+                $notification = new AuditNotification($result, 'results');
+                Mail::to($agentEmail->email)
+                    ->cc($supervisorEmail->email)->send($notification);
 
                 // Display a warning message if the total marks are 0
                 toast('Auto Fail generated','warning')->position('top-end');
                 return redirect()->to('/quality_analyst/qa_agent_alert_form/'.$results->id);
 
              }else{
+
+                $result = new Result();
+                $result->marks = $results->marks;
+                $result->agentEmail = $agentEmail;
+                $result->supervisorEmail = $supervisorEmail;
+                $result->qualityAnalysts = $qualityAnalysts;
+
+
+                $notification = new AuditNotification($result, 'results');
+                Mail::to($agentEmail->email)
+                    ->cc($supervisorEmail->email)->send($notification);
+
 
                 // Display a success message if the total marks are not 0
                 toast('Agent Audited successfully','success')->position('top-end');

@@ -9,7 +9,7 @@
 @include('sweetalert::alert')
 
   <!-- /.card -->
-  <form action="{{ route('dthbilling.store') }}" method="POST" name="listForm">
+  <form action="{{ route('dthbilling.store') }}" method="POST" >
     <input type="hidden"  name="date_updated" value="<?php echo date('Y-m-d H:i:s'); ?>" class="form-control">
       @csrf
       <div class="card card-info">
@@ -22,7 +22,7 @@
             <div class="row">
                 <div class="col-2">
                     <label>Supervisor</label>
-                    <select class="custom-select" id="final" name="supervisor" aria-placeholder="select an option">
+                    <select required class="custom-select" id="final" name="supervisor" aria-placeholder="select an option">
                         <option disabled selected>Select Agent</option>
                         @foreach ($supervisor as $supervisors)
                             <option value="{{ $supervisors->id }}">{{ $supervisors->name }}</option>
@@ -32,7 +32,7 @@
                 </div>
                 <div class="col-2">
                     <label>Agent name</label>
-                    <select class="custom-select" id="final" name="agent_name" aria-placeholder="select an option">
+                    <select required class="custom-select" id="final" name="agent_name" aria-placeholder="select an option">
                         <option disabled selected>Select Agent</option>
                         @foreach ($agents as $agent)
                             <option value="{{ $agent->id }}">{{ $agent->name }}</option>
@@ -55,12 +55,12 @@
                 </div>
                 <div class="col-2">
                     <label>Customer Account</label>
-                    <input type="number" name="customer_account"class="form-control" placeholder="Account">
+                    <input required type="number" name="customer_account"class="form-control" placeholder="Account">
                     <span style="color:red">@error('customer_account'){{ $message }}@enderror</span>
                 </div>
                 <div class="col-2">
                     <label>Recording ID</label>
-                    <input type="number" name="recording_id" class="form-control" placeholder="record">
+                    <input required type="number" name="recording_id" class="form-control" placeholder="record">
                     <span style="color:red">@error('recording_id'){{ $message }}@enderror</span>
                 </div>
             </div>
@@ -83,8 +83,8 @@
                           <td>{{ $row->question }}</td>
                           <td>{{ $row->yes }}</td>
                           <td>
-                            <input type="radio"  id="questions" name="question_no_[{{ $row->id }}]" value="{{ $row->yes }}"  > Yes </label>
-                            <input type="radio" id="questions" name="question_no_[{{ $row->id }}]" value="{{ $row->no }}"  > No </label>
+                            <input required type="radio"  id="questions" name="question_no_[{{ $row->id }}]" value="{{ $row->yes }}"  > Yes </label>
+                            <input required type="radio" id="questions" name="question_no_[{{ $row->id }}]" value="{{ $row->no }}"  > No </label>
 
                             <span style="color:red">@error('question_no_'){{ $message }}@enderror</span>
                           </td>
@@ -102,7 +102,7 @@
             <div class="row">
                 <div class="col-2">
                     <label>QA-Call Category</label>
-                    <select class="custom-select" id="qa_call_category" name="qa_call_category"
+                    <select required class="custom-select" id="qa_call_category" name="qa_call_category"
                         value="qa_call_category" aria-placeholder="select an option">
                         <option disabled selected>select an option</option>
                         @foreach ($crm as $row)
@@ -118,13 +118,13 @@
                 </div>
                 <div class="col-2">
                     <label>QA-Call Nature</label>
-                    <select class="custom-select" id="qa_call_nature" name="qa_call_nature"
+                    <select required class="custom-select" id="qa_call_nature" name="qa_call_nature"
                         value="qa_call_nature"aria-placeholder="select an option">
                     </select>
                 </div>
                 <div class="col-2">
                     <label>Agent-Call Category</label>
-                    <select class="custom-select" id="agent_call_category" name="agent_call_category"
+                    <select required class="custom-select" id="agent_call_category" name="agent_call_category"
                     value="agent_call_category" aria-placeholder="select an option">
                     <option disabled selected>select an option</option>
                     @foreach ($crm as $row)
@@ -139,13 +139,13 @@
                 </div>
                 <div class="col-2">
                     <label>Agent-Call Nature</label>
-                    <select class="custom-select" id="agent_call_nature" name="agent_call_nature"
+                    <select required class="custom-select" id="agent_call_nature" name="agent_call_nature"
                     value="agent_call_nature"a ria-placeholder="select an option">
                 </select>
                 </div>
                 <div class="col-2">
                     <label>General Issue</label>
-                    <select class="custom-select" id="gen_call_nature" name="gen_call_nature"
+                    <select required class="custom-select" id="gen_call_nature" name="gen_call_nature"
                     value="gen_call_nature"a ria-placeholder="select an option">
                     <option disabled selected>select an option</option>
                     @foreach($general_issue as $row)
@@ -161,7 +161,7 @@
                 </div>
                 <div class="col-2">
                     <label>Specific Issue</label>
-                    <select class="custom-select" id="specific_issue" name="specific_issue"
+                    <select required class="custom-select" id="specific_issue" name="specific_issue"
                         value="specific_issue" aria-placeholder="select an option">
 
                     </select>
@@ -172,7 +172,7 @@
         <div class="container">
         <div class="col">
             <label>Feedback From QC</label>
-            <textarea class="form-control float-center" rows="3" name="feedback_from_qc" value="feedback_from_qc"
+            <textarea required class="form-control float-center" rows="3" name="feedback_from_qc" value="feedback_from_qc"
                 placeholder="Enter ..."></textarea>
                 <span style="color:red">  @error('feedback_from_qc') {{ $message }}  @enderror </span>
         </div>

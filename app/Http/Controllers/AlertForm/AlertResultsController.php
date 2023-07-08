@@ -20,40 +20,20 @@ class AlertResultsController extends Controller
      */
     public function index()
     {
-        $category = Categories::select('Categories.id','Categories.category_name',)  ->get();
+        $category = Categories::select('Categories.id','Categories.category_name',)->get();
 
-        $agents = User::select('users.id','users.name')->where('position', '=', 'Agent')->get();
+        $agentRole_id = Role::select('roles.id',)->where('name', '=', 'Agent')->first();
 
-        $viewalert = AlertForm::select('alert_forms.id','alert_forms.title','alert_forms.date','alert_forms.agent_name','categories.category_name',
-                                 'alert_forms.supervisor_name','alert_forms.qa_name','alert_forms.description','alert_forms.fatal_error',
-                                 'alert_forms.supervisor_comment','alert_forms.qa_signature','alert_forms.date_by_qa','alert_forms.supervisor_signature',
-                                'alert_forms.date_by_supervisor','alert_forms.agent_signature','alert_forms.date_by_agent','alert_forms.auto_status','alert_forms.results_id','results.category')
-                                ->join('results','results.id','=','alert_forms.results_id')
-                                ->join('user_categories','user_categories.category_id','=','results.category')
-                                ->join('categories','categories.id','=','results.category')
-                                ->get();
+        $agents = User::select('users.name','users.id','model_has_roles.role_id')
+                        ->join('model_has_roles','model_id','=','users.id')
+                       ->where('model_has_roles.role_id','=',$agentRole_id->id)
+                        ->get();
 
-        foreach($viewalert as $key => $value){
-
-                                    $agentName = User::where('id','=', $value['agent_name'])->first();
-                                    $value['agentName'] =  isset($agentName)  ?  $agentName->name : '';
-
-                                    $SupervisorName = User::where('id','=', $value['supervisor_name'])->first();
-                                    $value['SupervisorName'] =  isset($SupervisorName)  ?  $SupervisorName->name : '';
-
-                                    $qualityName = User::where('id','=', $value['qa_name'])->first();
-                                    $value['qualityName'] =  isset($qualityName)  ?  $qualityName->name : '';
-
-                                }
+        $viewalert = [];
 
               $data['viewalert']  = $viewalert;
               $data['category']  = $category;
               $data['agents']  = $agents;
-
-
-             //print_pre([$category] , true);
-
-            //   dd($data);
 
         return view('alert_forms/alert_forms_view')->with($data);
     }
@@ -89,9 +69,18 @@ class AlertResultsController extends Controller
     {
         $category = Categories::select('Categories.id','Categories.category_name')->get();
 
-        $agents = User::select('users.id','users.id')->where('position', '=', 'Agent')->get();
+        $agentRole_id = Role::select('roles.id',)->where('name', '=', 'Agent')->first();
+
+        $agents = User::select('users.name','users.id','model_has_roles.role_id')
+                        ->join('model_has_roles','model_id','=','users.id')
+                       ->where('model_has_roles.role_id','=',$agentRole_id->id)
+                        ->get();
+
+
 
         $input = $request->all();
+
+
 
         $agent = $request->input('agent');
 
@@ -101,7 +90,7 @@ class AlertResultsController extends Controller
         $start_date = $start_end_date[0];
         $end_date = $start_end_date[1];
 
-        $viewalert = AlertForm::select('alert_forms.id','alert_forms.title','alert_forms.date','alert_forms.agent_name','categories.category_name',
+        $viewalert = AlertForm::select('alert_forms.id','alert_forms.title','alert_forms.created_at','alert_forms.agent_name','categories.category_name',
                                  'alert_forms.supervisor_name','alert_forms.qa_name','alert_forms.description','alert_forms.fatal_error',
                                  'alert_forms.supervisor_comment','alert_forms.qa_signature','alert_forms.date_by_qa','alert_forms.supervisor_signature',
                                 'alert_forms.date_by_supervisor','alert_forms.agent_signature','alert_forms.date_by_agent','alert_forms.auto_status','alert_forms.results_id','results.category')
@@ -110,8 +99,8 @@ class AlertResultsController extends Controller
                                  ->join('categories','categories.id','=','results.category')
                                  ->where('alert_forms.agent_name','=',$agent)
                                  ->where('results.category','=',$categoryname)
-                                 ->where('alert_forms.date','>=',$start_date)
-                                 ->where('alert_forms.date','<=',$end_date)
+                                 ->where('alert_forms.created_at','>=',$start_date)
+                                 ->where('alert_forms.created_at','<=',$end_date)
                                    ->get();
 
       foreach($viewalert as $key => $value){
@@ -127,11 +116,12 @@ class AlertResultsController extends Controller
 
                                 }
 
-                                 //  print_pre([$viewalert] , true);
+
 
 
         $data['category']  = $category;
         $data['viewalert']  = $viewalert;
+        $data['agents']  = $agents;
 
 
 

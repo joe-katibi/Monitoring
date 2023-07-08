@@ -27,10 +27,10 @@ class CourseController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware(['role:super-admin|admin|moderator|developer|quality-analysts|trainer']);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware(['role:super-admin|admin|moderator|developer|quality-analysts|trainer']);
+    // }
     /**
      * Display a listing of the resource.
      *

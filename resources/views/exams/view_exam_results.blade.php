@@ -16,15 +16,21 @@
 
             @if ($i = 1)
             <?php $num =1;?>
-               @foreach ($examresults as $key => $questions)
+               @foreach ($exam_results as $key => $questions)
                    <div class="card card-warning ">
                        <div class="card-header">
-                        {!!  "Question ".  $num++ . ". ".  strip_tags( $questions->question, '<p>')!!}
+                        {!!  "Question ".  $num++ . ". ".  strip_tags( $questions->questionDone, '<p>')!!}
                        </div>
                        <div class="card-body">
+
+                       <p>{!! $questions->choices !!}</p>
                            {{-- <div class="form-check">
                                <ol type="A">
-                                   @foreach ($questions->answerDone )
+
+
+
+
+                                   @foreach ($questions->answerDone as $k => $choice )
                                    <li>
                                        <input type="radio" id="question-{{ $choice->id }}"
                                            name="question-answer-[{{ $question->id }}]"

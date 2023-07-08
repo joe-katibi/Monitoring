@@ -11,11 +11,10 @@ class AnswerKeys extends Model
     protected $fillable=[
         'question_id',
         'choices',
-        'question_wieght',
+        'question_weight',
+        'key_choice',
+        'is_correct',
         'created_by',
-
-
-
 
 
     ];

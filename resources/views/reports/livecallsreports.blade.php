@@ -104,12 +104,10 @@
                                             <th>Category</th>
                                             <th>Services</th>
                                             <th>Country</th>
-                                            <th>Strength Summary</th>
-                                            <th>Gap Summary</th>
-                                            <th>VOC Summary</th>
                                             <th>date</th>
                                             <th>Week</th>
                                             <th>Month</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -134,12 +132,13 @@
 
                                             </td>
                                             <td>{{ $livecall['country_name'] }}</td>
-                                            <td>{{ $livecall['summary_name'] }}</td>
-                                            <td>{{ $livecall['gap_name'] }}</td>
-                                            <td> {{ $livecall['voc_summary'] }} </td>
                                             <td> {{ $livecall['date'] }} </td>
                                             <td>{{ $livecall['weekNumberWithPrefix'] }}</td>
                                             <td>{{ $livecall['monthName'] }}</td>
+                                            <td>
+                                                <a href="{{ route('livecalls.index',$livecall['id']) }}" class="btn btn-info"><i class="fas fa-eye"></i></a>
+
+                                            </td>
 
                                         </tr>
                                         @endforeach
@@ -252,7 +251,7 @@
                     console.log(result);
                     $.each(result, function (key, value) {
                         $("#supervisor").append('<option value="' + value
-                            .id + '">' + value.name + '</option>');
+                            .model_id + '">' + value.name + '</option>');
                     });
 
                 }
@@ -289,7 +288,7 @@
                     console.log(result);
                     $.each(result, function (key, value) {
                         $("#agent").append('<option value="' + value
-                            .id + '">' + value.name + '</option>');
+                            .model_id + '">' + value.name + '</option>');
                     });
 
                 }

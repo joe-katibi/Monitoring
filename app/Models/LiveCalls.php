@@ -25,7 +25,7 @@ class LiveCalls extends Model
         'voc_summary',
         'voc_description',
     ];
-    protected $casts = [
-        'created_at' => 'datetime:d-M-Y'
-    ];
+    // protected $casts = [
+    //     'created_at' => 'datetime:d-M-Y'
+    // ];
 }

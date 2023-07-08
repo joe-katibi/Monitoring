@@ -45,7 +45,7 @@
                                <td>{{ $row->category_name }}</td>
                                <td>
 
-                                @if ($row->status == 'active')
+                                @if ($row->status == '1')
                                 <a disable class="badge badge-success" >active</a>
                                 @else
                                 <a disable class="badge badge-danger" >inactive</a>
@@ -57,19 +57,19 @@
                                <td>
                                 @can('view-start-results-exam-buttons')
 
-                                  @if($row->status == 'inactive')
+                                  @if($row->status == '0')
                                   <a style="display:none;" href="{{ route('examination.index',$row->id) }}" class="btn btn-success"><i class="fas fa-play" ></i>Start</a>
                                   @else
                                   <a href="{{ route('examination.index',$row->id) }}" class="btn btn-success"><i class="fas fa-play" ></i>Start</a>
                                   @endif
 
-                                  @if($row->status == 'active')
+                                  @if($row->status == '1')
 
-                                  <a style="display:none;" href="{{ route('examresult.create',$row->id) }}" class="btn btn-info"><i class="fas fa-eye"></i>Results</a>
+                                  <a style="display:none;" href="{{ route('examresult.show',$row->id) }}" class="btn btn-info"><i class="fas fa-eye"></i>Results</a>
 
                                   @else
 
-                                  <a href="{{ route('examresult.create',$row->id) }}" class="btn btn-info"><i class="fas fa-eye"></i>Results</a>
+                                  <a href="{{ route('examresult.show',$row->id) }}" class="btn btn-info"><i class="fas fa-eye"></i>Results</a>
 
                                   @endif
 

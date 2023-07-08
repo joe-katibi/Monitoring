@@ -26,41 +26,27 @@
       <table class="table table-bordered" id="questionsTable">
         <thead>
             <tr>
-                <th>Number</th>
-                <th>Question</th>
-                <th>Parameter</th>
-                <th>service</th>
                 <th>Category</th>
-                <th>Marks Passed</th>
-                <th>Marks Failed</th>
+                <th>service</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach($list as $key=>$item )
                 <tr>
-                <td>{{$item->number}}</td>
-                <td>{{$item->question}}</td>
-                <td>{{$item->summarized}}</td>
+                <td>{{$item->category_name}}</td>
                 <td>
-                    @if ($item->service_name == 'Cable')
-
+                    @if ($item->service_id == '1')
                     <a disable class="badge badge-success" >Cable</a>
-
                     @else
                     <a disable class="badge badge-primary">DTH</a>
-
                     @endif
-
                 </td>
-                <td>{{$item->category_name}}</td>
-                <td>{{$item->yes}}</td>
-                <td>{{$item->no}}</td>
                 <td class="text-right" v-if="$page.props.auth.hasRole.superAdmin || $page.props.auth.hasRole.admin">
                 <div class="btn-group btn-group-sm">
-                      <a href="{{ route('parametor.edit',$item->id ) }}" class="btn btn-success"><i class="fas fa-edit"></i></a>
+                      <a href="{{ route('parametor.show',$item->id ) }}" class="btn btn-warning"><i class="fas fa-eye"></i></a>
                       @method('DELETE')
-                     <a href="{{ route('parametor.destroy',$item->id) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                     {{-- <a href="{{ route('parametor.destroy',$item->id) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a> --}}
 
                        </div>
                 </td>

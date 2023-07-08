@@ -27,10 +27,12 @@ class fiberWelcomeEditController extends Controller
     public function index()
     {
 
-       $data['list'] = FiberWelcomeQuestion::select('fiber_welcome_questions.*','services.service_name','categories.category_name')
-       ->join('services','fiber_welcome_questions.service','=','services.id')
-       ->join('categories','fiber_welcome_questions.category','=','categories.id')
-       ->get();
+    //    $data['list'] = FiberWelcomeQuestion::select('fiber_welcome_questions.*','services.service_name','categories.category_name')
+    //    ->join('services','fiber_welcome_questions.service','=','services.id')
+    //    ->join('categories','fiber_welcome_questions.category','=','categories.id')
+    //    ->get();
+
+       $data['list'] = Categories::select('categories.id','categories.category_name','categories.service_id')->get();
 
     //    print_pre($data,true);
         return view('admin/edit_parametors/Fiber/welcomequestionedit',$data);
@@ -109,7 +111,20 @@ class fiberWelcomeEditController extends Controller
      */
     public function show($id)
     {
-        //
+
+         $data['list'] = FiberWelcomeQuestion::select('fiber_welcome_questions.*','services.service_name','categories.category_name')
+       ->join('services','fiber_welcome_questions.service','=','services.id')
+       ->join('categories','fiber_welcome_questions.category','=','categories.id')
+       ->where('fiber_welcome_questions.category','=',$id)
+       ->get();
+
+         $data['total'] = FiberWelcomeQuestion::where('category', '=', $id)->sum('yes');
+
+
+
+
+      // print_pre($total,true);
+        return view('/admin/edit_parametors/Fiber/viewparameter',)->with($data);
     }
 
     /**

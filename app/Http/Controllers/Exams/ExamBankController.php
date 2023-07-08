@@ -22,10 +22,10 @@ class ExamBankController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware(['role:super-admin|admin|moderator|developer|quality-analysts|trainer']);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware(['role:super-admin|admin|moderator|developer|quality-analysts|trainer']);
+    // }
     /**
      * Display a listing of the resource.
      *
@@ -67,88 +67,145 @@ class ExamBankController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $input = $request->all();
+    // public function store(Request $request)
+    // {
+    //     $input = $request->all();
 
-     //print_pre( [$input], true);
+    //    print_pre( [$input], true);
 
-    //  dd($input);
+    // //  dd($input);
 
+    //     try{
 
+    //         DB::beginTransaction();
 
-        // $request->validate([
-        //     'service'=>'required',
-        //     'question_weight'=>'required',
-        //     'course'=>'required',
-        //     'answer_key'=>'required',
-        //     'question'=>'required',
-        //     'answer_a'=>'required',
-        //     'answer_b'=>'required',
-        //     'answer_c'=>'required',
-        //     'answer_d'=>'required',
-        // ]);
+    //         $examination = new ExamsQuestions();
+    //         $examination->service = isset($input['service']) ? $input['service']:"";
+    //        // $examination->question_weight = isset($input['question_weight']) ? $input['question_weight']:"";
+    //         $examination->course = isset($input['course']) ? $input['course']:"";
+    //         $examination->created_by = isset($input['created_by']) ? $input['created_by']:"";
+    //         $examination->question = isset($input['question']) ? $input['question']:"";
 
-        try{
+    //         $examination->save();
 
-            DB::beginTransaction();
+    //        //dd($examination);
 
-            $examination = new ExamsQuestions();
-            $examination->service = isset($input['service']) ? $input['service']:"";
-           // $examination->question_weight = isset($input['question_weight']) ? $input['question_weight']:"";
-            $examination->course = isset($input['course']) ? $input['course']:"";
-            $examination->created_by = isset($input['created_by']) ? $input['created_by']:"";
-            $examination->question = isset($input['question']) ? $input['question']:"";
-
-            $examination->save();
-
-           //dd($examination);
-
-            log::channel('examination')->info('examination Created : ------> ', ['200' , $examination->toArray() ] );
+    //         log::channel('examination')->info('examination Created : ------> ', ['200' , $examination->toArray() ] );
 
 
-            // Loop through each question and store the corresponding question results.
-            foreach ($input['question_weight_']  as $key => $value) {
+    //         // Loop through each question and store the corresponding question results.
+    //         foreach ($input['question_weight_']  as $key => $value) {
 
-                 // Create a new AnswerKeys object
-                 $answers = new AnswerKeys();
+    //              // Create a new AnswerKeys object
+    //              $answers = new AnswerKeys();
 
-                 $answers->question_id =  $examination->id;
-                 $answers->key_choice = $key;
-                 $answers->question_weight = $value;
-                 $answers->choices = isset($input['answer_a']) ? $input['answer_a']:"";
-                 $answers->choices = isset($input['answer_b']) ? $input['answer_b']:"";
-                 $answers->choices = isset($input['answer_c']) ? $input['answer_c']:"";
-                 $answers->choices = isset($input['answer_d']) ? $input['answer_d']:"";
-                 $answers->created_by = $examination->created_by;
+    //              $answers->question_id =  $examination->id;
+    //              $answers->key_choice = $key;
+    //              $answers->question_weight = $value;
+
+    //             //  $answers->choices = isset($input['answer_a']) ? $input['answer_a']:"";
+    //             //  $answers->choices = isset($input['answer_b']) ? $input['answer_b']:"";
+    //             //  $answers->choices = isset($input['answer_c']) ? $input['answer_c']:"";
+    //             //  $answers->choices = isset($input['answer_d']) ? $input['answer_d']:"";
+
+    //             if (isset($input['answer_a'])) {
+    //                 $answers->choices = $input['answer_a'];
+    //                 $answers->is_correct = ($input['is_correct'] == 'a') ? 1 : 0;
+    //             }
+    //             if (isset($input['answer_b'])) {
+    //                 $answers->choices = $input['answer_b'];
+    //                 $answers->is_correct = ($input['is_correct'] == 'b') ? 1 : 0;
+    //             }
+    //             if (isset($input['answer_c'])) {
+    //                 $answers->choices = $input['answer_c'];
+    //                 $answers->is_correct = ($input['is_correct'] == 'c') ? 1 : 0;
+    //             }
+    //             if (isset($input['answer_d'])) {
+    //                 $answers->choices = $input['answer_d'];
+    //                 $answers->is_correct = ($input['is_correct'] == 'd') ? 1 : 0;
+    //             }
+    //              $answers->created_by = $examination->created_by;
+
+    //             //  dd($answers);
+    //             // print_pre($answers, true);
+
+    //               $answers->save();
 
 
-                  $answers->save();
 
 
-                 //dd($answers);
+    //         }
 
+    //         DB::commit();
 
-            }
+    //         toast('Question Created successfully','success')->position('top-end');
+    //         return redirect('exams/exam_bank');
 
-            DB::commit();
+    //     }catch (\Throwable $e) {
 
-            toast('Question Created successfully','success')->position('top-end');
-            return redirect('exams/exam_bank');
-
-        }catch (\Throwable $e) {
-
-            DB::rollBack();
-            Log::info($e->getMessage() );
-            throw $e;
-        }
-
-    }
-
-    // public function choicestore($id){
-
+    //         DB::rollBack();
+    //         Log::info($e->getMessage() );
+    //         throw $e;
+    //     }
 
     // }
+    public function store(Request $request)
+{
+    $input = $request->all();
+
+
+
+
+
+    try {
+        DB::beginTransaction();
+
+        $examination = new ExamsQuestions();
+        $examination->service = isset($input['service']) ? $input['service'] : "";
+        $examination->course = isset($input['course']) ? $input['course'] : "";
+        $examination->created_by = isset($input['created_by']) ? $input['created_by'] : "";
+        $examination->question = isset($input['question']) ? $input['question'] : "";
+
+
+        $examination->save();
+
+        log::channel('examination')->info('examination Created : ------> ', ['200', $examination->toArray()]);
+
+        // Loop through each question and store the corresponding question results.
+        $choices = ['answer_a', 'answer_b', 'answer_c', 'answer_d'];
+        $isCorrectIndex = array_search($input['is_correct'], $choices);
+
+
+        // print_pre([$isCorrectIndex], true);
+        foreach ($input['question_weight_'] as $key => $value) {
+            // Create a new AnswerKeys object
+            $answers = new AnswerKeys();
+
+            $answers->question_id = $examination->id;
+            $answers->key_choice = $key;
+            $answers->question_weight = $value;
+            $answers->choices = isset($input[$choices[$key]]) ? $input[$choices[$key]] : "";
+            $answers->is_correct = ($isCorrectIndex === $key) ? 1 : 0;
+            $answers->created_by = $examination->created_by;
+
+           // print_pre([$choices], true);
+
+            $answers->save();
+        }
+
+        DB::commit();
+
+        toast('Question Created successfully', 'success')->position('top-end');
+        return redirect('exams/exam_bank');
+    } catch (\Throwable $e) {
+        DB::rollBack();
+        Log::info($e->getMessage());
+        throw $e;
+    }
+}
+
+
+
 
     /**
      * Display the specified resource.

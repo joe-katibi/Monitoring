@@ -47,14 +47,17 @@
 
  <div class="card-body">
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col">
              <label for="">Issue Summary</label>
              <input readonly type="text" name="issue_summary" class="form-control" placeholder="issue_summary" value="{{$dthlivecalls[0]['issue_summary'] }}">
              </div>
-        <div class="col-sm-6">
-             <label for="">Strength Summary</label>
-             <input readonly type="text" class="form-control" id="strength_summary" name="strength_summary"  value="{{ $dthlivecalls[0]['summary_name']}}">
-             </div>
+             <div class="col">
+                <label for="">Strength Summary</label>
+                <div class="form-control" style="height: auto; overflow-y: scroll;">
+                 @foreach ($strengthResults as $strength) <span class="badge badge-success">{{ $strength->summary_name }}</span>
+                 @endforeach
+                 </div>
+                </div>
         </div>
 </div>
 <div class="card-body">
@@ -71,11 +74,13 @@
     </div>
 <div class="card-body">
    <div class="row">
-            <div class="col-sm-6">
-              <label for="">Gaps Identifted Summary</label>
-              <input readonly class="form-control" id="gaps_summary" name="gaps_summary"  value="{{ $dthlivecalls[0]['gap_name'] }}">
-
-             </div>
+    <div class="col">
+        <label for="">Gaps Identifted Summary</label>
+        <div class="form-control" style="height: auto; overflow-y: scroll;">
+            @foreach ($gapResults as $gap) <span class="badge badge-danger">{{ $gap->gap_name }}</span>
+            @endforeach
+            </div>
+       </div>
         <div class="col-sm-6">
                 <label for="">Voice of Customer Summary</label>
                <input readonly class="form-control" id="voc_summary" name="voc_summary"  value="{{ $dthlivecalls[0]['voc_summary'] }}">
@@ -96,7 +101,7 @@
       </div>
     </div>
  <div class="card-footer">
-  <a href="{{ route('dthlivecalls.edit',$dthlivecalls[0]['id'] ) }}" class="btn btn-info float-left"  > Edit Live Call</a>
+  {{-- <a href="{{ route('dthlivecalls.edit',$dthlivecalls[0]['id'] ) }}" class="btn btn-info float-left"  > Edit Live Call</a> --}}
   <a href="{{ route('category') }}" class="btn btn-info float-right"  > QA Another Call</a>
 
      </div>

@@ -148,6 +148,8 @@ class ServicesReportController extends Controller
 
              }
 
+            // print_pre([$servicereport1] , true);
+
         $servicereport = exam_results::select('exam_results.marks_achieved','exam_results.conduct_id','exam_results.report_type_id','exam_results.created_by','exam_results.created_at','conduct_exams.id',
                                          'conduct_exams.course','conduct_exams.exam_name','conduct_exams.service','conduct_exams.category','conduct_exams.trainer_qa','conduct_exams.completion_date','conduct_exams.created_by as Scheduleby','report_types.type_name','users.category','users.name','users.services','users.country','services.service_name','countries.country_name','categories.category_name','services.service_name','courses.course_name','services.id as s_id'
                                            )
