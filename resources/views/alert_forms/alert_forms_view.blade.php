@@ -112,8 +112,34 @@
             </td>
              <td class="text-right" >
                 @can('view-results-autofail-button-view')
-               <div class="btn-group btn-group-sm">
-                <a href="{{ route('autofail.edit',$row['id'] ) }}" class="btn btn-success"><i class="fas fa-edit"></i></a>
+                <div class="btn-group btn-group-sm" >
+
+                @switch($user_id)
+                    @case($user_id == $agentlogged->model_id)
+                    <a href="{{ route('autofail.edit', $row['id']) }}" class="btn btn-success" style="display: none;"><i class="fas fa-edit"></i></a>
+                    <a href="{{ route('agent_alert_form.edit', $row['id']) }}" class="btn btn-success" @if ($row['auto_status'] == 3 || $row['auto_status'] == 1 ) style="display: none;" @endif><i class="fas fa-edit"></i></a>
+
+
+                        @break
+                        @case($user_id == $supervisorlogged->model_id)
+                        <a href="{{ route('autofail.edit', $row['id']) }}" class="btn btn-success" @if ($row['auto_status'] == 3 || $row['auto_status'] == 2) style="display: none;" @endif ><i class="fas fa-edit"></i></a>
+                        <a href="{{ route('agent_alert_form.edit', $row['id']) }}" class="btn btn-success" style="display: none;"><i class="fas fa-edit"></i></a>
+
+                        @break
+                        @case($user_id == $qualitylogged->model_id)
+                        <a href="{{ route('autofail.edit', $row['id']) }}" class="btn btn-success" style="display: none;"><i class="fas fa-edit"></i></a>
+                        <a href="{{ route('agent_alert_form.edit', $row['id']) }}" class="btn btn-success" style="display: none;"><i class="fas fa-edit"></i></a>
+
+                        @break
+                        @case($user_id == $trainierlogged->model_id)
+                        <a href="{{ route('autofail.edit', $row['id']) }}" class="btn btn-success" style="display: none;"><i class="fas fa-edit"></i></a>
+                        <a href="{{ route('agent_alert_form.edit', $row['id']) }}" class="btn btn-success" style="display: none;"><i class="fas fa-edit"></i></a>
+
+                        @break
+
+                    @default
+
+                @endswitch
                 <a href="{{ route('autofail.show',$row['id']) }}" class="btn btn-info"><i class="fas fa-eye"></i></a>
                </div>
                @endcan
@@ -134,36 +160,43 @@
 
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+    <link href="/assets/css/dataTables.min.css" rel="stylesheet">
+    <link href="/assets/css/buttons.bootstrap4.min.css" rel="stylesheet">
 
 @stop
 
 @section('js')
+<script src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+
+<script src="/assets/js/dataTables.min.js"></script>
+<script src="/assets/js/pdfmake.min.js"></script>
+<script src="/assets/js/vfs_fonts.js"></script>
+<script src="/assets/js/buttons.print.min.js"></script>
+<script src="/assets/js/buttons.colVis.js"></script>
+<script src="/assets/js/buttons.html5.js"></script>
+<script src="/assets/js/buttons.jszip.min.js"></script>
 
 <script>
+    $(document).ready(function() {
+        $('.daterange').daterangepicker({
+            timePicker: true,
+            timePickerIncrement: 30,
+            locale: {
+                format: 'YYYY/MM/DD hh:mm:ss'
+            }
+        });
 
-    questionsTable = $('#questionsTable').dataTable({
+        $('#questionsTable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
 
-      "dom" : 'lfrtip'
+        });
+
     });
-
-  </script>
-<script  src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
-<script  src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script  src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-<script type="text/javascript">
-	$('.daterange').daterangepicker(
-    {
-      timePicker: true,
-      timePickerIncrement: 30,
-      locale: {
-        format: 'YYYY/MM/DD hh:mm:ss '
-      }
-    }
-
-
-    );
 </script>
 
 <script>

@@ -67,17 +67,9 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::post('/home/store', [App\Http\Controllers\HomeController::class, 'store'])->name('home.store');
-Route::resource('home', HomeController::class);
-Route::post('/home/{id}/edit', [App\Http\Controllers\HomeController::class, 'edit'])->name('home.edit');
-Route::delete('/home/{id}/destroy', [App\Http\Controllers\HomeController::class, 'destroy'])->name('home.destroy');
-Route::get('home/{id}/activate', [App\Http\Controllers\HomeController::class, 'activate'])->name('home.activate');
-Route::get('home/{id}/deactivate',[App\Http\Controllers\HomeController::class,  'deactivate'])->name('home.deactivate');
 
 
-
-
-Route::group(['middleware' => ['role:super-admin|admin']], function () {
+Route::group(['middleware' => ['auth']], function () {
 
 
 
@@ -125,7 +117,16 @@ Route::group(['middleware' => ['role:super-admin|admin']], function () {
 //     // Route::delete('roles/{role}/permissions/{permission}',[UserController::class,'revokePermission'])->name('users.permissions.revoke');
 //     //Route::get('results/billing/billing_results', [App\Http\Controllers\QualityAnalyst\BillingCategoryController::class, 'index'])->name('result');
 
-});
+
+
+Route::post('/home/store', [App\Http\Controllers\HomeController::class, 'store'])->name('home.store');
+Route::resource('home', HomeController::class);
+Route::post('/home/{id}/edit', [App\Http\Controllers\HomeController::class, 'edit'])->name('home.edit');
+Route::delete('/home/{id}/destroy', [App\Http\Controllers\HomeController::class, 'destroy'])->name('home.destroy');
+Route::get('home/{id}/activate', [App\Http\Controllers\HomeController::class, 'activate'])->name('home.activate');
+Route::get('home/{id}/deactivate',[App\Http\Controllers\HomeController::class,  'deactivate'])->name('home.deactivate');
+
+
 
 // settiing --- roles -- permissions---deartments//
 Route::prefix('settings')->group(function () {
@@ -160,16 +161,8 @@ Route::prefix('settings')->group(function () {
     //departments
     Route::get('departments', [App\Http\Controllers\DepartmentsController::class, 'index'])->name('settings.departments.index');
     Route::post('departments/post', [App\Http\Controllers\DepartmentsController::class, 'store'])->name('settings.departments.post');
+    Route::post('departments/edit', [App\Http\Controllers\DepartmentsController::class, 'edit'])->name('settings.departments.edit');
 });
-
-// Route::prefix('Quality Analysts')->group(function () {
-
-//     Route::get('quality_analyst/Welcometeamcategory', [App\Http\Controllers\QualityAnalyst\WelcomeCategoryController::class, 'index'])->name('welcometeamcategory');
-
-
-
-
-// });
 
 
 /* Create parameters and Edit */
@@ -260,28 +253,34 @@ Route::get('exams/{conductexam}/view_conduct',[App\Http\Controllers\Exams\Conduc
 Route::get('exams/{conductexam}/edit_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'update'])->name('conductexam.update');
 Route::delete('exams/{conductexam}/view_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'destroy'])->name('conductexam.destroy');
 Route::post('exams/schedule_exam',[App\Http\Controllers\Exams\ConductExamController::class,'store'])->name('conductexam.store');
-Route::get('exams/conduct_exams/{id}/reactivate',[App\Http\Controllers\Exams\ConductExamController::class,'reactivate'])->name('conductexam.reactivate');
-// Route::post('exams/{conductexam}/edit_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'deactivate'])->name('conductexam.deactivate');
+Route::post('exams/conduct_exams/{id}/deactivate', [App\Http\Controllers\Exams\ConductExamController::class,'deactivate'])->name('exams.conduct_exams.deactivate');
+//Route::post('exams/{conductexam}/edit_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'deactivate'])->name('conductexam.deactivate');
+Route::post('exams/conduct_exams/{id}/reactivate', [App\Http\Controllers\Exams\ConductExamController::class,'reactivate'])->name('exams.conduct_exams.reactivate');
+
 
 
 Route::resource('examination',ExaminationController::class);
 Route::get('exams/{examination}/examination',[App\Http\Controllers\Exams\ExaminationController::class,'index'])->name('examination.index');
+// Route::get('exams/{examination}/{conductid}/{examid}/examination',[App\Http\Controllers\Exams\ExaminationController::class,'index'])->name('examination.index');
 Route::post('exams/examination',[App\Http\Controllers\Exams\ExaminationController::class,'store'])->name('examination.store');
 Route::get('exams/agent_examination',[App\Http\Controllers\Exams\ExaminationController::class,'show'])->name('examination.show');
 
 
 Route::resource('examresult',ExamsResultsController::class);
 Route::get('exams/exam_result',[App\Http\Controllers\Exams\ExamsResultsController::class, 'index'])->name('examresult.index');
-Route::get('/exams/view_exam_results/{examresult}',[App\Http\Controllers\Exams\ExamsResultsController::class, 'show'])->name('examresult.show');
-Route::get('exams/view_results/{conductid}/{examresult}',[App\Http\Controllers\Exams\ExamsResultsController::class, 'viewResults'])->name('examresult.viewResults');
+Route::get('/exams/view_exam_results/{examresult}/{schedule_id}',[App\Http\Controllers\Exams\ExamsResultsController::class, 'show'])->name('examresult.show');
+Route::get('exams/view_results/{conductid}/{examresult}/{examid}',[App\Http\Controllers\Exams\ExamsResultsController::class, 'viewResults'])->name('examresult.viewResults');
+Route::get('/exams/exams_show/{examresult}/{schedule_id}',[App\Http\Controllers\Exams\ExamsResultsController::class, 'edit'])->name('examresult.edit');
 Route::post('exams/exam_result',[App\Http\Controllers\Exams\ExamsResultsController::class, 'store'])->name('examresult.store');
 
 Route::resource('exambank',ExamBankController::class);
 Route::get('exams/exam_bank',[App\Http\Controllers\Exams\ExamBankController::class, 'index'])->name('exam_bank');
 Route::get('exams/{exambank}/exam_bank',[App\Http\Controllers\Exams\ExamBankController::class, 'destroy'])->name('exambank.destroy');
 Route::post('/exams/create_exam',[App\Http\Controllers\Exams\ExamBankController::class, 'store'])->name('store');
+Route::get('exams/{question}/view_questions',[App\Http\Controllers\Exams\ExamBankController::class, 'questionShow'])->name('view_questions.questionShow');
 Route::get('/exams/create_exam',[App\Http\Controllers\Exams\ExamBankController::class, 'create'])->name('exambank.store');
 Route::get('exams/edit_exam',[App\Http\Controllers\Exams\ExamBankController::class, 'edit'])->name('exam_bank.edit');
+Route::post('exams/{question}',[App\Http\Controllers\Exams\ExamBankController::class, 'update'])->name('exambank.update');
 Route::get('exams/{question}/exam_view',[App\Http\Controllers\Exams\ExamBankController::class, 'show'])->name('exam_view.show');
 Route::get('/exams/create_exam',[App\Http\Controllers\Exams\ExamBankController::class, 'choicestore'])->name('exambank.choicestore');
 
@@ -299,11 +298,12 @@ Route::get('exams/{create_course}/edit_course',[App\Http\Controllers\Exams\Cours
 Route::get('call_tracker/tracker_view', [App\Http\Controllers\CallTracker\TrackerController::class, 'index'])->name('tracker_view');
 Route::resource('call_tracker', TrackerController::class);
 Route::post('/call_tracker/create', [App\Http\Controllers\CallTracker\TrackerController::class, 'store'])->name('call_tracker.store');
-Route::get('/call_tracker/{call_tracker}/edit_tracker', [App\Http\Controllers\CallTracker\TrackerController::class, 'edit'])->name('call_tracker.edit');
+Route::post('/call_tracker/{call_tracker}/edit_tracker', [App\Http\Controllers\CallTracker\TrackerController::class, 'edit'])->name('call_tracker.edit');
+Route::post('/call_tracker/{call_tracker}/update', [App\Http\Controllers\CallTracker\TrackerController::class, 'update'])->name('call_tracker.update');
 Route::get('/call_tracker/{call_tracker}/show_tracker', [App\Http\Controllers\CallTracker\TrackerController::class, 'show'])->name('call_tracker.show');
-Route::get('call_tracker/{call_tracker}/create', [App\Http\Controllers\CallTracker\TrackerController::class, 'store_sub'])->name('store_sub');
-Route::post('call_tracker/{call_tracker}/create', [App\Http\Controllers\CallTracker\TrackerController::class, 'store_sub'])->name('store_sub');
-Route::post('/call_tracker/{call_tracker}/create', [App\Http\Controllers\CallTracker\TrackerController::class, 'destroy'])->name('call_tracker.destroy');
+//Route::get('call_tracker/{call_tracker}/create', [App\Http\Controllers\CallTracker\TrackerController::class, 'storeSub'])->name('call_tracker.storeSub');
+Route::post('call_tracker/{call_tracker}/create', [App\Http\Controllers\CallTracker\TrackerController::class, 'storeSub'])->name('call_tracker.storeSub');
+Route::delete('/call_tracker/{call_tracker}/destroy', [App\Http\Controllers\CallTracker\TrackerController::class, 'destroy'])->name('call_tracker.destroy');
 
 Route::get('calltracker/{id}', function ($id) {
     $SubCallTracker = App\Models\SubCallTracker::where('call_tracker_id',$id)->get();
@@ -313,16 +313,17 @@ Route::get('calltracker/{id}', function ($id) {
 Route::get('call_summary/summary', [App\Http\Controllers\CallSummary\CallSummaryController::class, 'index'])->name('summaryview');
 Route::resource('summary', CallSummaryController::class);
 Route::post('/call_summary/create', [App\Http\Controllers\CallSummary\CallSummaryController::class, 'store'])->name('summary.store');
-Route::put('call_summary/create', [App\Http\Controllers\CallSummary\CallSummaryController::class, 'create'])->name('summary.create');
+Route::post('/call_summary/update', [App\Http\Controllers\CallSummary\CallSummaryController::class, 'update'])->name('summary.update');
 Route::post('/call_summary/create', [App\Http\Controllers\CallSummary\CallSummaryController::class, 'storeGap'])->name('summary.storeGap');
 
 Route::resource('general', App\Http\Controllers\General\GeneralIssueController::class);
 Route::get('general_issue/general_view', [App\Http\Controllers\General\GeneralIssueController::class, 'index'])->name('general.index');
 Route::post('general_issue/general_view', [App\Http\Controllers\General\GeneralIssueController::class, 'store'])->name('general.store');
 Route::post('general_issue/{general}/general_view', [App\Http\Controllers\General\GeneralIssueController::class, 'storeGen'])->name('general.storeGen');
-Route::get('general_issue/{general}/general_edit', [App\Http\Controllers\General\GeneralIssueController::class, 'edit'])->name('general.edit');
+Route::post('general_issue/{general}/general_edit', [App\Http\Controllers\General\GeneralIssueController::class, 'edit'])->name('general.edit');
+Route::post('general_issue/{general}/general_update', [App\Http\Controllers\General\GeneralIssueController::class, 'update'])->name('general.update');
 Route::get('general_issue/{general}/general_show', [App\Http\Controllers\General\GeneralIssueController::class, 'show'])->name('general.show');
-Route::delete('general_issue/{general}/general_show', [App\Http\Controllers\General\GeneralIssueController::class, 'destroy'])->name('general.destroy');
+Route::delete('general_issue/{general}/general_destory', [App\Http\Controllers\General\GeneralIssueController::class, 'destroy'])->name('general.destroy');
 
 Route::get('general-id/{id}', function ($id) {
     $SubIssueGeneral = App\Models\SubIssueGeneral::where('issue_general_id',$id)->get();
@@ -339,12 +340,13 @@ Route::delete('call_saved/{upload}/upload_calls',[App\Http\Controllers\Upload\Up
 
 /* Alert form Routes */
 Route::resource('autofail', App\Http\Controllers\AlertForm\QaAlertFormController::class);
-//Route::get('/alert_forms/alert_forms_view', [App\Http\Controllers\AlertForm\QaAlertFormController::class, 'alertformsview'])->name('autofail.alertformsview');
-//Route::get('/alert_forms/alert_forms_view', [App\Http\Controllers\AlertForm\QaAlertFormController::class, 'searchAutofail'])->name('autofail.searchAutofail');
+Route::get('alert_forms/pdf', [App\Http\Controllers\AlertForm\QaAlertFormController::class, 'generatePDF'])->name('autofail.pdf');
+Route::get('/generate-pdf/{id}', [App\Http\Controllers\AlertForm\QaAlertFormController::class, 'generatePDF'])->name('autofail.generatePDF');
 Route::get('alert_forms/alert_view_full/{id}', [App\Http\Controllers\AlertForm\QaAlertFormController::class, 'show'])->name('autofail.show');
 Route::get('/quality_analyst/qa_agent_alert_form/{id}', [App\Http\Controllers\AlertForm\QaAlertFormController::class, 'index'])->name('qa_agent_alert_form');
 Route::post('/quality_analyst/qa_agent_alert_form/', [App\Http\Controllers\AlertForm\QaAlertFormController::class, 'store'])->name('autofail.store');
 Route::get('team_leader/tl_agent_alert_form/{id}', [App\Http\Controllers\AlertForm\QaAlertFormController::class, 'edit'])->name('autofail.edit');
+Route::post('team_leader/tl_agent_alert_form/{id}', [App\Http\Controllers\AlertForm\QaAlertFormController::class, 'updateAlert'])->name('autofail.updateAlert');
 
 // Route::get('category/{id}', function ($id) {
 //     $AgentName = App\Models\user::where('category',$id)->where('position', '=', 'Agent')->get();
@@ -362,6 +364,19 @@ Route::get('category/{id}', function ($id) {
     return response()->json($AgentName);
 })->name('category_agent');
 
+ /* Coaching Forms Routes */
+ Route::resource('coaching', App\Http\Controllers\CoachingController::class);
+ Route::get('/coaching_forms/index/{coaching}', [App\Http\Controllers\CoachingController::class, 'index'])->name('coaching.index');
+ Route::get('coaching_forms/view/', [App\Http\Controllers\CoachingController::class, 'create'])->name('coaching.create');
+ Route::get('coaching_forms/view/', [App\Http\Controllers\CoachingController::class, 'coach'])->name('coaching.coach');
+ Route::get('coaching_forms/agent_edit/{coaching}', [App\Http\Controllers\CoachingController::class, 'agentEdit'])->name('coaching.agentEdit');
+ Route::post('coaching_forms/agent_edit/{coaching}', [App\Http\Controllers\CoachingController::class, 'update'])->name('coaching.update');
+ Route::get('coaching_forms/show/{coaching}/{results_id}',[App\Http\Controllers\CoachingController::class, 'show'])->name('coaching.show');
+ Route::post('/coaching_forms/index/', [App\Http\Controllers\CoachingController::class, 'store'])->name('coaching.store');
+ Route::get('coaching_forms/{coaching}/edit', [App\Http\Controllers\CoachingController::class, 'edit'])->name('coaching.edit');
+ Route::post('coaching_forms/{coaching}/edit', [App\Http\Controllers\CoachingController::class, 'supervisorUpdate'])->name('coaching.supervisorUpdate');
+ Route::get('coaching_forms/coaching_pdf',[App\Http\Controllers\CoachingController::class, 'generatePDF'])->name('coaching.pdf');
+ Route::get('/coaching_forms/coaching_pdf/{coaching}/{results_id}', [App\Http\Controllers\CoachingController::class, 'generatePDF'])->name('coaching.generatePDF');
 
 
 
@@ -369,10 +384,15 @@ Route::get('category/{id}', function ($id) {
     Route::get('agent/agent_action', [App\Http\Controllers\Agent\AgentActionController::class, 'index'])->name('agent_action');
     Route::get('agent/agentdashboard', [App\Http\Controllers\Agent\AgentDashboardController::class, 'index'])->name('agentdashboard');
     Route::get('agent/agent_results', [App\Http\Controllers\Agent\AgentResultsController::class, 'index'])->name('agent_results');
+    Route::get('agent/agent_view_results', [App\Http\Controllers\Agent\AgentViewResultsController::class, 'index'])->name('agent_view_results');
+
+    Route::resource('agent_alert_form',AgentAlertFormController::class);
     Route::get('agent/agent_alert_form', [App\Http\Controllers\Agent\AgentAlertFormController::class, 'index'])->name('agent_alert_form');
     Route::get('agent_alert_form', [App\Http\Controllers\Agent\AgentAlertFormController::class, 'agent_alert_form']);
-    Route::post('agent/agent_alert_form', [App\Http\Controllers\Agent\AgentAlertFormController::class, 'agent_alert_form'])->name('agent_alert_form');
-    Route::get('agent/agent_view_results', [App\Http\Controllers\Agent\AgentViewResultsController::class, 'index'])->name('agent_view_results');
+    Route::get('agent/agent_alert_form/{agent_alert_form}/edit', [App\Http\Controllers\Agent\AgentAlertFormController::class, 'edit'])->name('agent_alert_form.edit');
+    Route::post('agent/agent_alert_form/{agent_alert_form}/update', [App\Http\Controllers\Agent\AgentAlertFormController::class, 'update'])->name('agent_alert_form.update');
+
+
 
 /* Result view */
 
@@ -390,20 +410,23 @@ Route::get('team_leader/{qaresults}/Teamleader_action_results', [App\Http\Contro
 Route::Post('team_leader/Teamleader_action_results', [App\Http\Controllers\Leader\agentActionResultsController::class, 'update'])->name('qaresults.update');
 Route::get('team_leader/Teamleader_action_results/{qaresults}', [App\Http\Controllers\Leader\agentActionResultsController::class, 'index']);
 Route::get('team_leader/agents_actions_results', [App\Http\Controllers\Leader\agentActionResultsController::class, 'index'])->name('qaresults.index');
+Route::get('team_leader/agents_actions_results', [App\Http\Controllers\Leader\agentActionResultsController::class, 'create'])->name('qaresults.create');
 Route::get('team_leader/{qaresults}/teamleader_view_results', [App\Http\Controllers\Leader\agentActionResultsController::class, 'show'])->name('qaresults.show');
 Route::get('team_leader/teamleader_view_results/{qaresults}', [App\Http\Controllers\Leader\agentActionResultsController::class, 'show'])->name('qaresults.show');
-Route::get('team_leader/agents_actions_results', [App\Http\Controllers\Leader\agentActionResultsController::class, 'search'])->name('qaresults.search');
+Route::get('team_leader/agents_actions_results', [App\Http\Controllers\Leader\agentActionResultsController::class, 'destroy'])->name('qaresults.destroy');
+Route::get('team_leader/agents_actions_results', [App\Http\Controllers\Leader\agentActionResultsController::class, 'qualityreport'])->name('qaresults.qualityreport');
 
 
 
 Route::get('team_leader/TeamleaderDashboard', [App\Http\Controllers\Leader\teamleaderdashboardController::class, 'index'])->name('TeamleaderDashboard');
 Route::get('team_leader/Teamleader_action_results', [App\Http\Controllers\Leader\TeamLeaderActionResultsController::class, 'index'])->name('Teamleader_action_results');
+Route::get('team_leader/Teamleader_action_results', [App\Http\Controllers\Leader\TeamLeaderActionResultsController::class, 'store'])->name('qareport');
+
 
 
 
 
 /* Quality Analyst Routes */
-Route::get('quality_analyst/agent_mapping', [App\Http\Controllers\QualityAnalyst\AgentMappingController::class, 'index'])->name('agent_mapping');
 Route::get('quality_analyst/qadashboard', [App\Http\Controllers\QualityAnalyst\QaDashboardController::class, 'index'])->name('qadashboard');
 Route::post('quality_analyst/qa_agent_alert_form', [App\Http\Controllers\AlertForm\QaAlertFormController::class, 'qa_agent_alert_form'])->name('qa_agent_alert_form');
 Route::get('qa_agent_alert_form', [App\Http\Controllers\AlertForm\QaAlertFormController::class, 'qa_agent_alert_form']);
@@ -465,6 +488,31 @@ Route::get('course-report/{id}', function ($id) {
 Route::resource('livecallsreport', LiveCallReportController::class);
 Route::get('reports/livecallsreports', [App\Http\Controllers\Reports\LiveCallReportController::class, 'index'])->name('livecallsreport.index');
 Route::get('reports/livecallsreports', [App\Http\Controllers\Reports\LiveCallReportController::class, 'show'])->name('livecallsreport.show');
+
+});
+
+Route::get('course-exam/{id}', function ($id) {
+    $exam_name = App\Models\ConductExam::where('course',$id)->get();
+    return response()->json($exam_name);
+});
+
+
+
+Route::get('trainer-exam/{id}', function ($id) {
+    $trainerInfo = App\Models\ConductExam::where('course', $id)
+             ->select('conduct_exams.trainer_qa', 'users.username')
+
+        ->join('users', 'users.id', '=', 'conduct_exams.trainer_qa')
+        ->first();
+
+    if ($trainerInfo) {
+        return response()->json(['username' => $trainerInfo->username]);
+    } else {
+        return response()->json(['error' => 'Trainer not found'], 404);
+    }
+});
+
+
 
 
 /*Route::prefix('admin')->name('/admin/dashboard')->middleware(['auth:sanctum', 'verified', 'role: super-admin|admin|moderator|developer'])->group(function() {

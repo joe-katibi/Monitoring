@@ -104,7 +104,7 @@ class AutoFailReportController extends Controller
 
         $input = $request->all();
 
-       //print_pre($input , true);
+      // print_pre($input , true);
 
 
         $service = $request->input('service');
@@ -118,7 +118,7 @@ class AutoFailReportController extends Controller
         $end_date = $start_end_date[1];
 
         $autofailreports = AlertForm::select('alert_forms.agent_name','alert_forms.supervisor_name','alert_forms.qa_name','alert_forms.auto_status','alert_forms.created_at','alert_forms.results_id',
-                                         'users.name','users.country','users.services','users.category','countries.country_name','services.service_name','categories.category_name', 'results.customer_account','services.id as s_id','users.id as user_id',)
+                                         'users.name','users.country','users.services','users.category','countries.country_name','services.service_name','categories.category_name', 'results.customer_account','results.category','services.id as s_id','users.id as user_id',)
                                          ->join('users','users.id','=','alert_forms.agent_name')
                                          ->join('countries','countries.id','=','users.country')
                                          ->join('user_categories','user_categories.user_id','=','users.id')
@@ -126,17 +126,17 @@ class AutoFailReportController extends Controller
                                          ->join('services','services.id','=','users.services')
                                          ->join('results','results.id','=','alert_forms.results_id')
                                          ->where('users.country','=',$countryname)
-                                         ->where('users.services','=',$service )
-                                         ->where('results.category','=',$categoryname)
+                                          ->where('users.services','=',$service )
+                                         // ->where('results.category','=',$categoryname)
                                          ->where('results.date_recorded','>=',$start_date)
                                          ->where('results.date_recorded','<=',$end_date)
-                                         ->where('alert_forms.agent_name','=', $agents->id )
-                                         ->where('alert_forms.supervisor_name','=',$supervisor->id)
+                                        // ->where('alert_forms.agent_name','=', $agents->id )
+                                       //  ->where('alert_forms.supervisor_name','=',$supervisor->id)
                                         // ->where('alert_forms.qa_name','=',$qa->id )
                                          ->get();
 
 
-       // print_pre([$autofailreports] , true);
+        //print_pre([$autofailreports] , true);
 
 
         foreach($autofailreports as $key => $value){
@@ -150,7 +150,7 @@ class AutoFailReportController extends Controller
             $qualityName = User::where('id','=', $value['qa_name'])->first();
             $value['qualityName'] =  isset($qualityName)  ?  $qualityName->name : '';
 
-            $createdAt = $value->date_recorded;
+            $createdAt = $value->created_at;
 
             $monthName = Carbon::parse($createdAt)->format('F');
             $value['monthName'] =  isset($createdAt)  ?  $monthName: '';
@@ -167,6 +167,7 @@ class AutoFailReportController extends Controller
             $data['country']= $country;
             $data['category']= $category;
 
+          //print_pre([$autofailreports] , true);
 
         return view('reports/auto_fail_report')->with($data);
     }

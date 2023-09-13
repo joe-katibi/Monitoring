@@ -44,41 +44,41 @@
                                <td>{{ $row->name }}</td>
                                <td>{{ $row->category_name }}</td>
                                <td>
-
                                 @if ($row->status == '1')
                                 <a disable class="badge badge-success" >active</a>
                                 @else
                                 <a disable class="badge badge-danger" >inactive</a>
                                 @endif
-
-
                                </td>
                                <td>{{ $row->created_at}}</td>
                                <td>
-                                @can('view-start-results-exam-buttons')
 
-                                  @if($row->status == '0')
-                                  <a style="display:none;" href="{{ route('examination.index',$row->id) }}" class="btn btn-success"><i class="fas fa-play" ></i>Start</a>
-                                  @else
-                                  <a href="{{ route('examination.index',$row->id) }}" class="btn btn-success"><i class="fas fa-play" ></i>Start</a>
-                                  @endif
+                                @php
+                                   $examId = $row->id;
+                                   $scheduleId = $row->schedule_id;
+                                   $created_by = $userId;
+                                   $hasExamAttempt = isset($examAttempts[$examId]) || isset($examAttempts[$scheduleId]);
+                                 @endphp
+                                @if ($hasExamAttempt)
+                                  <!-- The user has already taken the exam, hide the start button and show the results button -->
+                                 @can('view-start-results-exam-buttons')
+                                <a style="display:none;" href="{{ route('examination.index', $row->id) }}" class="btn btn-success"><i class="fas fa-play"></i>Start</a>
+                                <a href="{{ route('examresult.viewResults', ['conductid' => $examId, 'examresult' => $created_by, 'examid' => $scheduleId]) }}" class="btn btn-info"><i class="fas fa-eye"></i>Results</a>
+                                 @endcan
+                                 @can('view-exam-results-question-with-answers')
+                                <a href="{{ route('examresult.show', ['examresult' => $examId, 'schedule_id' => $scheduleId]) }}" class="btn btn-info"><i class="fas fa-eye"></i>Results</a>
+                                @endcan
+                               @else
+                             <!-- The user has not taken the exam, show the start button and hide the results button -->
+                             @can('view-start-results-exam-buttons')
+                              <a href="{{ route('examination.index', $row->id) }}" class="btn btn-success"><i class="fas fa-play"></i>Start</a>
+                            <a style="display:none;" href="{{ route('examresult.show', ['examresult' => $examId, 'schedule_id' => $scheduleId]) }}" class="btn btn-info"><i class="fas fa-eye"></i>Results</a>
+                            @endcan
+                            @endif
 
-                                  @if($row->status == '1')
-
-                                  <a style="display:none;" href="{{ route('examresult.show',$row->id) }}" class="btn btn-info"><i class="fas fa-eye"></i>Results</a>
-
-                                  @else
-
-                                  <a href="{{ route('examresult.show',$row->id) }}" class="btn btn-info"><i class="fas fa-eye"></i>Results</a>
-
-                                  @endif
-
-                                  @endcan
                           </td>
                       </tr>
                   @endforeach
-
-
                   </tbody>
               </table>
           </div>
@@ -97,7 +97,7 @@
 <script>
 
     questionsTable = $('#questionsTable').dataTable({
-
+        ordering:false,
       "dom" : 'lfrtip'
     });
 

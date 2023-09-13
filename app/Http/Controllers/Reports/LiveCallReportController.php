@@ -169,7 +169,7 @@ class LiveCallReportController extends Controller
                                             $data['strengthName']= $strengthName;
 
 
-         //print_pre([ $gapName ] , true);
+         //print_pre([ $data ] , true);
 
         return view('reports/livecallsreports')->with($data);
     }

@@ -44,6 +44,8 @@
                   <tbody>
 
                         @foreach ($conduct as $key=> $row)
+
+                        {{-- @dd($row); --}}
                          <tr>
                                <td>{{ $row->id}}</td>
                                <td>{{ $row->exam_name}}</td>
@@ -61,13 +63,22 @@
                                 @endif
                                </td>
                                <td>
-                                @if ($row->status  == '0')
-                                <button data-url="{{ url('exams/conduct_exams/'. $row->id .'/reactivate') }}" data-row="{{ json_encode($row) }}" class="btn btn-warning .activate-button">
-                                    <i class="fas fa-recycle"></i>
-                                </button>
+                                @if ($row->status == '0')
+                                <form action="{{ url('exams/conduct_exams/'. $row->id .'/reactivate') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success activate-button">
+                                        <i class="fas fa-recycle"></i> Reactivate
+                                    </button>
+                                </form>
 
                                 @else
-                                <a disable class="badge badge-warning" ></a>
+                                <form action="{{ route('exams.conduct_exams.deactivate', $row->id) }}" method="POST">
+                                    @csrf
+                                    @method('POST')
+                                    <button type="submit" class="btn btn-warning activate-button">
+                                        <i class="fas fa-recycle"></i> Deactivate
+                                    </button>
+                                </form>
                                 @endif
                                </td>
                                <td>{{ $row->created_at}}</td>
@@ -101,7 +112,7 @@
 <script>
 
     questionsTable = $('#questionsTable').dataTable({
-
+       ordering:false,
       "dom" : 'lfrtip'
     });
 

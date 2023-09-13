@@ -3,164 +3,200 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-<h1 hidden></h1>
+<style>
+    .container {
+        position: relative;
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f0f0;
+    }
+
+    .card {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 1200px; /* Set a max-width for the card */
+        padding: 30px;
+        border: 1px solid black;
+        font-style: sans-serif;
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow: auto; /* Add scrollbars if content overflows */
+    }
+
+    #button {
+        background-color: #4caf50;
+        border-radius: 5px;
+        margin-top: auto;
+        margin-left: auto;
+        margin-right: auto;
+        color: white;
+        display: block;
+        padding: 10px;
+        width: fit-content;
+        cursor: pointer;
+    }
+
+    h2 {
+        text-align: center;
+        color: #24650b;
+    }
+
+    /* Add new styles for images */
+    .images-container {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .image {
+        width: 20%;
+    }
+</style>
 @stop
 
 @section('content')
-@include('sweetalert::alert')
+<body>
+    <div class="container">
+        <div  class="card" id="makepdf">
 
-            <div class="card card-success">
-                <div class="card-header">
-                   <input readonly class="form-control" style="color: green" name="{{ $showalert['title'] }}" value="{{ $showalert['title'] }}">
+            <div class="images-container">
+                <img class="image" src="{{ asset('assets/img/wananchi_logo.png') }}" >
+                <img class="image" src="{{ asset('assets/img/zuku-logo.png') }}" >
+            </div>
+            <h2>WANANCHI ALERT FORM</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Date:</label>
+                        <input readonly value="{{ $showalert[0]['date'] }}"  class="form-control">
+                    </div>
                 </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                  <form>
-                    <div class="col-md-12 text-center">
-                      <h2 name="form">{{ $showalert['title'] }}</h2>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Agent Name:</label>
+                        <input readonly value="{{ $showalert[0]['agentName'] }}" type="text" class="form-control">
                     </div>
-                    <div class="container">
-                    <div class="row">
-                      <div class="col-sm-3">
-                        <!-- text input -->
-                        <div class="form-group">
-                          <label>Date</label>
-                          <input disabled value="{{ $showalert['date'] }}" class="form-control"  >
-                        </div>
-                      </div>
-                      <div class="col-sm-3">
-                        <div class="form-group">
-                          <label>Agent name</label>
-                          <input disabled  value="{{ $showalert['agent_name'] }}" type="text" class="form-control" >
-                        </div>
-                      </div>
-                      <div class="col-sm-3">
-                        <div class="form-group">
-                          <label>Supervisor name</label>
-                          <input disabled  value="{{ $showalert['supervisor_name'] }}" type="text" class="form-control" >
-                        </div>
-                      </div>
-                      <div class="col-sm-3">
-                        <div class="form-group">
-                          <label>QA name</label>
-                          <input disabled  value="{{ $showalert['qa_name'] }}" type="text" class="form-control"  >
-                        </div>
-                      </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Supervisor Name:</label>
+                        <input readonly value="{{ $showalert[0]['SupervisorName'] }}" type="text" class="form-control">
                     </div>
-
-                    <div class="row">
-                      <div class="col-sm">
-                        <!-- textarea -->
-                        <div class="form-group">
-                          <label>Description of the Problem:</label>
-                          <input disabled  value="{{ $showalert['description'] }}" class="form-control" rows="2">
-                        </div>
-                      </div>
-                      <div class="col-sm">
-                        <div class="form-group">
-                          <label>Fatal Error committed:</label>
-                          <input disabled  value="{{ $showalert['fatal_error'] }}" class="form-control" rows="2"  >
-                        </div>
-                      </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Quality Analysts Name:</label>
+                        <input readonly value="{{ $showalert[0]['qualityName'] }}" type="text" class="form-control">
                     </div>
-                      <div class="row">
-                        <div class="col-sm-3">
-                          <!-- text input -->
-                          <div class="form-group">
-                            <label>QA name</label>
-                            <input disabled  value="{{ $showalert['qa_name'] }}"  type="text" class="form-control" >
-                          </div>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="form-group">
-                            <label>Signature</label>
-                            <input disabled  value="{{ $showalert['qa_signature'] }}" type="text" class="form-control" >
-                          </div>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="form-group">
-
-                            <label>Date</label>
-                            <input disabled  value="{{ $showalert['date_by_qa'] }}" class="form-control"  >
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm">
-                          <div class="form-group">
-                            <label>Comments by the supervisor:</label>
-                            <input disabled  value="{{ $showalert['supervisor_comment'] }}" class="form-control" rows="2" >
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="row">
-                        <div class="col-sm-3">
-                          <!-- text input -->
-                          <div class="form-group">
-                            <label>Supervisor name</label>
-                            <input disabled  value="{{ $showalert['supervisor_name'] }}" type="text" class="form-control"  >
-                          </div>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="form-group">
-                            <label>Signature</label>
-                            <input disabled  value="{{ $showalert['supervisor_signature'] }}" type="text" class="form-control" >
-                          </div>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="form-group">
-                            <label>Date</label>
-                            <input disabled  value="{{ $showalert['date_by_supervisor'] }}" class="form-control"  >
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-sm">
-                        <div class="form-group">
-                            <p>By signing this form, I acknowledge that I understand the feedback given and consequences thereof. I will correct this problem from today henceforth.</p>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-3">
-                          <!-- text input -->
-                          <div class="form-group">
-                            <label>Agent name</label>
-                            <input disabled  value="{{ $showalert['agent_name'] }}" type="text" class="form-control" placeholder="Supervisor name ..." >
-                          </div>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="form-group">
-                            <label>Signature</label>
-                            <input disabled  value="{{ $showalert['agent_signature'] }}" type="text" class="form-control" placeholder="Agent name ..." >
-                          </div>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="form-group">
-                            <label>Date</label>
-                            <input disabled value="{{ $showalert['date_by_agent'] }}" class="form-control"  >
-                          </div>
-                        </div>
-                      </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label">Description of the Problem:</label>
+                        <textarea readonly class="form-control" >{{ $showalert[0]['description'] }}</textarea>
                     </div>
-                      <div class="card-footer">
-                        {{-- <a href="{{route('category') }}" class="btn btn-success float-left"  > QA Another Call</a> --}}
-                        <button type="submit" class="btn btn-success float-right">Export PDF</button>
-
-                      </div>
-                  </form>
-
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label">Fatal Error Committed:</label>
+                        <textarea readonly class="form-control" >{{ $showalert[0]['fatal_error'] }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Quality Analysts Name:</label>
+                        <input readonly value="{{ $showalert[0]['qualityName'] }}" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Signature:</label>
+                        <img src="{{ $showalert[0]['qa_signature']  }}" alt="Quality Signature" style="max-width: 100px; max-height: 100px; display: block;">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label">Comments by the Supervisor:</label>
+                        <textarea readonly class="form-control" >{{ $showalert[0]['supervisor_comment'] }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Supervisor Name:</label>
+                        <input readonly value="{{ $showalert[0]['SupervisorName'] }}" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Signature:</label>
+                        <img src="{{ $showalert[0]['supervisor_signature']  }}" alt="Supervisor Signature" style="max-width: 100px; max-height: 100px; display: block;">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Date:</label>
+                        <input readonly value="{{ $showalert[0]['date_by_supervisor'] }}" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <p class="text-center">
+                            By signing this form, I acknowledge that I understand the feedback given and consequences thereof. I will correct this problem from today onwards.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Agent Name:</label>
+                        <input readonly value="{{ $showalert[0]['agentName'] }}" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Signature:</label>
+                        <img src="{{ $showalert[0]['agent_signature']  }}" alt="agent Signature" style="max-width: 100px; max-height: 100px; display: block;">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Date:</label>
+                        <input readonly value="{{ $showalert[0]['date_by_agent'] }}" class="form-control">
+                    </div>
                 </div>
             </div>
+        </div>
+
+    </div>
+    @can('view-export-PDF-alert-button')
+    <div class="row">
+        <div class="col-12 d-flex justify-content-center">
+            <a href="{{ route('autofail.generatePDF', $showalert[0]['id']) }}" class="btn btn-success">Export PDF</a>
+        </div>
+    </div>
+    @endcan
 
 
-
+</body>
 
 @stop
 
+
 @section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+
+
 @stop
 
 @section('js')
-    <script> console.log('Hi!'); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js">
+    </script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script> --}}
+
 @stop

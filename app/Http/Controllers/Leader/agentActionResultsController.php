@@ -43,32 +43,27 @@ class agentActionResultsController extends Controller
 
         $supervisorRole_id = Role::select('roles.id',)->where('name', '=', 'team-leader')->first();
 
-       // $agentRole_id = Role::select('roles.id',)->where('name', '=', 'Agent')->first();
-
         // Get the authenticated user's ID
-             $userId = auth()->id();
+         $userId = auth()->id();
 
-          $supervisorlogged = Role::select('roles.id',)
+        $userlogged = User::select('users.name','users.id',)->where('users.id','=',$userId)->first();
+
+        $supervisorlogged = Role::select('roles.id',)
                                      ->join('model_has_roles','model_has_roles.role_id','=','roles.id')
                                      ->where('name', '=', 'team-leader')
                                      ->where('model_has_roles.role_id','=',$userId )
                                      ->first();
 
-          $agentlogged = Role::select('roles.id',)
+        $agentlogged = Role::select('roles.id',)
                                 ->join('model_has_roles','model_has_roles.role_id','=','roles.id')
                                ->where('name', '=', 'Agent')
                                ->where('model_has_roles.role_id','=',$userId )
                                ->first();
 
-          // print_pre([$supervisorlogged] , true);
-
-        $supervisors= User::select('users.name','users.id','model_has_roles.role_id','user_categories.category_id','categories.category_name')
+        $supervisors= User::select('users.name','users.id','model_has_roles.role_id')
                            ->join('model_has_roles','model_id','=','users.id')
                            ->join('roles','roles.id','=','model_has_roles.role_id')
-                           ->join('user_categories','user_categories.user_id','=','users.id')
-                           ->join('categories','categories.id','=','user_categories.category_id')
                            ->where('model_has_roles.role_id','=',$supervisorRole_id->id)
-                         //  ->where('users.id','=', $userId)
                             ->get();
 
          $data['ticketStatus']=$ticketStatus;
@@ -77,28 +72,23 @@ class agentActionResultsController extends Controller
          $data['$userId']=$userId;
          $data['supervisorlogged']=$supervisorlogged;
          $data['agentlogged']=$agentlogged;
+         $data['userlogged']=$userlogged;
 
         return view('team_leader/agents_actions_results')->with($data);
     }
-
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * create a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function search(Request $request)
+    public function create(Request $request)
     {
+
+        // Get the authenticated user's ID
+        $userId = auth()->id();
+
+        $userlogged = User::select('users.name','users.id',)->where('users.id','=',$userId)->first();
 
         $input= $request->all();
 
@@ -107,8 +97,7 @@ class agentActionResultsController extends Controller
 
          $start_end_date = explode(' - ', $request->input('created_at'));
          $start_date = $start_end_date[0];
-         $end_date = $start_end_date[1];;
-
+         $end_date = $start_end_date[1];
 
 
         $qa_results = Result::select('results.id','results.agent_name','results.supervisor','results.quality_analysts','results.date_recorded','results.customer_account','results.recording_id',
@@ -152,20 +141,14 @@ class agentActionResultsController extends Controller
                           ->where('model_has_roles.role_id','=',$supervisorRole_id->id)
                             ->get();
 
-       // print_pre([$value] , true);
-
         $ticketStatus= TicketStatus::all();
 
         $data['ticketStatus']=$ticketStatus;
-
         $data['supervisors']=$supervisors;
-
-
-         $data['qa_results']=$qa_results;
-
+        $data['qa_results']=$qa_results;
+        $data['userlogged']=$userlogged;
 
         return view('team_leader/agents_actions_results')->with($data);
-
 
     }
 
@@ -192,11 +175,88 @@ class agentActionResultsController extends Controller
                         ->where('question_results.results','=',$id)
                ->get();
 
+           foreach($audit_agent as $key => $value){
+
+            $agentName = User::where('id','=', $value['agent_name'])->first();
+            $value['agentName'] =  isset($agentName)  ?  $agentName->name : '';
+
+            $SupervisorName = User::where('id','=', $value['supervisor'])->first();
+            $value['SupervisorName'] =  isset($SupervisorName)  ?  $SupervisorName->name : '';
+
+            $qualityName = User::where('id','=', $value['quality_analysts'])->first();
+            $value['qualityName'] =  isset($qualityName)  ?  $qualityName->name : '';
+
+           }
+
+
            // Store the audit_agent in the $data array
                    $data['audit_agent'] = $audit_agent;
 
         return view('team_leader/teamleader_view_results')->with($data);
     }
+
+            /**
+     * qualityreport a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function qualityreport(Request $request)
+    {
+
+        // Get the authenticated user's ID
+        $userId = auth()->id();
+
+        $userlogged = User::select('users.name','users.id',)->where('users.id','=',$userId)->first();
+
+        $input= $request->all();
+
+         $agent = $request->input('agent');
+         $status = $request->input('status');
+
+         $start_end_date = explode(' - ', $request->input('created_at'));
+         $start_date = $start_end_date[0];
+         $end_date = $start_end_date[1];;
+
+        $qa_results = Result::select('results.id','results.agent_name','results.supervisor','results.quality_analysts','results.date_recorded','results.customer_account','results.recording_id',
+                                    'results.supervisor_comment','results.final_results','results.status','results.category','users.country','users.services','categories.category_name','services.service_name','countries.country_name','results.created_at',)
+                                     ->join('user_categories','user_categories.category_id','=','results.category')
+                                     ->join('users','users.id','=','user_categories.user_id')
+                                     ->join('categories','categories.id','=','results.category')
+                                     ->join('services','services.id','=','users.services')
+                                     ->join('countries','countries.id','=','users.country')
+                                     ->where('results.agent_name','=',$agent)
+                                     ->where('results.status','=',$status)
+                                     ->where('results.date_recorded','>=',$start_date)
+                                     ->where('results.date_recorded','<=',$end_date)
+                                     ->get();
+
+        foreach($qa_results as $key => $value){
+
+            $value['autofails'] = AlertForm::select('alert_forms.id','alert_forms.results_id')
+            ->where('results_id','=',$value['id'] )
+            ->get();
+
+            $agentName = User::where('id','=', $value['agent_name'])->first();
+            $value['agentName'] =  isset($agentName)  ?  $agentName->name : '';
+
+            $SupervisorName = User::where('id','=', $value['supervisor'])->first();
+            $value['SupervisorName'] =  isset($SupervisorName)  ?  $SupervisorName->name : '';
+
+            $qualityName = User::where('id','=', $value['quality_analysts'])->first();
+            $value['qualityName'] =  isset($qualityName)  ?  $qualityName->name : '';
+
+        }
+
+        $ticketStatus= TicketStatus::all();
+        $data['ticketStatus']=$ticketStatus;
+        $data['qa_results']=$qa_results;
+        $data['userlogged']=$userlogged;
+
+        return view('team_leader/agents_actions_results')->with($data);
+
+    }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -295,14 +355,5 @@ class agentActionResultsController extends Controller
        return redirect('team_leader/teamleader_view_results/'.$resultID );
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+
 }

@@ -42,6 +42,7 @@
                                 <th>ID</th>
                                 <th>Category</th>
                                 <th>Service</th>
+                                <th>SubCategory</th>
                                 <th style="width: 10%">AddSubCategory</th>
                                 <th style="width: 10%">Action</th>
                               </tr>
@@ -61,6 +62,11 @@
                     @endif
                 </td>
                 <td>
+                    <div class="btn-group btn-group-sm">
+                        <a href="{{ route('general.show',$row['id'])}}" class="btn btn-warning" ><i class="fas fa-eye"></i>View Sub Category</a>
+                    </div>
+                </td>
+                <td>
                     @can('view-general-add-category-button')
                     <a class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" href="{{route('general.storeGen',$row['id'])}}">Add</a>
                     @endcan
@@ -68,8 +74,7 @@
                 <td>
                     @can('view-general-action-button')
                     <div class="btn-group btn-group-sm">
-                        <a href="{{ route('general.edit',$row['id']) }}" class="btn btn-success"><i class="fas fa-edit" ></i></a>
-                        <a href="{{ route('general.show',$row['id']) }}" class="btn btn-info"><i class="fas fa-eye"></i></a>
+                        <a href="{{ route('general.edit',$row['id']) }}" data-toggle="modal" data-target="#editModal{{$row['id']}}"  class="btn btn-success"><i class="fas fa-edit" ></i></a>
                          <a href="{{ route('general.destroy',$row['id']) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
                     </div>
                     @endcan
@@ -112,6 +117,43 @@
               </div>
             </div>
           </div>
+        </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="editModal{{$row['id']}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Edit Category</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <form action="{{ route('general.edit', $row['id']) }}" method="POST">
+                            {{ csrf_field() }}
+                            <label for="name">Edit Category</label>
+                            <input type="text" name="category" class="form-control">
+                            <input type="hidden" name="category_id" value="{{$row['id']}}">
+                            <div class="col-ms-3">
+                              <div class="card-body">
+                                  <div class="row">
+                                      @can('view-save-category-button')
+                                      <div class="col">
+                                          <button type="submit" class="btn btn-success float-right">Save changes</button>
+                                      </div>
+                                      @endcan
+                                  </div>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                </div>
                 @endforeach
               </tbody>
             </table>

@@ -46,7 +46,7 @@ class UserController extends Controller
 
         $user = User::select('users.id','users.name','users.email','users.country','users.services','users.category','users.user_status','users.created_at',
                              'users.position','services.service_name','countries.country_name','departments.department_name',
-                             //'roles.description',
+                              //'roles.description',
                              //'user_categories.category_id','categories.category_name',
                              //'model_has_roles.role_id'
                              )
@@ -55,8 +55,8 @@ class UserController extends Controller
                             ->join('departments','departments.id','=','users.department_id')
                            // ->join('user_categories','user_categories.user_id','=','users.id')
                            // ->join('categories','categories.id','=','user_categories.category_id')
-                            // ->join('model_has_roles','model_has_roles.model_id','=','users.id')
-                         //    ->join('roles','roles.id','=','model_has_roles.role_id')
+                           // ->join('model_has_roles','model_has_roles.model_id','=','users.id')
+                         //  ->join('roles','roles.id','=','model_has_roles.role_id')
                           ->get();
 
                         //   if ($user->roles()) {

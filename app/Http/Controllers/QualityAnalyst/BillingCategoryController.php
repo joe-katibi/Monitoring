@@ -28,6 +28,7 @@ use App\Models\LiveCalls;
 use App\Models\LiveCalls_results;
 use App\Models\GapSummaries;
 use App\Models\VoCSummaries;
+use App\Models\Coaching;
 use Datatables;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -215,10 +216,9 @@ class BillingCategoryController extends Controller
                 // Set the properties of the QuestionResults object
                 $question_results->results =  $results->id;
                 $question_results->question_no = $key;
-                $question_results->marks = $value;
+                $question_results->marks = $value ;
+                // $question_results->marks = ($value === 'Auto Fail') ? 5 : $value;
                 $question_results->created_by = $results->quality_analysts;
-
-                // dd($question_results);
 
                 // Save the QuestionResults object to the database
                 $question_results->save();
@@ -227,37 +227,17 @@ class BillingCategoryController extends Controller
                 log::channel('billing_category')->info('Billing Category Created : ------> ', ['200' , $question_results->toArray() ] );
             }
 
-            // Calculate the total marks for the results
-          // $totals = QuestionResults::where('results' , '=',  $results->id )->sum('marks');
-
-          // Query the QuestionResults model for the 'marks' column where 'results' equals $results->id
-               $total = QuestionResults::select('marks')->where('results', '=', $results->id)
-               //->where('marks', '=', 'Auto Fail')
-               ->get();
-
-               foreach ($total as $result) {
-                // Check if the 'marks' value is "Auto Fail"
-                if ($result->marks == "Auto Fail") {
-                    // Assign 5 to $result->marks if it's "Auto Fail"
-                    $result->marks = 5;
-                } else {
-                    // If it's not "Auto Fail", sum up the 'marks' column where 'results' equals $results->id
-                    $result->marks = QuestionResults::where('results', '=', $results->id)->sum('marks');
-                }
-            }
-
+           // Sum up the 'marks' column where 'results' equals $results->id.
+            $totalMarks = QuestionResults::where('results', '=', $results->id)->sum('marks');
 
             // Get the Result object for the results
             $results_update = Result::find($results->id);
 
             // Set the final_results property of the Result object to the total marks
-            $results_update->final_results =  $result->marks;
-
+            $results_update->final_results = $totalMarks;
 
             // Update the Result object in the database
             $results_update->save();
-
-          //  print_pre($results_update->final_results , true);
 
             // Log the update of the Result object
             log::channel('billing_category')->info('Billing Category Updated : ------> ', ['200' , $results_update->toArray() ] );
@@ -265,28 +245,96 @@ class BillingCategoryController extends Controller
             // Commit the transaction
             DB::commit();
 
-            // Check if the total marks are 0
-            if ($results_update->final_results == 5) {
-                // Display a warning message if the total marks are 0
+           $autofail = QuestionResults::where('results', '=', $results->id)->where('marks', '=', 'Auto Fail')->first();
 
 
+           // Check if $autofail is null or $autofail->marks is not 'Auto Fail'
+            if (!$autofail || $autofail->marks !== 'Auto Fail') {
+               // Redirect to a different view
+                return redirect('results/billing/billing_results/'.$results->id);
+             }
 
-                    $result = new Result();
-                    $result->agentEmail = $agentEmail;
-                    $result->supervisorEmail = $supervisorEmail;
-                    $result->qualityAnalysts = $qualityAnalysts;
+
+            // Check if the total marks are 5
+            if ($autofail->marks == 'Auto Fail') {
+
+                   // Get the current date and time
+                    $currentDateTime = Carbon::today();
+
+               // Calculate the start and end of the current month
+                    $startOfMonth = Carbon::now()->startOfMonth();
+                   $endOfMonth = Carbon::now()->endOfMonth();
+
+           // Format the date in 'Y-m-d' format
+                   $startOfMonthDate = $startOfMonth->format('Y-m-d');
+                   $endOfMonthDate = $endOfMonth->format('Y-m-d');
+
+             // Fetch the coaching record for the current month
+           $coachingRecord = Coaching::where('agent', '=', $results->agent_name)
+               ->whereRaw("DATE(created_at) >= ?", [$startOfMonthDate])
+               ->whereRaw("DATE(created_at) <= ?", [$endOfMonthDate])
+               ->first();
+
+              // Fetch the result record for the current month
+              $resultRecord = Result::where('agent_name', '=', $results->agent_name)
+               ->whereRaw("DATE(created_at) >= ?", [$startOfMonthDate])
+                ->whereRaw("DATE(created_at) <= ?", [$endOfMonthDate])
+                ->first();
+
+                     if ($coachingRecord && $resultRecord) {
+                        // Both records exist for the current month
+
+                       // print_pre($coachingRecord, true);
+
+                        $result = new Result();
+                        $result->agentEmail = $agentEmail;
+                        $result->supervisorEmail = $supervisorEmail;
+                        $result->qualityAnalysts = $qualityAnalysts;
+
+                        $notification = new AuditNotification($result, 'results');
+                        Mail::to($agentEmail->email)
+                            ->cc($supervisorEmail->email)->send($notification);
 
 
-                    $notification = new AuditNotification($result, 'results');
-                    Mail::to($agentEmail->email)
-                        ->cc($supervisorEmail->email)->send($notification);
+                    toast('Auto Fail generated', 'warning')->position('top-end');
+                    return redirect()->to('/quality_analyst/qa_agent_alert_form/'.$results->id);
 
-                toast('Auto Fail generated', 'warning')->position('top-end');
-                return redirect()->to('/quality_analyst/qa_agent_alert_form/'.$results->id);
+                    } else {
+
+                        // Record not found for the current month in either Coaching or Result table
+                        $coachingForm = new Coaching();
+                        $coachingForm->agent = $results->agent_name;
+                        $coachingForm->record_id = $results->recording_id;
+                        $coachingForm->supervisor =  $results->supervisor;
+                        $coachingForm->quality_analyst = $results->quality_analysts;
+                        $coachingForm->scores = $totalMarks;
+                        $coachingForm->coaching_status = '1';
+                        $coachingForm->results_id = $results->id;
+                        $coachingForm->category_id = $results->category;
+                        //save required details on coaching DB
+
+                        // dd($totalMarks);
+                        $coachingForm->save();
+
+                        $coachingForm = new Coaching();
+                        $coachingForm->agentEmail = $agentEmail;
+                        $coachingForm->supervisorEmail = $supervisorEmail;
+                        $coachingForm->qualityAnalysts = $qualityAnalysts;
+
+                        $notification = new AuditNotification($coachingForm, 'results');
+                        Mail::to($agentEmail->email)
+                            ->cc($supervisorEmail->email)->send($notification);
+
+                    toast('Coaching Form generated', 'info')->position('top-end');
+
+                    return redirect()->to('/coaching_forms/index/'.$results->id);
+
+                    }
+
             } else {
                 // Display a success message if the total marks are not 0
                 $result = new Result();
-                $result->marks = $results->marks;
+                $result->marks = $totalMarks;
                 $result->qualityAnalysts = $qualityAnalysts;
                 $result->agentEmail = $agentEmail;
                 $result->supervisorEmail = $supervisorEmail;
@@ -296,15 +344,9 @@ class BillingCategoryController extends Controller
                     ->cc($supervisorEmail->email)->send($notification);
 
                 toast('Agent Audited successfully', 'success')->position('top-end');
+
                 return redirect('results/billing/billing_results/'.$results->id);
             }
-
-
-
-
-
-            // Debugging statement (commented out)
-            // print_pre([$results , $totals] , true);
 
             // Catch any exceptions and roll back the transaction
             } catch (\Throwable $e) {
@@ -313,7 +355,7 @@ class BillingCategoryController extends Controller
                 Log::info($e->getMessage() );
                 throw $e;
             }
-        }
+    }
 
 
     /**

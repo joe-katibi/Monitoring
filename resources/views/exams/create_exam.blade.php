@@ -150,7 +150,7 @@
           </div>
 
     </div>
-        <div class="card-body">
+        <div class="card-footer">
             @can('view-create-question-button')
             <div class="col">
                 <div class="col-md-12">

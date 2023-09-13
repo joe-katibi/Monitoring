@@ -18,7 +18,9 @@ return new class extends Migration
             $table->string('question_id');
             $table->string('answers_selected');
             $table->string('marks_achieved');
-            $table->string('user_id');
+            $table->string('conduct_id');
+            $table->string('report_type_id');
+            $table->string('schedule_id');
             $table->string('created_by');
             $table->timestamps();
         });

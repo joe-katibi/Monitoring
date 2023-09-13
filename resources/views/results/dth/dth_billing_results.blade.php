@@ -17,16 +17,16 @@
          <div class="row">
         <div class="col-2">
             <label>Supervisor</label>
-          <input readonly type="text" class="form-control" placeholder="supervisor" value="{{ $question_v[0]['supervisor']  }}">
+          <input readonly type="text" class="form-control" placeholder="supervisor" value="{{ $question_v[0]['SupervisorName']  }}">
         </div>
 
         <div class="col-2">
             <label>Agent name</label>
-          <input readonly type="text" class="form-control" placeholder="agent name" value="{{ $question_v[0]['agent_name']  }}">
+          <input readonly type="text" class="form-control" placeholder="agent name" value="{{ $question_v[0]['agentName']  }}">
         </div>
         <div class="col-2">
             <label>QA name</label>
-          <input readonly type="text" class="form-control" placeholder="qc name" value="{{ $question_v[0]['quality_analysts '] }}">
+          <input readonly type="text" class="form-control" placeholder="qc name" value="{{ $question_v[0]['qualityName'] }}">
         </div>
         <div class="col-2">
             <label>Date</label>

@@ -100,7 +100,7 @@
                       </div>
                     </div>
                 </div>
-                    <div class="card-body">
+                    <div class="card-footer">
                         @can('view-scheduling-exam-button')
 
                         <div class="row">

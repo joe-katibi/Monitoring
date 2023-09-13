@@ -152,6 +152,7 @@ class LiveCallCategoryController extends Controller
         $fiberlivecalls->voc_summary = isset($input['voc_summary']) ? $input['voc_summary'] : "";
         $fiberlivecalls->voc_description = isset($input['voc_description']) ? $input['voc_description'] : "";
         $fiberlivecalls->report_type_id = isset($input['reporttype']) ? $input['reporttype'] :"";
+        $fiberlivecalls->service_id = 1;
 
         // exit;
         // Save the new LiveCalls object to the database.
@@ -163,6 +164,7 @@ class LiveCallCategoryController extends Controller
             $strength->livecall_id = $fiberlivecalls->id;
             $strength->summary_id = $value;
             $strength->category_id = $fiberlivecalls->category;
+            // $strength->service_id = 1;
             $strength->created_by =$fiberlivecalls->quality_analysts;
 
             $strength->save();

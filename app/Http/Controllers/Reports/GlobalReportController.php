@@ -99,6 +99,8 @@ class GlobalReportController extends Controller
 
         $countryname = $request->input('country');
 
+        $groupBy = 'month';
+
         $start_end_date = explode(' - ', $request->input('created_at'));
         $start_date = $start_end_date[0];
         $end_date = $start_end_date[1];
@@ -109,7 +111,7 @@ class GlobalReportController extends Controller
 
         $country = Countries::All()->toArray();
 
-        $auditresults = User::select('users.id','users.country','users.name','users.services','services.service_name', 'results.date_recorded','categories.category_name',
+        $auditresults= User::select('users.id','users.country','users.name','users.services','services.service_name', 'results.date_recorded','categories.category_name',
                                    'countries.country_name','results.final_results', 'results.report_type_id', 'results.created_at','report_types.id','report_types.type_name'
                                    )
                                  ->join('services','services.id','=','users.services')
@@ -124,6 +126,47 @@ class GlobalReportController extends Controller
                                  ->where('results.date_recorded','>=',$start_date)
                                  ->where('results.date_recorded','<=',$end_date)
                                  ->get();
+
+    //      // Group the results by week number
+    //      $format =null;
+
+    //    $groupedResults = $auditresults->groupBy(function ($item) {
+    //     $groupBy= 'week';
+    //     if($groupBy =='week'){
+
+    //         $format ='W';
+
+    //      }elseif($groupBy =='month'){
+
+    //         $format ='Y-m';
+
+    //      }
+    //     $createdAt = $item->date_recorded;
+    //     return Carbon::parse($createdAt)->format($format);
+    //    });
+
+    //     // Initialize the final arrays to store results for weeks and months
+    //     $final_results_by_period = [];
+
+    //   foreach ($groupedResults as $period => $results) {
+    //              $periodTotal = $results->sum('final_results');
+    //             if ($format == 'W') {
+    //               $final_results_by_period[] = [
+    //              'period' => "Week " . $period,
+    //                'total' => $periodTotal
+    //             ];
+    //            } elseif ($format == 'Y-m') {
+    //              $final_results_by_period[] = [
+    //             'period' => Carbon::parse($period)->format('F Y'), // Format the month for display
+    //             'total' => $periodTotal
+    //            ];
+    //           }
+    //         }
+
+           //  dd([$groupedResults]);
+             //print_pre([$groupedResults], true);
+
+
         foreach ($auditresults as $key => $value) {
 
                         $createdAt = $value->date_recorded;
@@ -135,6 +178,9 @@ class GlobalReportController extends Controller
                         $weekNumberWithPrefix = "week " . $weekNumber;
                          $value['weekNumberWithPrefix'] =  isset($createdAt)  ?  $weekNumberWithPrefix: '';
                         }
+
+                      // dd( $groupBy);
+
 
          $examresults =exam_results::select('exam_results.marks_achieved','exam_results.conduct_id','exam_results.report_type_id','exam_results.created_by','exam_results.created_at','conduct_exams.id',
                                             'conduct_exams.course','conduct_exams.exam_name','conduct_exams.service','conduct_exams.category','conduct_exams.trainer_qa','conduct_exams.completion_date','conduct_exams.created_by','report_types.type_name','users.name','users.services','users.country','services.service_name','countries.country_name','categories.category_name','services.service_name','courses.course_name',
@@ -168,7 +214,7 @@ class GlobalReportController extends Controller
 
          }
 
-      // print_pre([ $examresults ] , true);
+       //print_pre([ $examresults ] , true);
 
 
         $data['auditresults']= $auditresults;
@@ -177,7 +223,10 @@ class GlobalReportController extends Controller
         $data['services']= $services;
         $data['country']= $country;
 
+      $data['groupBy']=$groupBy;
+    //    $data['final_results_by_period']=$final_results_by_period;
 
+       //print_pre([$final_results_by_period ] , true);
 
         return view('reports/global_report')->with($data);
 

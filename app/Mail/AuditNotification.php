@@ -44,31 +44,18 @@ class AuditNotification extends Mailable
             $this->userEmail = $data->agentEmail;
             $this->supervisorEmail = $data->supervisorEmail;
             $this->qualityAnalysts = $data->qualityAnalysts;
-        } elseif ($type == 'exam_results') {
+        } elseif ($type == 'coaching') {
+            $this->coachingId = $data->id;
+            $this->userEmail = $data->agentEmail;
+            $this->supervisorEmail = $data->supervisorEmail;
+            $this->qualityAnalysts = $data->qualityAnalysts;
+        }elseif ($type == 'exam_results') {
             $this->examId = $data->id;
             $this->userEmail = $$data->agentEmail;
             $this->supervisorEmail = $data->supervisorEmail;
             $this->qualityAnalysts = $data->qualityAnalysts;
         }
     }
-
-
-    // public function build()
-    // {
-    //     $audit = $this->data->marks;
-    //     $user = $this->data->agentEmail;
-    //     $supervisor = $this->data->supervisorEmail;
-
-    //     return $this->markdown('emails.audit_notification')
-    //                 ->subject('Monitoring Ticket Raised')
-    //                 ->from(config('mail.from.address'), config('mail.from.name'))
-    //                 ->replyTo(config('mail.from.address'), config('mail.from.name'))
-    //                 ->with([
-    //                     'audit' => $audit,
-    //                     'user' => $user,
-    //                     'supervisor' => $supervisor,
-    //                 ]);
-    // }
 
     public function build()
 {
@@ -122,6 +109,19 @@ class AuditNotification extends Mailable
             ->replyTo(config('mail.from.address'), config('mail.from.name'))
             ->with([
                 'result' => $this->examResult,
+                'user' => $userEmail,
+                'supervisor' => $this->supervisorEmail,
+                'qualityAnalysts' => $this->qualityAnalysts,
+                'type' => $this->type, // add this line to pass the $type variable to the view
+
+            ]);
+    }elseif ($this->type == 'coaching') {
+        return $this->markdown('coaching.coaching_notification')
+            ->subject('Coaching Form')
+            ->from(config('mail.from.address'), config('mail.from.name'))
+            ->replyTo(config('mail.from.address'), config('mail.from.name'))
+            ->with([
+                'coachingId' => $this->coachingId,
                 'user' => $userEmail,
                 'supervisor' => $this->supervisorEmail,
                 'qualityAnalysts' => $this->qualityAnalysts,

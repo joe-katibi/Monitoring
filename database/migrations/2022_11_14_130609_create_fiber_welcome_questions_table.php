@@ -15,13 +15,13 @@ return new class extends Migration
     {
         Schema::create('fiber_welcome_questions', function (Blueprint $table) {
             $table->id();
-            $table->boolean('number');
-            $table->string('question');
-            $table->string('summarized');
-            $table->string('yes');
-            $table->string('no');
-            $table->string('service');
-            $table->string('category');
+            $table->boolean('number')->nullable();
+            $table->string('question')->nullable();
+            $table->string('summarized')->nullable();
+            $table->string('yes')->nullable();
+            $table->string('no')->nullable();
+            $table->string('service')->nullable();
+            $table->string('category')->nullable();
             $table->timestamps();
         });
     }

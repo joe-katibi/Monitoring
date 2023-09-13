@@ -23,12 +23,13 @@
           @endcan
     </div>
     <div class="card-body">
+        <div class="container">
       <table class="table table-bordered" id="questionsTable">
         <thead>
             <tr>
                 <th>Category</th>
-                <th>service</th>
-                <th>Actions</th>
+                <th style="width: 20%">service</th>
+                <th style="width: 20%">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -44,10 +45,7 @@
                 </td>
                 <td class="text-right" v-if="$page.props.auth.hasRole.superAdmin || $page.props.auth.hasRole.admin">
                 <div class="btn-group btn-group-sm">
-                      <a href="{{ route('parametor.show',$item->id ) }}" class="btn btn-warning"><i class="fas fa-eye"></i></a>
-                      @method('DELETE')
-                     {{-- <a href="{{ route('parametor.destroy',$item->id) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a> --}}
-
+                      <a href="{{ route('parametor.show',$item->id ) }}" class="btn btn-warning" ><i class="fas fa-eye"></i>View Parameters</a>
                        </div>
                 </td>
             </tr>
@@ -55,6 +53,7 @@
         </tbody>
       </table>
     </div>
+  </div>
 </div>
 
 

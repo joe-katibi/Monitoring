@@ -25,23 +25,9 @@ class GeneralIssueController extends Controller
 
         $data['crm'] = $crm ;
 
-        // dd($data);
 
 
         return view('general_issue/general_view')->with($data);
-    }
-
-    Public function genfetcher(Request $request)
-
-    {
-
-        $data ['sub_general'] = SubIssueGeneral::Where('issue_general_id','=',$request->id)->get(['sub_name','id']);
-
-        // dd($data);
-        return response()->json($data);
-
-
-
     }
 
     /**
@@ -64,7 +50,6 @@ class GeneralIssueController extends Controller
     {
         $input = $request->all();
 
-
         $request->validate([
             'name'=>'required',
 
@@ -75,8 +60,6 @@ class GeneralIssueController extends Controller
 
             $issuegeneral = new IssueGeneral();
             $issuegeneral->name =isset($input['name']) ? $input['name']:"";
-
-            // dd($issuegeneral);
 
             $issuegeneral->save();
 
@@ -106,22 +89,17 @@ class GeneralIssueController extends Controller
     {
         $input = $request->all();
 
-        //dd($input);
-
         $request->validate([
             'sub_name'=>'required',
             'issue_general_id'=>'required',
         ]);
 
-        // dd($input);
         try {
             DB::beginTransaction();
             $subissuegeneral = new SubIssueGeneral();
 
             $subissuegeneral->sub_name = isset($input['sub_name'])? $input['sub_name']:"";
             $subissuegeneral->issue_general_id = isset($input['issue_general_id'])? $input['issue_general_id']:"";
-
-            // dd($subissuegeneral);
 
             $subissuegeneral->save();
 
@@ -144,15 +122,12 @@ class GeneralIssueController extends Controller
      */
     public function show($id)
     {
+        $showgeneral =SubIssueGeneral::select('sub_issue_generals.id','sub_issue_generals.sub_name','sub_issue_generals.issue_general_id','sub_issue_generals.created_at')
+                                       ->join('issue_generals','issue_generals.id','=','sub_issue_generals.issue_general_id')
+                                       ->Where('sub_issue_generals.issue_general_id','=',$id)
+                                       ->get();
 
-        $showgeneral = IssueGeneral::select('issue_generals.id','issue_generals.name','sub_issue_generals.sub_name','sub_issue_generals.issue_general_id')
-                                    ->join('sub_issue_generals','sub_issue_generals.issue_general_id','=','issue_generals.id')
-                                    ->Where('issue_generals.id','=',$id)
-                                    ->first()
-                                    ;
          $data['showgeneral'] = $showgeneral;
-
-        //  dd($data);
 
         return view('general_issue/general_show')->with($data);
     }
@@ -163,10 +138,14 @@ class GeneralIssueController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
 
-        return view('general_issue/general_edit');
+        $input = $request->all();
+        $editIssuegeneral = IssueGeneral::findOrFail($id);
+        $editIssuegeneral->name =isset($input['category']) ? $input['category']:"";
+        $editIssuegeneral->save();
+        return redirect()->back();
     }
 
     /**
@@ -178,7 +157,14 @@ class GeneralIssueController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $input = $request->all();
+
+       /// dd( $input );
+
+        $editsubissuegeneral= SubIssueGeneral::findOrFail($id);
+        $editsubissuegeneral->sub_name =isset($input['edit_sub_call_tracker']) ? $input['edit_sub_call_tracker']:"";
+        $editsubissuegeneral->save();
+        return redirect()->back();
     }
 
     /**

@@ -1,0 +1,13 @@
+{
+    "font awesome 5 brands": {
+        "normal": "font_awesome_5_brands_normal_fb9d9d07623a1909f4ac83efc1cfefff"
+    },
+    "font awesome 5 free": {
+        "normal": "font_awesome_5_free_normal_0e6e7dec3f674a93755558ebf6189930",
+        "900": "C:\\laragon\\www\\monitoring\\storage\\fonts\/\/font_awesome_5_free_900_b5d6bc0de14bd36dca678ba980c83092"
+    },
+    "source sans pro": {
+        "300_italic": "source_sans_pro_300_italic_3a168601d8da8c080b95dcea3f86c860",
+        "italic": "C:\\laragon\\www\\monitoring\\storage\\fonts\/\/source_sans_pro_italic_af17c8440088929b38c5cfe930d7915d"
+    }
+}

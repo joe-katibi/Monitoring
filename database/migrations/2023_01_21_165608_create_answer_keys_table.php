@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('choices');
             $table->string('question_weight');
             $table->string('created_by');
+            $table->string('key_choice');
+            $table->string('is_correct');
             $table->timestamps();
         });
     }

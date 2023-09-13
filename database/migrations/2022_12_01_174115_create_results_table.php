@@ -37,6 +37,7 @@ return new class extends Migration
             $table->integer('totals')->nullable();
             $table->integer('final_results')->nullable();
             $table->dateTime('date_updated')->nullable();
+            $table->dateTime('created_by')->nullable();
             $table->timestamps();
         });
     }

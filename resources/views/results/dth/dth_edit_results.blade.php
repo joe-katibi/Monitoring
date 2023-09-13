@@ -17,16 +17,16 @@
       <div class="row">
         <div class="col-2">
             <label>Supervisor</label>
-            <input readonly type="text" class="form-control" placeholder="supervisor" value="{{ $question_v[0]['supervisor']  }}">
+            <input readonly type="text" class="form-control" placeholder="supervisor" value="{{ $question_v[0]['SupervisorName']  }}">
           </div>
 
           <div class="col-2">
               <label>Agent name</label>
-            <input readonly type="text" class="form-control" placeholder="agent name" value="{{ $question_v[0]['agent_name']  }}">
+            <input readonly type="text" class="form-control" placeholder="agent name" value="{{ $question_v[0]['agentName']  }}">
           </div>
           <div class="col-2">
               <label>QA name</label>
-            <input readonly type="text" class="form-control" placeholder="qc name" value="{{ $question_v[0]['quality_analysts '] }}">
+            <input readonly type="text" class="form-control" placeholder="qc name" value="{{ $question_v[0]['qualityName'] }}">
           </div>
           <div class="col-2">
               <label>Date</label>
@@ -53,15 +53,20 @@
             <th style="width: 10px">No</th>
             <th>Question</th>
             <th>Archived</th>
-            <th>Percentage</th>
+            <th style="width: 10%">Select rating</th>
           </tr>
         </thead>
         <tbody>
             @foreach($question_v as $row )
             <tr>
-              <td>{{ $row->number }}</td>
+              <td>{{ $row->question_no }}</td>
                <td>{{ $row->question }}</td>
                   <td>{{$row->marks}}</td>
+                  <td>
+                    <input type="radio"  id="questions" name="question_no_[{{ $row->r_id }}]" value="{{ $row->yes }}"  > Yes </label>
+                    <input type="radio" id="questions" name="question_no_[{{ $row->r_id }}]" value="{{ $row->no }}"  > No </label>
+
+                  </td>
 
             </tr>
             @endforeach

@@ -32,6 +32,7 @@
                 <thead>
                     <tr>
                         <th>Gap Summary</th>
+                        <th>Service</th>
                         <th>Created Date</th>
                         <th style="width: 10%">Action</th>
                     </tr>
@@ -40,6 +41,13 @@
                           @foreach ($sumry as $row)
                            <tr>
                             <td>{{$row->summary_name}}</td>
+                            <td>
+                                @if ($row->service_name == 'Cable')
+                                <a disable class="badge badge-success" >Cable</a>
+                                @else
+                                <a disable class="badge badge-primary" >DTH</a>
+                                @endif
+                            </td>
                             <td>{{$row->created_at}}</td>
                                  <td>
                                     @can('view-strength-edit-delete-action')
@@ -80,6 +88,7 @@
                 <thead>
                     <tr>
                         <th>VOC Summary</th>
+                        <th>Service</th>
                         <th>Created Date</th>
                         <th style="width: 10%">Action</th>
                     </tr>
@@ -88,7 +97,14 @@
                         @foreach ($sumvoc as $row)
                         <tr>
 
-                            <td>{{$row->summary_name}}</td>
+                            <td>{{$row->voc_name}}</td>
+                            <td>
+                                @if ($row->service_name == 'Cable')
+                                <a disable class="badge badge-success" >Cable</a>
+                                @else
+                                <a disable class="badge badge-primary" >DTH</a>
+                                @endif
+                            </td>
                             <td>{{$row->created_at}}</td>
                               <td>
                                 @can('view-voc-edit-delete-action')
@@ -128,6 +144,7 @@
                 <thead>
                     <tr>
                         <th>Gap Summary</th>
+                        <th>Service</th>
                         <th>Created Date</th>
                         <th style="width: 10%">Action</th>
                     </tr>
@@ -136,6 +153,13 @@
                         @foreach ($sumgap as $row)
                         <tr>
                             <td>{{$row->gap_name}}</td>
+                            <td>
+                                @if ($row->service_name == 'Cable')
+                                <a disable class="badge badge-success" >Cable</a>
+                                @else
+                                <a disable class="badge badge-primary" >DTH</a>
+                                @endif
+                            </td>
                             <td>{{$row->created_at}}</td>
                               <td>
                                 @can('view-gap-edit-delete-action')
@@ -171,9 +195,21 @@
                     <div class="modal-body">
                       <form action="{{ route('summary.store') }}" method="POST">
                         {{csrf_field()}}
+                        <div >
                         <label for="name">Strength Summary</label>
-                        <input type="text" name="summary_name" class="form-control">
-                        <input type="text" name="summary_title" value="Strength Summary" hidden>
+                        <input type="text" name="summary_name" required class="form-control">
+                        <input type="text" name="summary_title" value="summary_name" hidden>
+                        </div>
+                        <div class="form-group">
+                            <label for="section">Select service</label>
+                            <select class="form-control" required="required" id="service" name="service">
+                             <option selected="selected" value="">--Select service--</option>
+                             @foreach ($services as $service)
+                             <option value="{{ $service['id'] }}">{{$service['service_name'] }}</option>
+                             @endforeach
+                         </select>
+                        </div>
+
                         <div class="col-ms-3">
                           <div class="card-body">
                               <div class="row">
@@ -208,11 +244,20 @@
                       </button>
                     </div>
                     <div class="modal-body">
-                      <form action="{{ route('summary.create') }}" method="POST">
+                      <form action="{{ route('summary.update') }}" method="POST">
                         {{csrf_field()}}
                         <label for="name">VOC Summary</label>
-                        <input type="text" name="summary_name" class="form-control">
-                        <input type="text" name="summary_title" value="VOC Summary" hidden>
+                        <input type="text" name="voc_name" required class="form-control">
+                        <div class="form-group">
+                            <label for="section">Select service</label>
+                            <select class="form-control" required="required" id="service" name="service">
+                             <option selected="selected" value="">--Select service--</option>
+                             @foreach ($services as $service)
+                             <option value="{{ $service['id'] }}">{{$service['service_name'] }}</option>
+                             @endforeach
+                         </select>
+                        </div>
+                        <input type="text" name="VOC_title" value="VOC Summary" hidden>
                         <div class="col-ms-3">
                           <div class="card-body">
                               <div class="row">
@@ -249,7 +294,16 @@
                       <form action="{{ route('summary.storeGap') }}" method="POST">
                         {{csrf_field()}}
                         <label for="name">Gap Summary</label>
-                        <input type="text" name="gap_name" class="form-control">
+                        <input type="text" name="gap_name" required class="form-control">
+                        <div class="form-group">
+                            <label for="section">Select service</label>
+                            <select class="form-control" required id="service" name="service">
+                             <option selected="selected" value="">--Select service--</option>
+                             @foreach ($services as $service)
+                             <option value="{{ $service['id'] }}">{{$service['service_name'] }}</option>
+                             @endforeach
+                         </select>
+                        </div>
                         <input type="text" name="gap_title" value="Gap Summary" hidden>
                         <div class="col-ms-3">
                           <div class="card-body">

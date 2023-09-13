@@ -199,14 +199,14 @@
 
 @section('js')
 
-<script>
+{{-- <script>
 
     questionsTable = $('#questionsTable').dataTable({
 
       "dom" : 'lfrtip'
     });
 
-  </script>
+  </script> --}}
 
 <script>
     $(document).ready(function () {

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('live_call_id');
             $table->string('strength_id');
-            $table->string('gaps_summary_id');
+            $table->string('summary_id');
             $table->string('service_id');
             $table->string('category_id');
             $table->timestamps();

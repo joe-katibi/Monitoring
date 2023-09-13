@@ -4,12 +4,14 @@ namespace App\Http\Controllers\AlertForm;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Services;
 use App\Models\Countries;
 use App\Models\Categories;
 use App\Models\AlertForm;
+use Carbon\Carbon;
 
 class AlertResultsController extends Controller
 {
@@ -24,6 +26,16 @@ class AlertResultsController extends Controller
 
         $agentRole_id = Role::select('roles.id',)->where('name', '=', 'Agent')->first();
 
+        $user_id = auth()->user()->id;
+
+        $supervisorlogged = Role::select('roles.id',)->where('name', '=', 'team-leader')->first();
+
+        $agentlogged = Role::select('roles.id',)->where('name', '=', 'Agent')->first();
+
+        $qualitylogged = Role::select('roles.id',)->where('name', '=', 'quality-analyst')->first();
+
+        $trainierlogged = Role::select('roles.id',)->where('name', '=', 'trainer')->first();
+
         $agents = User::select('users.name','users.id','model_has_roles.role_id')
                         ->join('model_has_roles','model_id','=','users.id')
                        ->where('model_has_roles.role_id','=',$agentRole_id->id)
@@ -34,6 +46,12 @@ class AlertResultsController extends Controller
               $data['viewalert']  = $viewalert;
               $data['category']  = $category;
               $data['agents']  = $agents;
+              $data['user_id']  = $user_id;
+              $data['supervisorlogged']  = $supervisorlogged;
+              $data['agentlogged']  = $agentlogged;
+              $data['qualitylogged']  = $qualitylogged;
+              $data['trainierlogged']  = $trainierlogged;
+
 
         return view('alert_forms/alert_forms_view')->with($data);
     }
@@ -71,15 +89,25 @@ class AlertResultsController extends Controller
 
         $agentRole_id = Role::select('roles.id',)->where('name', '=', 'Agent')->first();
 
+        $user_id = auth()->user()->id;
+
+        $supervisorlogged = Role::select('roles.id','model_has_roles.model_id')->join('model_has_roles','role_id','=','roles.id')->where('name', '=', 'team-leader')->first();
+
+        $agentlogged = Role::select('roles.id','model_has_roles.model_id')->join('model_has_roles','role_id','=','roles.id')->where('name', '=', 'Agent')->first();
+
+        $qualitylogged = Role::select('roles.id','model_has_roles.model_id')->join('model_has_roles','role_id','=','roles.id')->where('name', '=', 'quality-analyst')->first();
+
+        $trainierlogged = Role::select('roles.id','model_has_roles.model_id')->join('model_has_roles','role_id','=','roles.id')->where('name', '=', 'trainer')->first();
+
+
+
         $agents = User::select('users.name','users.id','model_has_roles.role_id')
                         ->join('model_has_roles','model_id','=','users.id')
                        ->where('model_has_roles.role_id','=',$agentRole_id->id)
                         ->get();
 
 
-
         $input = $request->all();
-
 
 
         $agent = $request->input('agent');
@@ -116,14 +144,14 @@ class AlertResultsController extends Controller
 
                                 }
 
-
-
-
         $data['category']  = $category;
         $data['viewalert']  = $viewalert;
         $data['agents']  = $agents;
-
-
+        $data['user_id']  = $user_id;
+        $data['supervisorlogged']  = $supervisorlogged;
+        $data['agentlogged']  = $agentlogged;
+        $data['qualitylogged']  = $qualitylogged;
+        $data['trainierlogged']  = $trainierlogged;
 
         return view('alert_forms/alert_forms_view')->with($data);
     }

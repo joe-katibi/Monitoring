@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Exams;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use App\Helper\Helper;
@@ -17,7 +18,7 @@ use App\Models\UserCategory;
 use App\Models\Courses;
 use App\Models\Services;
 use App\Models\ExamStatus;
-use App\Models\Answers;
+use App\Models\AnswerKeys;
 use Datatables;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -27,16 +28,6 @@ use App\Jobs\ExamStatusJob;
 class ConductExamController extends Controller
 {
 
-      //
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    // public function __construct()
-    // {
-    //     $this->middleware(['role:super-admin|admin|moderator|developer|quality-analysts|trainer']);
-    // }
     /**
      * Display a listing of the resource.
      *
@@ -46,17 +37,17 @@ class ConductExamController extends Controller
     {
 
         $data['conduct'] = ConductExam::select('conduct_exams.id','conduct_exams.schedule_name','conduct_exams.time','conduct_exams.course',
-                                      'conduct_exams.exam_name','conduct_exams.service','conduct_exams.category','conduct_exams.trainer_qa','conduct_exams.start_date','conduct_exams.completion_date','conduct_exams.created_at','exam_statuses.schedule_id','courses.course_name','users.name','categories.category_name','exam_statuses.status','user_categories.category_id', 'exam_statuses.id as status_id')
+                                      'conduct_exams.exam_name','conduct_exams.service','conduct_exams.category','conduct_exams.trainer_qa','conduct_exams.start_date','conduct_exams.completion_date','conduct_exams.created_at','exam_statuses.schedule_id','courses.course_name','users.name','categories.category_name','exam_statuses.status',
+                                      'exam_statuses.id as status_id')
                                       ->join('users','users.id','=','conduct_exams.trainer_qa')
-                                      ->join('user_categories','user_categories.user_id','=','conduct_exams.trainer_qa')
                                       ->join('categories','categories.id','=','conduct_exams.category')
                                       ->join('services','services.id','=','conduct_exams.service')
                                       ->join('exam_statuses','exam_statuses.exam_id','=','conduct_exams.id')
                                       ->join('courses','courses.id','=','conduct_exams.course')
+                                      ->orderby('conduct_exams.id','desc')
                                       ->get();
 
-
-     //print_pre( $data , true  );
+                                   //  dd($data);
 
         return view('exams/conduct_exam', )->with($data);
     }
@@ -81,9 +72,6 @@ class ConductExamController extends Controller
        $course = Courses::all()->toArray();
        $service = Services::all()->toArray();
 
-
-      // print_pre($trainer_id, true);
-
        $data['examquestion'] = $examquestion ;
        $data['conduct'] = $conduct ;
        $data['category'] = $category ;
@@ -92,25 +80,6 @@ class ConductExamController extends Controller
        $data['service'] = $service ;
 
         return view('exams/schedule_exam')->with($data);
-    }
-
-    public function IDGenerator($model, $trow, $length = 5, $prefix)
-    {
-        $data = $model::orderBy('schedule_id', 'desc')->first();
-
-        if ($data) {
-            $code = substr($data->$trow, strlen($prefix) + 1);
-            $actual_last_number = intval($code);
-            $increment_last_number = $actual_last_number + 1;
-            $last_number_length = strlen($increment_last_number);
-            $og_length = $length - $last_number_length;
-            $last_number = str_repeat("0", $og_length) . $increment_last_number;
-        } else {
-            $og_length = $length - strlen($prefix) - 1;
-            $last_number = str_repeat("0", $og_length) . "1";
-        }
-
-        return $prefix . '-' . $last_number;
     }
 
     /**
@@ -144,9 +113,29 @@ class ConductExamController extends Controller
         log::channel('schedule')->info('schedule exam Created : ------> ', ['200', $schedule->toArray()]);
 
         // Generate unique schedule code
-        //$schedule_id = self::IDGenerator(new ConductExam(), 'id', 5, 'EXM');
-        $schedule_id = $this->IDGenerator(new ExamStatus, 'schedule_id', 5, 'EXM');
+        // Prefix for the ID
+          $prefix = 'Exam';
 
+            // Retrieve the last assigned numeric value from the database
+            $lastNumericValue = DB::table('counters')->select('value')->first();
+
+              // If no value is found, start from 1, otherwise increment the last value
+              $numericValue = $lastNumericValue ? intval($lastNumericValue->value) + 1 : 1;
+
+              // Format the numeric value with leading zeros (8 digits)
+              $formattedNumericValue = str_pad($numericValue, 8, '0', STR_PAD_LEFT);
+
+              // Combine the prefix and formatted numeric value
+              $uniqueID = $prefix . '-' . $formattedNumericValue;
+
+             // Save the new numeric value back to the database
+         if ($lastNumericValue) {
+                     DB::table('counters')->update(['value' => $numericValue]);
+                 } else {
+                    DB::table('counters')->insert(['value' => $numericValue]);
+                   }
+
+         $schedule_id =  $uniqueID;
 
         // Create a new ExamStatus object
         $examstatus = new ExamStatus();
@@ -179,42 +168,42 @@ class ConductExamController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
+{
+    $viewquestion = ConductExam::find($id)
+        ->join('exam_statuses', 'exam_statuses.exam_id', '=', 'conduct_exams.id')
+        ->join('courses', 'courses.id', '=', 'conduct_exams.course')
+        ->join('services', 'services.id', '=', 'conduct_exams.service')
+        ->join('statuses', 'statuses.status_id', '=', 'status')
+        ->join('categories', 'categories.id', '=', 'conduct_exams.category')
+        ->join('users', 'users.id', '=', 'conduct_exams.trainer_qa')
+        ->join('exams_questions', 'exams_questions.course', '=', 'conduct_exams.course')
+        ->select('conduct_exams.id', 'conduct_exams.category', 'conduct_exams.time', 'conduct_exams.course', 'conduct_exams.exam_name', 'conduct_exams.service', 'conduct_exams.category', 'conduct_exams.trainer_qa', 'conduct_exams.start_date', 'conduct_exams.completion_date', 'conduct_exams.created_at', 'exams_questions.question', 'exams_questions.id as q_id', 'courses.course_name', 'services.service_name', 'categories.category_name', 'users.name', 'exam_statuses.schedule_id', 'exam_statuses.status', 'statuses.status_name')
+        ->where('conduct_exams.id', '=', $id)
+        ->get();
 
-    {
+    foreach ($viewquestion as $key => $value) {
+        $questions = ExamsQuestions::select('exams_questions.id', 'exams_questions.question', 'exams_questions.course')
+            ->where('exams_questions.course', '=', $value->course)
+            ->get();
 
-        $examshow = ConductExam::where('id','=',$id)->first();
+        foreach ($questions as $k => $question) {
+            $choices = AnswerKeys::select('id', 'choices', 'question_weight')
+                ->where('question_id', '=', $question->id)
+                ->get();
 
-        $viewquestion = ConductExam::find($id)
-                             ->join('exam_statuses','exam_statuses.exam_id','=','conduct_exams.id')
-                             ->join('courses','courses.id','=','conduct_exams.course')
-                             ->join('services','services.id','=','conduct_exams.service')
-                             ->join('categories','categories.id','=','conduct_exams.category')
-                             ->join('users','users.id','=','conduct_exams.trainer_qa')
-                             ->join('user_categories','user_categories.user_id','=','conduct_exams.trainer_qa')
-                             ->join('exams_questions','exams_questions.course','=','conduct_exams.course')
-                             ->join('answer_keys','answer_keys.question_id','=','exams_questions.id')
+            $question->choices = $choices; // Assign choices to the question object
+        }
 
-                             ->select('conduct_exams.id','conduct_exams.category','conduct_exams.time',
-                                     'conduct_exams.course','conduct_exams.exam_name','conduct_exams.service','conduct_exams.category',
-                                    'conduct_exams.trainer_qa','conduct_exams.start_date','conduct_exams.completion_date','conduct_exams.created_at',
-                                    'exams_questions.question','exams_questions.id as q_id','answer_keys.choices','answer_keys.question_weight',
-                                    'courses.course_name',
-                                    'services.service_name','categories.category_name','users.name','exam_statuses.schedule_id','exam_statuses.status','user_categories.category_id')
-                                    ->where('conduct_exams.id','=',$id)
-                             ->first();
-
-                //
-
-                //print_pre(  $viewquestion, true);
-
-        $data['viewquestion'] = $viewquestion;
-        $data['examshow'] = $examshow;
-
-        //  print_pre(  $data, true);
-         //dd($viewquestion);
-
-        return view('exams/view_conduct')->with($data);
+        $value->question = $questions; // Assign questions to the value object
     }
+
+    $data['viewquestion'] = $viewquestion;
+
+    // dd($question->choices);
+
+    return view('exams/view_conduct')->with($data);
+}
+
 
     /**
      * Show the form for editing the specified resource.
@@ -227,7 +216,18 @@ class ConductExamController extends Controller
         //
         $examedit = ConductExam::find($id);
         $course = Courses::all()->toArray();
-        $trainer = User::where('position','=','Trainer')->orWhere('position', '=','Quality Analyst')->get();
+
+        $trainerRole_id = Role::select('roles.id',)->where('name', '=', 'trainer')->orWhere('name', '=','quality-analyst')->first();
+
+        $trainer= User::select('users.name','users.id','model_has_roles.role_id')
+                          ->join('model_has_roles','model_id','=','users.id')
+                           ->join('roles','roles.id','=','model_has_roles.role_id')
+                          ->where('model_has_roles.role_id','=',$trainerRole_id)
+                          ->get();
+
+                        //   dd( $trainerRole_id);
+
+
         $service = Services::all()->toArray();
         $category = Categories::all()->toArray();
 
@@ -255,18 +255,73 @@ class ConductExamController extends Controller
     }
 
     public function reactivate($id)
-{
+    {
+        // Find the row in the exam_statuses table with the given ID
+        $row = DB::table('exam_statuses')->where('id', $id)->first();
 
-    dd($id);
-    // Find the row in the exam_statuses table with the given ID
-    $row = DB::table('exam_statuses')->where('id', $id)->first();
+        // Generate a new unique ID for the reactivated exam
+        $prefix = 'Exam';
+        $lastNumericValue = DB::table('counters')->select('value')->first();
+        $numericValue = $lastNumericValue ? intval($lastNumericValue->value) + 1 : 1;
+        $formattedNumericValue = str_pad($numericValue, 8, '0', STR_PAD_LEFT);
+        $uniqueID = $prefix . '-' . $formattedNumericValue;
 
-    // Update the status column to 1
-    DB::table('exam_statuses')->where('id', $id)->update(['status' => 1]);
+        // Update the row with the new ID and set the status to 1 (reactivate)
+        DB::table('exam_statuses')->where('id', $id)->update([
+            'id' => $uniqueID,
+            'status' => 1,
+        ]);
 
-    // Return a response to indicate that the row was successfully activated
-    return response()->json(['message' => 'Row activated!']);
-}
+        // Save the new numeric value back to the database
+        if ($lastNumericValue) {
+            DB::table('counters')->update(['value' => $numericValue]);
+        } else {
+            DB::table('counters')->insert(['value' => $numericValue]);
+        }
+
+        $reactivatedID =  $uniqueID;
+
+        // Get the currently authenticated user's ID
+        $userId = Auth::user()->id;
+
+        $reactivatedExam = ConductExam::find($id);
+
+        $NewExam = new ConductExam();
+        $NewExam->schedule_name = $reactivatedID;
+        $NewExam->course = $reactivatedExam->course;
+        $NewExam->time = $reactivatedExam->time;
+        $NewExam->exam_name = $reactivatedExam->exam_name;
+        $NewExam->service = $reactivatedExam->service;
+        $NewExam->category = $reactivatedExam->category;
+        $NewExam->trainer_qa = $reactivatedExam->trainer_qa;
+        $NewExam->start_date = $reactivatedExam->start_date;
+        $NewExam->completion_date = $reactivatedExam->completion_date;
+        $NewExam->created_by = $userId;
+
+        log::channel('reactivateexam')->info('exam reactivated : ------> ', ['200', $NewExam->toArray()]);
+
+        $NewExam->save();
+
+        $NewExamStatus = new ExamStatus();
+        $NewExamStatus->schedule_id = $reactivatedID;
+        $NewExamStatus->exam_id = $NewExam->id;
+        $NewExamStatus->created_by = $userId;
+        $NewExamStatus->status = '1';
+        $NewExamStatus->start_time = Carbon::now();
+        $NewExamStatus->end_time = Carbon::now()->addMinutes($NewExamStatus->start_time );
+
+        log::channel('newexamstatus')->info('exam reactivated newexamstatus : ------> ', ['200', $NewExamStatus->toArray()]);
+
+        $NewExamStatus->save();
+
+          // Show the Sweet Alert toast
+        toast('Exam reactivated with new ID: ' . $uniqueID, 'success')->position('top-end');
+
+        // Redirect back
+        return redirect()->back();
+
+    }
+
 
     public function activate($id)
     {
@@ -283,15 +338,18 @@ class ConductExamController extends Controller
 
     public function deactivate($id)
     {
-        /** @var ExamStatus $ExamStatus */
 
-        $examstatus = ExamStatus::findOrFail($id);
+        $examstatus = ExamStatus::where('exam_id','=', $id)->first();
 
         $examstatus->status = 0;
 
         $examstatus->save();
 
-        return back();
+       // Show the Sweet Alert toast
+        toast('Exam Deactivated', 'success')->position('top-end');
+
+       // Redirect back
+       return redirect()->back();
     }
 
 

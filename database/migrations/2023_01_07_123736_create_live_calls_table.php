@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('tittle')->nullable();
             $table->string('account_number')->nullable();
+            $table->string('recording_id')->nullable();
             $table->string('date')->nullable();
             $table->string('quality_analysts')->nullable();
             $table->string('category')->nullable();
@@ -30,6 +31,7 @@ return new class extends Migration
             $table->string('gaps_description')->nullable();
             $table->string('voc_summary')->nullable();
             $table->string('voc_description')->nullable();
+            $table->string('report_type_id')->nullable();
             $table->timestamps();
         });
     }

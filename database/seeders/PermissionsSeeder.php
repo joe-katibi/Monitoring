@@ -552,6 +552,12 @@ class PermissionsSeeder extends Seeder
                 'description' => 'Buttons for Start and Results Exam',
                 'name' => 'view-start-results-exam-buttons'
             ],
+            [
+                'module' => 'Examination',
+                'sub_module' => 'View Question answered with their selected answeres',
+                'description' => 'Buttons for view results with question and answers for only supervisors/trainer and Quality Analyst',
+                'name' => 'view-exam-results-question-with-answers'
+            ],
             // Upload Calls either Good or Bad
             [
                 'module' => 'Upload Calls',
@@ -610,6 +616,44 @@ class PermissionsSeeder extends Seeder
                 'description' => 'button for editing parameter',
                 'name' => 'view-btn-edit-parameters'
             ],
+                //Coaching Form pdf
+            [
+                    'module' => 'Coaching Form PDF ',
+                    'sub_module' => 'Coaching Export PDF',
+                    'description' => 'Button for exporting Sign PDF Coaching form',
+                    'name' => 'view-export-PDF-coaching-button'
+            ],
+
+                  //Alert Form pdf
+            [
+                    'module' => 'Alert Form PDF',
+                    'sub_module' => 'Alert Export PDF',
+                    'description' => 'Button for Exporting signed Alert PDF form',
+                    'name' => 'view-export-PDF-alert-button'
+            ],
+                  //Alertform-report supervisor request
+            [
+                    'module' => 'Audit Supervisor Report',
+                    'sub_module' => 'Audit Supervisor Report',
+                    'description' => 'Supervisor to pull audit report',
+                    'name' => 'supervisor-report-request'
+            ],
+
+                  //Alertform-report agent request
+            [
+                    'module' => 'Audit Agent Report',
+                    'sub_module' => 'Audit Agent Report',
+                    'description' => 'Agent to pull audit report',
+                    'name' => 'agent-report-request'
+            ],
+                //Alertform-report agent request
+            [
+                    'module' => 'Audit Quality Analysts Report',
+                    'sub_module' => 'Audit Quality Analysts  Report',
+                    'description' => 'Quality Analysts  to pull audit report',
+                    'name' => 'quality-analysts-report-request'
+            ],
+
 
 
 

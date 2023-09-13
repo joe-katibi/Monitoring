@@ -17,27 +17,27 @@
         <div class="row">
              <div class="col-md-2">
                  <label>Exam Name</label>
-                 <input readonly type="text" name="exam_name" class="form-control" placeholder="exam_name" value="{{ $viewquestion['exam_name']}}">
+                 <input readonly type="text" name="exam_name" class="form-control" placeholder="exam_name" value="{{ $viewquestion[0]['exam_name']}}">
                  </div>
             <div class="col-md-2">
                 <label>Exam Code</label>
-              <input readonly type="text" name="exam_code" class="form-control" placeholder="exam_code" value="{{ $viewquestion->schedule_id }}">
+              <input readonly type="text" name="exam_code" class="form-control" placeholder="exam_code" value="{{ $viewquestion[0]['schedule_id'] }}">
             </div>
             <div class="col-md-2">
                 <label>Course</label>
-                <input readonly type="text" name="course" class="form-control" placeholder="course" value="{{ $viewquestion->course_name}}">
+                <input readonly type="text" name="course" class="form-control" placeholder="course" value="{{ $viewquestion[0]['course_name']}}">
             </div>
             <div class="col-md-2">
                 <label>Trainer/QA</label>
-                <input readonly type="text" name="trainer_qa" class="form-control" placeholder="trainer_qa" value="{{$viewquestion->name }}">
+                <input readonly type="text" name="trainer_qa" class="form-control" placeholder="trainer_qa" value="{{$viewquestion[0]['name'] }}">
             </div>
             <div class="col-md-2">
                 <label>Department</label>
-                <input readonly type="text" name="department" class="form-control" placeholder="department" value="{{ $viewquestion->category_name }}">
+                <input readonly type="text" name="department" class="form-control" placeholder="department" value="{{ $viewquestion[0]['category_name'] }}">
             </div>
             <div class="col-md-2">
                 <label>Status</label>
-                <input readonly type="text" name="status" class="form-control" placeholder="status" value="{{ $viewquestion->status }}">
+                <input readonly type="text" name="status" class="form-control" placeholder="status" value="{{ $viewquestion[0]['status_name'] }}">
             </div>
         </div>
     </div>
@@ -47,11 +47,11 @@
         <div class="row">
             <div class="col-6">
                 <label>Date Started</label>
-                <input readonly type="text" name="date_start" class="form-control" placeholder="date_start" value="{{ $viewquestion->start_date }}">
+                <input readonly type="text" name="date_start" class="form-control" placeholder="date_start" value="{{ $viewquestion[0]['start_date']}}">
                 </div>
            <div class="col-6">
                <label>Date Completion</label>
-             <input readonly type="text" name="date_completion" class="form-control" placeholder="date_completion" value="{{  $viewquestion->completion_date }}">
+             <input readonly type="text" name="date_completion" class="form-control" placeholder="date_completion" value="{{  $viewquestion[0]['completion_date'] }}">
            </div>
         </div>
     </div>
@@ -62,60 +62,43 @@
         {{-- <input readonly class="form-control" style="color: green" name="category" value="Questions"> --}}
     </div>
     <div class="card-body">
-        <table class="table table-bordered" id="questionsTable">
-            <thead>
-            <tr>
-                <th>Questions</th>
-                <th>Answer</th>
-                <th>Marks</th>
-              </tr>
-            </thead>
-              <tbody>
-                {{-- @foreach ($viewquestion as $key=>$item) --}}
-                <tr>
-                    <td >{!! $viewquestion->question !!}</td>
-                    <td>
-                        <ol type="A" >
-                        <li>{!! $viewquestion->answer_a !!}</li>
-                        <li>{!! $viewquestion->answer_b !!}</li>
-                        <li>{!! $viewquestion->answer_b !!}</li>
-                        <li>{!! $viewquestion->answer_c !!}</li>
-                      </ol>
-                    </td>
-                    <td >{{ $viewquestion->question_weight }} </td>
-                  </tr>
-                  {{-- @endforeach --}}
-            </tbody>
 
-        </table>
+        <div class="container">
+            <div class="card-body float-center ">
 
+                @foreach ($viewquestion as $key => $questions)
+                <div class="question-card card card-warning">
+                    <div class="card-header">
+                        {!! strip_tags($questions->question[0]['question'], '<p>') !!}
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check">
+                            <ol type="A">
+                                @foreach ($questions->question[0]['choices'] as $k => $choice)
+                                <li>
+                                    <div class="row">
+                                        <div class="col">
+                                            <label for="question_weight_a">Answer</label>
+                                    <input readonly name="correct_answer" class="form-control float-center"  value="{!! strip_tags($choice->choices) !!}">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="question_weight_a">Answer Weight</label>
+                  <input readonly type="number" id="question_weight_a" name="question_weight_[{{ old('answer_a')}}]" class="form-control" placeholder="Weightage" value="{!! $choice->question_weight !!}">
 
-        {{-- <div class="row">
-            <div class="col-sm-8">
-            <label>Question</label>
-            @foreach ($viewquestion as $key=> $col)
-             <p>{{ $examshow->answer_key }}</p>
-             @endforeach
-            <label>Answer</label>
+                            </div>
+                        </div>
+                                </li>
+                            @endforeach
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
 
-            <div class="row">
+             </div>
 
-                <dl>
-                <ol type="A" >
-                    <li>Answer 1</li>
-                    <li>Answer 2</li>
-                    <li>Answer 3</li>
-                    <li>Answer 4</li>
-                  </ol>
-                  <dt>Correct Answers</dt>
-                  <dd>A</dd>
-                  <dt>Weightage</dt>
-                  <dd>5</dd>
-                </dl>
-            </div>
+       </div>
 
-            </div>
-        </div> --}}
     </div>
 </div>
 </form>

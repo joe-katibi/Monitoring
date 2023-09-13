@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Call tracker category')
 
 @section('content_header')
 
@@ -20,7 +20,7 @@
                 {{csrf_field()}}
                 <label for="call_tracker">Category Name</label>
                 <div>
-                    <input type="text" name="call_tracker" class="form-control">
+                    <input type="text" name="call_tracker" class="form-control" required>
                 </div>
                 <label>Service</label>
                 <div>
@@ -31,9 +31,6 @@
                     @endforeach
                     </select>
                 </div>
-
-
-
                 <div class="card-body">
                     @can('view-add-category-tracker')
                     <div class="row">
@@ -72,7 +69,7 @@
                 </td>
                  <td>
                     @can( 'view-add-category-button')
-                    <a class="btn btn-warning" data-toggle="modal" data-target="#exampleModal" href="{{route('store_sub',$row->id)}}">Add</a>
+                    <a class="btn btn-warning" data-toggle="modal" data-target="#exampleModal" href="{{route('call_tracker.storeSub',$row->id)}}">Add</a>
                     @endcan
 
                 </td>
@@ -89,11 +86,10 @@
                 </button>
               </div>
               <div class="modal-body">
-                <form action="{{route('store_sub',$row->id)}}" method="POST">
+                <form action="{{route('call_tracker.storeSub',$row->id)}}" method="POST">
                   {{csrf_field()}}
                   <label for="name">SubCategory</label>
                   <input type="text" name="sub_call_tracker" class="form-control">
-                  {{-- <label for="image">Image</label> --}}
                   <input type="text" name="call_tracker_id" value="{{$row->id}}" hidden>
                   <div class="col-ms-3">
                     <div class="card-body">
@@ -116,6 +112,7 @@
               </div>
             </div>
           </div>
+        </div>
                 @endforeach
               </tbody>
             </table>

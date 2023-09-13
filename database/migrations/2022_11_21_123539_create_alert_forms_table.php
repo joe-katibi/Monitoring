@@ -23,12 +23,15 @@ return new class extends Migration
             $table->string('description');
             $table->string('fatal_error');
             $table->string('supervisor_comment');
-            $table->string('qa_signature');
+            $table->longText('qa_signature');
             $table->dateTime('date_by_qa');
-            $table->string('supervisor_signature');
+            $table->longText('supervisor_signature');
             $table->dateTime('date_by_supervisor');
-            $table->string('agent_signature');
+            $table->longText('agent_signature');
             $table->dateTime('date_by_agent');
+            $table->string('category_id');
+            $table->string('results_id');
+            $table->string('auto_status');
             $table->string('service_id');
             $table->timestamps();
         });

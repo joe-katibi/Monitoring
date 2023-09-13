@@ -7,7 +7,9 @@
 @stop
 
 @section('content')
-<form method="GET" action="{{ route('qaresults.search') }}" >
+
+@can('supervisor-report-request')
+<form method="GET" action="{{ route('qaresults.create') }}" >
          <div class="card card-success ">
             <div class="card-header">
                  <input readonly class="form-control" style="color: green" value="Audit Results">
@@ -17,9 +19,7 @@
                 <div class="col-md-4">
                     <label for="section">Supervisor</label>
                     <select class="form-control" required="required" id="supervisor" name="supervisor"><option selected="selected" value="">--Select Supervisor--</option>
-                     @foreach ($supervisors as $supervisor )
-                     <option value="{{$supervisor['id']}}">{{ $supervisor['name'] }}</option>
-                     @endforeach
+                     <option value="{{$userlogged['id']}}">{{ $userlogged['name'] }}</option>
                    </select>
                 </div>
             <div class="col-md-4">
@@ -48,13 +48,108 @@
           </div>
         </div>
         </div>
-        @can('view-results-audit-button')
+
           <div class="col">
             <button type="submit" class="btn btn-success float-right" ><strong>Search</strong></button>
          </div>
-         @endcan
+
         </div>
 </form>
+@endcan
+
+@can('agent-report-request')
+<form method="GET" action="{{ route('qaresults.qualityreport') }}" >
+    <div class="card card-success ">
+       <div class="card-header">
+            <input readonly class="form-control" style="color: green" value="Audit Results">
+           </div>
+   <div class="card-body">
+       <div class="row">
+           <div class="col-md-4">
+               <label for="section">Agent</label>
+               <select class="form-control" required="required" id="agent" name="agent"><option selected="selected" value="">--Select Agent--</option>
+                <option value="{{$userlogged['id']}}">{{ $userlogged['name'] }}</option>
+              </select>
+           </div>
+       <div class="col-md-4">
+          <label for="section">Select Ticket Status</label>
+           <div class="form-group">
+      <select class="form-control" required="required" id="status" name="status"><option selected="selected" value="">--Select ticket Status--</option>
+           @foreach ($ticketStatus as $tickets )
+           <option value="{{ $tickets['id'] }}">{{ $tickets['status_name']}}</option>
+           @endforeach
+         </select>
+       </div>
+     </div>
+    <div class="col-md-4">
+      <!-- Date range -->
+     <div class="form-group">
+         <label>Date range:</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+             <span class="input-group-text">
+               <i class="far fa-calendar-alt"></i>
+             </span>
+      </div>
+      <input type="text" name="created_at"class="form-control daterange" id="reservation">
+      </div>
+<!-- /.input group -->
+     </div>
+   </div>
+   </div>
+     <div class="col">
+       <button type="submit" class="btn btn-success float-right" ><strong>Search</strong></button>
+    </div>
+   </div>
+</form>
+@endcan
+
+@can('quality-analysts-report-request')
+<form method="GET" action="{{ route('qareport') }}" >
+    <div class="card card-success ">
+       <div class="card-header">
+            <input readonly class="form-control" style="color: green" value="Audit Results">
+           </div>
+   <div class="card-body">
+       <div class="row">
+           <div class="col-md-4">
+               <label for="section">Quality Analysts</label>
+               <select class="form-control" required="required" id="quality" name="quality"><option selected="selected" value="">--Select Quality Analysts--</option>
+                <option value="{{$userlogged['id']}}">{{ $userlogged['name'] }}</option>
+              </select>
+           </div>
+       <div class="col-md-4">
+          <label for="section">Select Ticket Status</label>
+           <div class="form-group">
+      <select class="form-control" required="required" id="status" name="status"><option selected="selected" value="">--Select ticket Status--</option>
+           @foreach ($ticketStatus as $tickets )
+           <option value="{{ $tickets['id'] }}">{{ $tickets['status_name']}}</option>
+           @endforeach
+         </select>
+       </div>
+     </div>
+    <div class="col-md-4">
+      <!-- Date range -->
+     <div class="form-group">
+         <label>Date range:</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+             <span class="input-group-text">
+               <i class="far fa-calendar-alt"></i>
+             </span>
+      </div>
+      <input type="text" name="created_at"class="form-control daterange" id="reservation">
+      </div>
+<!-- /.input group -->
+     </div>
+   </div>
+   </div>
+     <div class="col">
+       <button type="submit" class="btn btn-success float-right" ><strong>Search</strong></button>
+    </div>
+   </div>
+</form>
+@endcan
 <div class="card-body">
     <table class="table table-bordered" id="questionsTable">
       <thead>
@@ -152,41 +247,44 @@
 @stop
 
 @section('css')
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+<link href="/assets/css/dataTables.min.css" rel="stylesheet">
+<link href="/assets/css/buttons.bootstrap4.min.css" rel="stylesheet">
 
 @stop
 
 @section('js')
+<script src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+
+<script src="/assets/js/dataTables.min.js"></script>
+<script src="/assets/js/pdfmake.min.js"></script>
+<script src="/assets/js/vfs_fonts.js"></script>
+<script src="/assets/js/buttons.print.min.js"></script>
+<script src="/assets/js/buttons.colVis.js"></script>
+<script src="/assets/js/buttons.html5.js"></script>
+<script src="/assets/js/buttons.jszip.min.js"></script>
 
 <script>
+    $(document).ready(function() {
+        $('.daterange').daterangepicker({
+            timePicker: true,
+            timePickerIncrement: 30,
+            locale: {
+                format: 'YYYY/MM/DD hh:mm:ss'
+            }
+        });
 
-    questionsTable = $('#questionsTable').dataTable({
+        $('#questionsTable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
 
-      "dom" : 'lfrtip'
+        });
+
     });
-
-  </script>
-
-<script  src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
-<script  src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script  src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-  <script type="text/javascript">
-	$('.daterange').daterangepicker(
-
-    {
-      timePicker: true,
-      timePickerIncrement: 30,
-      locale: {
-        format: 'YYYY/MM/DD hh:mm:ss '
-      }
-    }
-
-    );
-
 </script>
-
-
 
 
 @stop

@@ -135,12 +135,12 @@
 @stop
 
 @section('js')
-<script>
+{{-- <script>
 
     questionsTable = $('#questionsTable').dataTable({
 
       "dom" : 'lfrtip'
     });
 
-  </script>
+  </script> --}}
 @stop

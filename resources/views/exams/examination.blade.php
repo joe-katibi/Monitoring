@@ -13,6 +13,7 @@
         <input  type="hidden" name="conduct_id"  id="conductId" data-conduct-id="{{ $conduct[0]->id}}" value="{{ $conduct[0]->id}}">
         <input  type="hidden" name="created_by" id="createdBy" data-created-by="{{ Auth::user()->id  }}" value="{{ Auth::user()->id }}">
         <input type="hidden" name="reporttype" value="{{ $reporttype['type_id']}}">
+        <input type="hidden" name="examId" value="{{ $examID['schedule_id']}}">
 
         @if (session('status'))
             <div class="alert alert-success">
@@ -79,55 +80,49 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body">
-
-                <div class="container">
-                    @if ($i = 1)
-                    @foreach ($questions as $key => $question)
-                    <div class="card card-warning ">
-                        <div class="card-header">
-                            {!!  "Question ".  ($key+1) . ". " . strip_tags($question->question, '<p>') !!}
-                        </div>
-                        <div class="card-body">
-                            <input type="hidden" name="questions[{{ $question->course }}]" value="{{ $question->course }}">
-                            <input  type="hidden" name="schedule[{{ $question->id }}]"
-                                        value="{{ $question->id  }}">
-                            <div class="form-check">
-                                <ol type="A">
-                                    @foreach ($question->choices as $k => $choice)
-                                        <li>
-                                            <input type="radio" id="choice-{{ $choice->id }}" name="question-answer-[{{ $question->id }}]"
-                                                   value="{{ $choice->id }}" required>
-                                            <label for="choice-{{ $choice->id }}">{!! $choice->choices !!}</label>
-                                            <input  type="hidden" name="questions-choice-[{{ $choice->id }}]"
-                                                value="{{ $choice->question_weight }}">
-                                        </li>
-                                    @endforeach
-                                </ol>
-                            </div>
-                        </div>
+<div class="card-body">
+    <div class="container">
+        <div id="questionContainer">
+            <!-- First question will be displayed by default -->
+            @foreach ($questions as $key => $question)
+            <div id="question-{{ $key }}" class="question-card card card-warning {{ $key === 0 ? '' : 'd-none' }}">
+                <div class="card-header">
+                    {!!  "Question ".  ($key+1) . ". " . strip_tags($question->question, '<p>') !!}
+                </div>
+                <div class="card-body">
+                    <input type="hidden" name="questions[{{ $question->course }}]" value="{{ $question->course }}">
+                    <input  type="hidden" name="schedule[{{ $question->id }}]" value="{{ $question->id }}">
+                    <div class="form-check">
+                        <ol type="A">
+                            @foreach ($question->choices as $k => $choice)
+                            <li>
+                                <input type="radio" id="choice-{{ $choice->id }}" name="question-answer-[{{ $question->id }}]"
+                                       value="{{ $choice->id }}" required>
+                                <label for="choice-{{ $choice->id }}">{!! $choice->choices !!}</label>
+                                <input  type="hidden" name="questions-choice-[{{ $choice->id }}]"
+                                    value="{{ $choice->question_weight }}">
+                            </li>
+                        @endforeach
+                        </ol>
                     </div>
-                @endforeach
-            @endif
-                    @can('view-saving-done-exam-button')
-                    <div class="card-footer">
-
-                        <button  type="submit" class="btn btn-success float-right">Submit</button>
-
-                    </div>
-
-                    @endcan
-
-
                 </div>
             </div>
+            @endforeach
+        </div>
+
+        <div class="navigation-buttons">
+            <button type="button" class="btn btn-primary" data-action="prev"  onclick="changeQuestion(-1)">Previous</button>
+            <button type="button" class="btn btn-primary" data-action="next" onclick="changeQuestion(1)">Next</button>
+            @can('view-saving-done-exam-button')
+            <button type="submit" class="btn btn-success d-none" id="submitBtn">Submit</button>
+            @endcan
+        </div>
+    </div>
+</div>
 
         </div>
 
     </form>
-
-
-
 
 
 @stop
@@ -151,90 +146,104 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
 
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/countdown/2.6.0/countdown.min.js"></script>
 
-    <script>
-        questionsTable = $('#tableList').dataTable({
 
-            "dom": 'lfrtip'
-        });
-    </script>
+<script>
+   let currentQuestion = 0;
+   const totalQuestions = {{ count($questions) }};
 
-  <!-- Place this code inside your view file -->
-  <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var endTime = localStorage.getItem('countdownEndTime'); // Get the end time from local storage
-
-  // Check if the end time is stored in local storage and is valid
-  if (endTime && !isNaN(endTime) && parseInt(endTime) > Date.now()) {
-    endTime = parseInt(endTime); // Parse the stored end time as an integer
-  } else {
-    // Set a new end time (e.g., 30 minutes from now)
-    endTime = Date.now() + (30 * 60 * 1000); // 30 minutes in milliseconds
-    localStorage.setItem('countdownEndTime', endTime); // Store the end time in local storage
-  }
-
-  // Update the countdown every second
-  var countdownInterval = setInterval(function() {
-    var now = Date.now(); // Get the current time in milliseconds
-    var distance = endTime - now; // Calculate the remaining time in milliseconds
-
-    // Check if the countdown has reached zero or less
-    if (distance <= 0) {
-      clearInterval(countdownInterval); // Stop the countdown
-      document.getElementById('timer').value = 'Time is up!'; // Display a message when the time is up
-
-      // Clear the stored end time from local storage
-      localStorage.removeItem('countdownEndTime');
-
-      // Make an AJAX request to store the selected answers
-      var formData = new FormData();
-      // Add your answer data to the formData object (e.g., formData.append('question1', 'answer1');)
-      // ...
-
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', 'examination.store', true);
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          // The request was successful
-          // Redirect to the results view
-          var conductId = document.getElementById('conductId').getAttribute('data-conduct-id');
-          var createdBy = document.getElementById('createdBy').getAttribute('data-created-by');
-          window.location.href = "/exams/view_results/" + conductId + "/" + createdBy;
-        } else {
-          // There was an error in the request
-          console.error('Error storing answers:', xhr.statusText);
-        }
-      };
-      xhr.onerror = function() {
-        console.error('Error storing answers: Network error');
-      };
-      xhr.send(formData);
-    } else {
-      // Calculate the minutes and seconds
-      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      // Display the countdown in the input element with the ID 'timer'
-      document.getElementById('timer').value = minutes + ' minutes, ' + seconds + ' seconds';
+    function showQuestion(questionNumber) {
+        document.getElementById('question-' + currentQuestion).classList.add('d-none');
+        document.getElementById('question-' + questionNumber).classList.remove('d-none');
+        currentQuestion = questionNumber;
+        updateNavigationButtons();
     }
-  }, 1000); // Update the countdown every second (1000 milliseconds)
-});
 
-  </script>
+    function updateNavigationButtons() {
+    const prevBtn = document.querySelector('.navigation-buttons button[data-action="prev"]');
+    // Changed the selector for the next button
+    const nextBtn = document.querySelector('.navigation-buttons button[data-action="next"]');
+    const submitBtn = document.getElementById('submitBtn');
 
-{{-- <script>
-    // Show the results view after a delay (adjust the delay as needed)
-    setTimeout(function() {
-        window.location.href = '{{ url('exams/view_results/{conductid}/{examresult}') }}';
-    }, 3000); // 3 seconds delay
+    prevBtn.disabled = currentQuestion === 0;
+    nextBtn.classList.toggle('d-none', currentQuestion === totalQuestions - 1);
+    submitBtn.classList.toggle('d-none', currentQuestion !== totalQuestions - 1);
+    }
+
+    function changeQuestion(direction) {
+        const nextQuestion = currentQuestion + direction;
+        if (nextQuestion >= 0 && nextQuestion < totalQuestions) {
+            showQuestion(nextQuestion);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize with the first question displayed
+        showQuestion(currentQuestion);
+    });
 </script>
- --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var endTime = localStorage.getItem('countdownEndTime'); // Get the end time from local storage
 
+        // Check if the end time is stored in local storage and is valid
+        if (endTime && !isNaN(endTime) && parseInt(endTime) > Date.now()) {
+            endTime = parseInt(endTime); // Parse the stored end time as an integer
+        } else {
+            // Set a new end time (e.g., 30 minutes from now)
+            endTime = Date.now() + (30 * 60 * 1000); // 30 minutes in milliseconds
+            localStorage.setItem('countdownEndTime', endTime); // Store the end time in local storage
+        }
 
+        // Update the countdown every second
+        var countdownInterval = setInterval(function() {
+            var now = Date.now(); // Get the current time in milliseconds
+            var distance = endTime - now; // Calculate the remaining time in milliseconds
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/countdown/2.6.0/countdown.min.js"></script>
+            // Check if the countdown has reached zero or less
+            if (distance <= 0) {
+                clearInterval(countdownInterval); // Stop the countdown
+                document.getElementById('timer').value = 'Time is up!'; // Display a message when the time is up
+
+                // Clear the stored end time from local storage
+                localStorage.removeItem('countdownEndTime');
+
+                // Make an AJAX request to store the selected answers
+                var formData = new FormData();
+                // Add your answer data to the formData object (e.g., formData.append('question1', 'answer1');)
+                // ...
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '{{ route('examination.store', $conduct[0]->id) }}', true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        // The request was successful
+                        // Redirect to the results view
+                        var conductId = document.getElementById('conductId').getAttribute('data-conduct-id');
+                        var createdBy = document.getElementById('createdBy').getAttribute('data-created-by');
+                        window.location.href = "/exams/view_results/" + conductId + "/" + createdBy;
+                    } else {
+                        // There was an error in the request
+                        console.error('Error storing answers:', xhr.statusText);
+                    }
+                };
+                xhr.onerror = function() {
+                    console.error('Error storing answers: Network error');
+                };
+                xhr.send(formData);
+            } else {
+                // Calculate the minutes and seconds
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Display the countdown in the input element with the ID 'timer'
+                document.getElementById('timer').value = minutes + ' minutes, ' + seconds + ' seconds';
+            }
+        }, 1000); // Update the countdown every second (1000 milliseconds)
+    });
+
+</script>
 
 
 

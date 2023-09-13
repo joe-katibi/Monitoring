@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('supervisor_name');
             $table->string('call_category');
             $table->string('qa_name');
+            $table->string('service_id');
             $table->string('call_rating');
             $table->string('call_date');
             $table->string('call_file');

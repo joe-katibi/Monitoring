@@ -14,55 +14,47 @@
         </div>
         <div class="card-body">
 
-            @if ($i = 1)
-            <?php $num =1;?>
-               @foreach ($exam_results as $key => $questions)
-                   <div class="card card-warning ">
-                       <div class="card-header">
-                        {!!  "Question ".  $num++ . ". ".  strip_tags( $questions->questionDone, '<p>')!!}
-                       </div>
-                       <div class="card-body">
-
-                       <p>{!! $questions->choices !!}</p>
-                           {{-- <div class="form-check">
-                               <ol type="A">
-
-
-
-
-                                   @foreach ($questions->answerDone as $k => $choice )
-                                   <li>
-                                       <input type="radio" id="question-{{ $choice->id }}"
-                                           name="question-answer-[{{ $question->id }}]"
-                                           value="{{ $choice->id }}">
-                                       <label for="examination">{!! $choice->choices !!}</label>
-                                       <input  type="hidden" name="questions-choice-[{{ $choice->id }}]"
-                                       value="{{ $choice->question_weight }}">
-
-                                   </li>
-                                   @endforeach
-                               </ol>
-
-                           </div> --}}
-
-                       </div>
-                   </div>
-               @endforeach
-           @endif
-
-
+            <?php $num = 1; ?>
+            @foreach ($exam_results as $result)
+                <div class="card card-warning">
+                    <div class="card-header">
+                        {!! "Question " . $num++ . ". " . strip_tags($result['questionDone'], '<p>') !!}
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check">
+                            <ol type="A">
+                                @foreach ($result['answerDone'] as $index => $answer)
+                                    <li>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="question_weight_a">Answer</label>
+                                                <input readonly name="correct_answer" class="form-control float-center {{ $index == $result['question_weight'] ? 'bg-green' : 'bg-red' }}" value="{!! strip_tags($answer) !!}">
+                                            </div>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
 
         </div>
-
     </div>
 </form>
-
-
-
 @stop
 
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
+    <style>
+        .bg-green {
+            background-color: #a3e8a0;
+        }
+
+        .bg-red {
+            background-color: #ff9f9f;
+        }
+    </style>
 @stop
 
 @section('js')

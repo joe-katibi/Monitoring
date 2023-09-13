@@ -23,7 +23,7 @@
                                  <label for="">Course</label>
                                  <select class="custom-select" placeholder="course" id="course" name="course" value="{{ old('course') }}">
                                     <span style="color:red">@error('course'){{ $message }}@enderror</span>
-                                    <option value="{{$examedit->course_name }}" >{{$examedit->course}}</option>
+                                    <option value="{{$examedit->course_name }}" >{{$course[0]['course_name']}}</option>
                                     {{-- <option disabled selected>select a course</option> --}}
                                     @foreach($course as $row )
                                     <option value="{{ $row['id'] }}">{{$row['course_name']}}</option>
@@ -51,7 +51,7 @@
                              <label for="">Services</label>
                              <select class="custom-select" placeholder="service" id="service" name="service" value="{{ old('service') }}">
                                 <span style="color:red">@error('service'){{ $message }}@enderror</span>
-                                <option value="{{$examedit->service }}" >{{$examedit->service}}</option>
+                                <option value="{{$examedit->service }}" >{{$service[0]['service_name']}}</option>
                                 {{-- <option disabled selected>select a service</option> --}}
                                 @foreach($service as $row )
                                 <option value="{{ $row['id'] }}">{{$row['service_name']}}</option>
@@ -64,7 +64,7 @@
                              <label for="">Category</label>
                             <select class="custom-select" placeholder="category" id="category" name="category" value="{{ old('category') }}">
                                 <span style="color:red">@error('category'){{ $message }}@enderror</span>
-                                <option value="{{$examedit->category }}" >{{$examedit->category}}</option>
+                                <option value="{{$examedit->category }}" >{{$category[0]['category_name']}}</option>
                                 {{-- <option disabled selected>select a category</option> --}}
                                 @foreach($category as $row )
                                 <option value="{{ $row['id'] }}">{{$row['category_name']}}</option>

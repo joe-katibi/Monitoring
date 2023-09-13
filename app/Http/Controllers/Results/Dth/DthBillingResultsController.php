@@ -17,6 +17,7 @@ use App\Models\Positions;
 use App\Models\Services;
 use App\Models\Countries;
 use App\Models\Categories;
+use Carbon\Carbon;
 use Datatables;
 
 class DthBillingResultsController extends Controller
@@ -39,7 +40,27 @@ class DthBillingResultsController extends Controller
                                         ->where('question_results.results','=',$id)
                                         ->get();
 
-//       dd($question_v);
+         foreach($question_v as $key => $value){
+
+                                            $agentName = User::where('id','=', $value['agent_name'])->first();
+                                            $value['agentName'] =  isset($agentName)  ?  $agentName->name : '';
+
+                                            $SupervisorName = User::where('id','=', $value['supervisor'])->first();
+                                            $value['SupervisorName'] =  isset($SupervisorName)  ?  $SupervisorName->name : '';
+
+                                            $qualityName = User::where('id','=', $value['quality_analysts'])->first();
+                                            $value['qualityName'] =  isset($qualityName)  ?  $qualityName->name : '';
+
+                                            $createdAt = $value->date_recorded;
+
+                                            $monthName = Carbon::parse($createdAt)->format('F');
+                                            $value['monthName'] =  isset($createdAt)  ?  $monthName: '';
+
+                                            $weekNumber = Carbon::parse($createdAt)->format('W');
+                                            $weekNumberWithPrefix = "week " . $weekNumber;
+                                            $value['weekNumberWithPrefix'] =  isset($createdAt)  ?  $weekNumberWithPrefix: '';
+
+                                        }
 
                    $data['question_v'] = $question_v;
 
@@ -97,9 +118,34 @@ class DthBillingResultsController extends Controller
         ->where('question_results.results','=',$id)
         ->get();
 
-//       dd($question_v);
+
+        foreach($question_v as $key => $value){
+
+            $agentName = User::where('id','=', $value['agent_name'])->first();
+            $value['agentName'] =  isset($agentName)  ?  $agentName->name : '';
+
+            $SupervisorName = User::where('id','=', $value['supervisor'])->first();
+            $value['SupervisorName'] =  isset($SupervisorName)  ?  $SupervisorName->name : '';
+
+            $qualityName = User::where('id','=', $value['quality_analysts'])->first();
+            $value['qualityName'] =  isset($qualityName)  ?  $qualityName->name : '';
+
+            $createdAt = $value->date_recorded;
+
+            $monthName = Carbon::parse($createdAt)->format('F');
+            $value['monthName'] =  isset($createdAt)  ?  $monthName: '';
+
+            $weekNumber = Carbon::parse($createdAt)->format('W');
+            $weekNumberWithPrefix = "week " . $weekNumber;
+            $value['weekNumberWithPrefix'] =  isset($createdAt)  ?  $weekNumberWithPrefix: '';
+
+        }
 
              $data['question_v'] = $question_v;
+
+            // print_pre([$data] , true);
+
+
         return view('results/Dth/dth_edit_results')->with($data);
     }
 

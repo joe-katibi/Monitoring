@@ -44,6 +44,16 @@
                     </div></a>
                 </div>
                 @endcan
+                @can('view-results-autofail-menu')
+                <div class="col-md-3 col-sm-6">
+                    <a href="{{ route('coaching.create') }}">   <div class="card  bg-success">
+                        <div class="card-body text-center">
+                            <h3><b>Coaching Forms</b></h3>
+                            <p>All Coaching Forms</p>
+                        </div>
+                    </div></a>
+                </div>
+                @endcan
             </div>
         </div>
     <!-- /Page Wrapper -->

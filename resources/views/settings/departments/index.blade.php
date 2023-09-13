@@ -31,6 +31,11 @@
     </div>
 
     <div class="card-body">
+        @if (Session::has('message'))
+        <div class="alert alert-{{ Session::has('message_type')? Session::get('message_type'): 'success' }}">
+            {{ Session::get('message') }}
+        </div>
+        @endif
         <div class="table-responsive">
             <table id="departmentsTable" class="table no-margin">
                 <thead>
@@ -53,14 +58,20 @@
                         <td>{{$row->created_at}}</td>
                         <td>
                             @can('view-edit-delete-departments')
-                            <a href="{{ url('settings/department/'. $row->id .'/edit') }}"
+
+                                <a href="#modal_edit_department" data-toggle="modal" class="btn btn-sm btn-info edit-button" data-rowid="{{ $row->id }}" data-departmentname="{{ $row->department_name }}" data-description="{{ $row->description }}">
+                                    <i class="fa fa-edit"></i> EDIT
+                                </a>
+
+
+                            {{-- <a href="{{ url('settings/department/'. $row->id .'/edit') }}"
                                 data-row="{{  json_encode($row) }}"
                                 class="btn btn-sm btn-info">
                                 <i class="fa fa-edit"></i> Edit
                             </a>
                             <a href="#" class="btn btn-sm btn-danger">
                                 <i class="fa fa-trash-alt"></i> Delete
-                            </a>
+                            </a> --}}
                             @endcan
                         </td>
                     </tr>
@@ -73,7 +84,7 @@
     <!-- /.card-body -->
 </div>
 @include('settings.departments.modals.modal_add_department')
-{{-- @include('modals.departments.modal_edit_department') --}}
+@include('settings.departments.modals.modal_edit_department')
 {{-- @include('modals.departments.modal_delete_department') --}}
 @stop
 @section('css')
@@ -90,4 +101,24 @@
       $('#departmentsTable').DataTable();
     });
 </script>
+
+
+<script>
+    $(document).ready(function() {
+        $('.edit-button').click(function() {
+            // Get the data attributes from the clicked button/link
+            var rowId = $(this).data('rowid');
+            var departmentName = $(this).data('departmentname');
+            var description = $(this).data('description');
+
+            // Set the values inside the modal form fields
+            $('#modal_row_id').text(rowId);
+            $('#modal_department_name').val(departmentName);
+            $('#modal_description').val(description);
+            $('#modal_row_id').val(rowId);
+        });
+    });
+</script>
+
+
 @stop

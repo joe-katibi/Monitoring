@@ -7,6 +7,7 @@
 @stop
 
 @section('content')
+ @include('sweetalert::alert')
 
 <form action="#" method="POST" name="listForm">
       @csrf
@@ -27,8 +28,6 @@
             <table class="table table-bordered" id="questionsTable">
                 <thead>
                     <tr>
-                        <th style="width: 10px">No</th>
-                        <th>Question</th>
                         <th>Course</th>
                         <th>Service</th>
                         <th>Created Date</th>
@@ -38,29 +37,19 @@
                     <tbody>
                           @foreach ($examquestion as $key=>$row)
                            <tr>
-                                 <td>{{$row['id']}}</td>
-                                 <td>{!! $row['question']!!}</td>
                                  <td>{{$row['course_name']}}</td>
                                  <td>
-
                                     @if ($row['service_name'] == 'Cable')
-
                                     <a disable class="badge badge-success" >Cable</a>
-
                                     @else
                                     <a disable class="badge badge-primary">DTH</a>
-
                                     @endif
-
                                 </td>
                                  <td>{{$row['created_at']}}</td>
                                  <td>
                                     @can('view-edit-view-delete-button-question')
                                      <div class="btn-group btn-group-sm">
-                                         <a href="{{ route('exambank.edit',$row['id']) }}" class="btn btn-success"><i class="fas fa-edit" ></i></a>
-                                         <a href="{{ route('exambank.show',$row['id']) }}" class="btn btn-info"><i class="fas fa-eye"></i></a>
-                                         @method('DELETE')
-                                          <a href="{{ route('exambank.destroy',$row['id']) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                                         <a href="{{ route('view_questions.questionShow',$row['id']) }}" class="btn btn-info"><i class="fas fa-eye"></i>View Questions</a>
                                      </div>
                                      @endcan
                             </td>
@@ -81,6 +70,7 @@
 @stop
 
 @section('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 
     questionsTable = $('#questionsTable').dataTable({

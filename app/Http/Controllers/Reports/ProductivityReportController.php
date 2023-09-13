@@ -197,7 +197,7 @@ class ProductivityReportController extends Controller
       foreach($productivityexams as $key => $value){
 
 
-        $agentName = User::where('position', '=', 'Agent')->where('category','=',$value['category'])->first();
+        $agentName = User::where('id','=', $value['created_by'])->first();
         $value['agentName'] =  isset($agentName)  ?  $agentName->name : '';
 
 
@@ -228,7 +228,7 @@ class ProductivityReportController extends Controller
             $data['productivityexams']= $productivityexams;
 
 
-             //print_pre([ $productivityresults] , true);
+             print_pre([$productivityexams] , true);
 
 
         return view('reports/productivity')->with($data);

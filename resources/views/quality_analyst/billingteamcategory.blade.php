@@ -203,14 +203,14 @@
 @section('js')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
+    {{-- <script>
 
       questionsTable = $('#questionsTable').dataTable({
 
         "dom" : 'lfrtip'
       });
 
-    </script>
+    </script> --}}
 
 <script>
     $(document).ready(function () {

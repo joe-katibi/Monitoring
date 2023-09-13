@@ -124,6 +124,7 @@ class ServicesReportController extends Controller
                                        ->where('users.services','=',$service )
                                        ->where('results.date_recorded','>=',$start_date)
                                        ->where('results.date_recorded','<=',$end_date)
+                                       ->distinct()
                                       ->get();
 
         foreach($servicereport1 as $key => $value){

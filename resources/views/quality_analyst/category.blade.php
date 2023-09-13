@@ -7,6 +7,7 @@
 @stop
 
 @section('content')
+@include('sweetalert::alert')
     <!-- split buttons box - Fiber Catergory-->
     @can('view-audit-fiber-categories')
     <div class="card">

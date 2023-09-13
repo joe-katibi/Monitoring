@@ -40,7 +40,7 @@
                                 <th>Email</th>
                                 <th>Country</th>
                                 <th>Services</th>
-                                <th>Position</th>
+                                <th>Role</th>
                                 <th>Department</th>
                                 {{-- <th>User Code</th> --}}
                                 <th>Status</th>
@@ -80,7 +80,7 @@
                                 <td>
                                     @can('view-edit-user-status')
                                     <a href="{{ url('settings/users/'. $row->id .'/edit') }}"
-                                        data-row="{{  json_encode($row) }}" class="btn btn-sm btn-success">
+                                        data-row="{{  json_encode($row) }}" class="btn btn-sm btn-info">
                                         <i class="glyphicon glyphicon-edit"></i> Edit
                                     </a>
                                     @if($row->user_status == 1)

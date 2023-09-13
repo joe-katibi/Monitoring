@@ -45,7 +45,10 @@ Thanks,<br>
         {{ str_replace([':user_name', ':supervisor_name',':quality_name'], [$user->name, $supervisor->name, $qualityAnalysts->name], config('audit_notification.live_calls_message')) }}
     @elseif ($type == 'autofails')
         <h2 class="red">{{ config('audit_notification.autofails_title') }}</h2>
-        {{ str_replace([':user_name', ':supervisor_name'], [$user->name, $supervisor->name], config('audit_notification.autofails_message')) }}
+        {{ str_replace([':user_name', ':supervisor_name',':quality_name'], [$user->name, $supervisor->name, $qualityAnalysts->name], config('audit_notification.autofails_message')) }}
+    @elseif ($type == 'coaching')
+        <h2 class="red">{{ config('audit_notification.coaching_title') }}</h2>
+        {{ str_replace([':user_name', ':supervisor_name',':quality_name'], [$user->name, $supervisor->name, $qualityAnalysts->name], config('audit_notification.coaching_message')) }}
     @elseif ($type == 'exam_results')
         <h2 class="blue">{{ config('audit_notification.exam_results_title') }}</h2>
         {{ str_replace([':user_name', ':supervisor_name'], [$userEmail->name, $supervisorEmail->name], config('audit_notification.exam_results_message')) }}

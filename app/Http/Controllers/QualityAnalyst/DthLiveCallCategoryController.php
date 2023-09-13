@@ -23,6 +23,9 @@ use App\Models\ReportType;
 use Datatables;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AuditNotification;
+
 
 class DthLiveCallCategoryController extends Controller
 {
@@ -148,6 +151,7 @@ class DthLiveCallCategoryController extends Controller
           $dthlivecalls->voc_summary = isset($input['voc_summary']) ? $input['voc_summary'] : "";
           $dthlivecalls->voc_description = isset($input['voc_description']) ? $input['voc_description'] : "";
           $dthlivecalls->report_type_id = isset($input['reporttype']) ? $input['reporttype'] :"";
+          $dthlivecalls->service_id = 2;
 
 
            //print_pre([$dthlivecalls] , true);
@@ -161,6 +165,7 @@ class DthLiveCallCategoryController extends Controller
             $strength->livecall_id = $dthlivecalls->id;
             $strength->summary_id = $value;
             $strength->category_id = $dthlivecalls->category;
+            // $strength->service_id = 2;
             $strength->created_by =$dthlivecalls->quality_analysts;
 
             $strength->save();
@@ -200,7 +205,7 @@ class DthLiveCallCategoryController extends Controller
 
             $liveCall = new LiveCalls();
 
-            $liveCall->marks = $fiberlivecalls->tittle;
+            $liveCall->marks = $dthlivecalls->tittle;
             $liveCall->qualityAnalysts = $qualityAnalysts;
             $liveCall->agentEmail = $agentEmail;
             $liveCall->supervisorEmail = $supervisorEmail;

@@ -12,8 +12,11 @@ class exam_results extends Model
         'question_id',
         'answers_selected',
         'marks_achieved',
-        'user_id',
+        'conduct_id',
+        'report_type_id',
+        'schedule_id',
         'created_by',
+
 
     ];
     protected $casts = [

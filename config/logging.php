@@ -264,6 +264,12 @@ return [
             'level' => 'debug',
             'days' => 30,
         ],
+        'summaryvoc' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/summaryvoc.log'),
+            'level' => 'debug',
+            'days' => 30,
+        ],
         'fiberlivecalls' => [
             'driver' => 'daily',
             'path' => storage_path('logs/fiberlivecalls.log'),
@@ -354,6 +360,54 @@ return [
             'level' => 'debug',
             'days' => 30,
         ],
+        'reactivateexam' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/reactivateexam.log'),
+            'level' => 'debug',
+            'days' => 30,
+        ],'newexamstatus' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/newexamstatus.log'),
+            'level' => 'debug',
+            'days' => 30,
+        ],'coachingform' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/coachingform.log'),
+            'level' => 'debug',
+            'days' => 30,
+        ],'supervisorSignAlertForm' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/supervisorSignAlertForm.log'),
+            'level' => 'debug',
+            'days' => 30,
+        ],'agentSignAlertForm' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/agentSignAlertForm.log'),
+            'level' => 'debug',
+            'days' => 30,
+        ],'agentSignAlertForm' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/agentSignAlertForm.log'),
+            'level' => 'debug',
+            'days' => 30,
+        ],'supervisorsignCoachingForm' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/supervisorsignCoachingForm.log'),
+            'level' => 'debug',
+            'days' => 30,
+        ],'agentsignCoachingForm' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/agentsignCoachingForm.log'),
+            'level' => 'debug',
+            'days' => 30,
+        ],'EditDepartment' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/EditDepartment.log'),
+            'level' => 'debug',
+            'days' => 30,
+        ],
+
+
 
 
 

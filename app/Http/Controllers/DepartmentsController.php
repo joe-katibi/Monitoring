@@ -86,9 +86,39 @@ class DepartmentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request )
     {
-        //
+
+        $input = $request->all();
+
+        $user_id = auth()->user()->id;
+
+        $id= $request->input('modal_row_id');
+
+        try {
+            DB::beginTransaction();
+            $editDepartment = Departments::where('id','=',$id)->first();
+            $editDepartment->department_name = isset($input['name']) ? $input['name'] : "";
+            $editDepartment->description = isset($input['description']) ? $input['description'] : "";
+            $editDepartment->created_by = $user_id;
+
+
+            $editDepartment->save();
+
+            log::channel('EditDepartment')->info('Department Edited : ------> ', ['200' , $editDepartment->toArray() ] );
+
+            DB::commit();
+
+            toast('Department Updated', 'success')->position('top-end');
+
+            return back();
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::info($e->getMessage() );
+            throw $e;
+        }
+
     }
 
     /**

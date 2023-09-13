@@ -108,7 +108,7 @@
        </div>
         <div class="card-body">
             @if (count($productivityresults) > 0)
-            <label>{{ $productivityresults[0]['type_name'] }}</label>
+
             <div class="table-responsive">
                 <table class="table table-bordered" id="questionsTable">
                     <thead>
@@ -178,8 +178,8 @@
                                     </td>
                                     <td>{{ $productivityresult['final_results'] }}%</td>
                                 </tr>
+                                @endforeach
                             </tbody>
-                            @endforeach
                         </table>
                     </div>
             @else
@@ -240,8 +240,9 @@
                                     <td>{{ $productivityexam['monthName'] }}</td>
                                     <td>{{ $productivityexam['final_results'] }}%</td>
                                 </tr>
+                                @endforeach
                             </tbody>
-                            @endforeach
+
                         </table>
                     </div>
 
@@ -256,47 +257,53 @@
 @stop
 
 @section('css')
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+<link href="/assets/css/dataTables.min.css" rel="stylesheet">
+<link href="/assets/css/buttons.bootstrap4.min.css" rel="stylesheet">
+
 @stop
 
 @section('js')
+<script src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+
+<script src="/assets/js/dataTables.min.js"></script>
+<script src="/assets/js/pdfmake.min.js"></script>
+<script src="/assets/js/vfs_fonts.js"></script>
+<script src="/assets/js/buttons.print.min.js"></script>
+<script src="/assets/js/buttons.colVis.js"></script>
+<script src="/assets/js/buttons.html5.js"></script>
+<script src="/assets/js/buttons.jszip.min.js"></script>
+
 
 <script>
+    $(document).ready(function() {
+        $('.daterange').daterangepicker({
+            timePicker: true,
+            timePickerIncrement: 30,
+            locale: {
+                format: 'YYYY/MM/DD hh:mm:ss'
+            }
+        });
 
-    questionsTable = $('#questionsTable').dataTable({
+        $('#questionsTable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
 
-      "dom" : 'lfrtip'
+        });
+
+
+        $('#questionsTable1').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
     });
-
-  </script>
-
-<script>
-
-    questionsTable = $('#questionsTable1').dataTable({
-
-      "dom" : 'lfrtip'
-    });
-
-  </script>
-
-
-<script  src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
-<script  src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script  src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-<script type="text/javascript">
-	$('.daterange').daterangepicker(
-        {
-      timePicker: true,
-      timePickerIncrement: 30,
-      locale: {
-        format: 'YYYY/MM/DD hh:mm:ss '
-      }
-    }
-
-
-    );
 </script>
+
 
 <script>
     $(document).ready(function () {
@@ -368,8 +375,6 @@
     });
 </script>
 
-
-
 <script>
     $(document).ready(function () {
 
@@ -404,4 +409,5 @@
 
     });
 </script>
+
 @stop

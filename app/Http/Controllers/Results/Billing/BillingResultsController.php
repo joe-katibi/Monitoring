@@ -34,6 +34,8 @@ class BillingResultsController extends Controller
         // $supervisorId
         // $qualityId
 
+        //dd($id);
+
 
         // Find a record in the Result model with the given $id value, and join it with two other tables
         $question_v = Result::find($id)
