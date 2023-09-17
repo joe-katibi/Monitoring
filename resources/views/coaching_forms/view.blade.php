@@ -81,7 +81,7 @@
                <td>{{ $row['agentName'] }}</td>
                <td>{{ $row['SupervisorName'] }}</td>
                <td>{{ $row['qualityName'] }}</td>
-               <td>{{ $row['date_coaching'] }}</td>
+               <td>{{ $row['created_at'] }}</td>
                <td>
 
                   @switch($row['coaching_status'] )

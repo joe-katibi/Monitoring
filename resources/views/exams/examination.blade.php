@@ -185,7 +185,7 @@
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var endTime = localStorage.getItem('countdownEndTime'); // Get the end time from local storage
+        var endTime = localStorage.getItem('examEnd'); // Get the end time from local storage
 
         // Check if the end time is stored in local storage and is valid
         if (endTime && !isNaN(endTime) && parseInt(endTime) > Date.now()) {
@@ -193,7 +193,7 @@
         } else {
             // Set a new end time (e.g., 30 minutes from now)
             endTime = Date.now() + (30 * 60 * 1000); // 30 minutes in milliseconds
-            localStorage.setItem('countdownEndTime', endTime); // Store the end time in local storage
+            localStorage.setItem('examEnd', endTime); // Store the end time in local storage
         }
 
         // Update the countdown every second
@@ -207,31 +207,31 @@
                 document.getElementById('timer').value = 'Time is up!'; // Display a message when the time is up
 
                 // Clear the stored end time from local storage
-                localStorage.removeItem('countdownEndTime');
+                localStorage.removeItem('examEnd');
 
                 // Make an AJAX request to store the selected answers
-                var formData = new FormData();
+                saveAnswersAndRedirect();
                 // Add your answer data to the formData object (e.g., formData.append('question1', 'answer1');)
                 // ...
 
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '{{ route('examination.store', $conduct[0]->id) }}', true);
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        // The request was successful
-                        // Redirect to the results view
-                        var conductId = document.getElementById('conductId').getAttribute('data-conduct-id');
-                        var createdBy = document.getElementById('createdBy').getAttribute('data-created-by');
-                        window.location.href = "/exams/view_results/" + conductId + "/" + createdBy;
-                    } else {
-                        // There was an error in the request
-                        console.error('Error storing answers:', xhr.statusText);
-                    }
-                };
-                xhr.onerror = function() {
-                    console.error('Error storing answers: Network error');
-                };
-                xhr.send(formData);
+                // var xhr = new XMLHttpRequest();
+                // xhr.open('POST', '{{ route('examination.store', $conduct[0]->id) }}', true);
+                // xhr.onload = function() {
+                //     if (xhr.status === 200) {
+                //         // The request was successful
+                //         // Redirect to the results view
+                //         var conductId = document.getElementById('conductId').getAttribute('data-conduct-id');
+                //         var createdBy = document.getElementById('createdBy').getAttribute('data-created-by');
+                //         window.location.href = "/exams/view_results/" + conductId + "/" + createdBy;
+                //     } else {
+                //         // There was an error in the request
+                //         console.error('Error storing answers:', xhr.statusText);
+                //     }
+                // };
+                // xhr.onerror = function() {
+                //     console.error('Error storing answers: Network error');
+                // };
+                // xhr.send(formData);
             } else {
                 // Calculate the minutes and seconds
                 var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -241,6 +241,38 @@
                 document.getElementById('timer').value = minutes + ' minutes, ' + seconds + ' seconds';
             }
         }, 1000); // Update the countdown every second (1000 milliseconds)
+
+        function saveAnswersAndRedirect() {
+        clearInterval(countdownInterval);
+        timerElement.textContent = "Exam submission in progress...";
+
+        // Collect data from the form
+        const formData = new FormData(document.forms.namedItem("listForm"));
+
+        // Perform an AJAX request to save answers
+        fetch("{{ route('examination.store', $conduct[0]->id) }}", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+            },
+        })
+        .then((response) => {
+            if (response.ok) {
+                // Redirect to the results page after saving answers
+                setTimeout(function () {
+                    window.location.href = "exams/view_results/"; // Replace with your actual results page URL
+                }, 2000); // Redirect after 2 seconds
+            } else {
+                // Handle the case when saving answers fails
+                timerElement.textContent = "Error while saving answers.";
+            }
+        })
+        .catch((error) => {
+            // Handle network errors here
+            timerElement.textContent = "Network error occurred.";
+        });
+    }
     });
 
 </script>

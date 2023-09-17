@@ -103,7 +103,7 @@ class HomeController extends Controller
                            $currentDate = Carbon::now();
 
                            // Calculate the start and end dates for the weeks
-                           $startOfWeek = $currentDate->copy()->startOfWeek()->subWeeks(23);
+                           $startOfWeek = $currentDate->copy()->subWeeks(10)->startOfWeek();
                            $endOfWeek = $currentDate->copy()->endOfWeek();
 
                            // Calculate the start and end dates for the months
@@ -118,6 +118,8 @@ class HomeController extends Controller
                                ->orWhereBetween('results.created_at', [$startOfMonth, $endOfMonth])
                                ->orderBy('results.created_at')
                                ->get();
+
+                              // print_pre($results, true);
 
                            $averages = [];
 

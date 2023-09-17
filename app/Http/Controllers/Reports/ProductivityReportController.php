@@ -228,7 +228,7 @@ class ProductivityReportController extends Controller
             $data['productivityexams']= $productivityexams;
 
 
-             print_pre([$productivityexams] , true);
+             //print_pre([$productivityexams] , true);
 
 
         return view('reports/productivity')->with($data);

@@ -4,6 +4,22 @@
 
 @section('content_header')
     <h1></h1>
+
+    <style>
+        /* Style the chart divs */
+        .chart-container {
+          margin: 20px; /* Add margin for spacing */
+          padding: 20px; /* Add padding for spacing and background color */
+          background-color: #f5f5f5; /* Set background color */
+          border: 1px solid #ccc; /* Add a border for separation */
+          border-radius: 5px; /* Add rounded corners */
+        }
+
+        /* Set the height of the chart divs */
+        .chart {
+          height: 400px; /* Adjust the height as needed */
+        }
+      </style>
 @stop
 
 @section('content')
@@ -114,59 +130,21 @@
     <div class="card-header">
         <input readonly class="form-control" style="color: blue"  value="Weekly Summary">
     </div>
-    <div class="card-body">
-
-            <table class="table table-bordered table-scroll" id="questionsTable" >
-                <thead>
-                    <tr>
-                        <th style="width: 10px" >Countries</th>
-                        @foreach ($weekHeaders as $week)
-                            <th style="width: 10px">{{ $week }}</th>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($averages as $country => $data)
-                        <tr>
-                            <td>{{ $country }}</td>
-                            @foreach ($data['weeks'] as $week => $percentage)
-                                <td>{{ $percentage }}%</td>
-                            @endforeach
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
-    </div>
 </div>
-<div class="card card">
-    <div class="card-header">
-        <input readonly class="form-control" style="color: blue"  value="Monthly Summary">
-    </div>
-    <div class="card-body">
-        <table class="table table-bordered" id="questionsTable">
-            <thead>
-                <tr>
-                    <th >Countries</th>
-                    @foreach ($monthHeaders as $month)
-                        <th>{{ $month }}</th>
-                    @endforeach
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($averages as $country => $data)
-                    <tr>
-                        <td>{{ $country }}</td>
-                        @foreach ($data['months'] as $month => $percentage)
-                            <td>{{ $percentage }}%</td>
-                        @endforeach
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
 
-      </div>
-    </div>
+
+  <!-- Chart containers -->
+  <div class="chart-container">
+    <div class="chart" id="weekly_combo_chart"></div>
+  </div>
+
+  <div class="card-header">
+    <input readonly class="form-control" style="color: blue"  value="Monthly Summary">
+</div>
+
+  <div class="chart-container">
+    <div class="chart" id="monthly_combo_chart"></div>
+  </div>
   </div>
 
 
@@ -306,6 +284,9 @@
 @stop
 
 @section('js')
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function () {
     $("#create_role").click(function (e) {
@@ -319,17 +300,112 @@ $(document).ready(function () {
 });
 </script>
 
-<script>
 
-    questionsTable = $('#questionsTable').dataTable({
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    // Load the Google Charts library
+    google.charts.load('current', {'packages':['corechart']});
 
-      "dom" : 'lfrtip'
-    });
+    // Set a callback to run when the Google Charts library is loaded
+    google.charts.setOnLoadCallback(drawCharts);
 
+    function drawCharts() {
+      drawWeeklyComboChart();
+      drawMonthlyComboChart();
+    }
 
+    function drawWeeklyComboChart() {
+      // Use PHP to generate JavaScript data arrays for the weekly chart
+      var weeklyData = <?php echo json_encode($averages); ?>;
 
+      // Extract the country names from the data for the chart labels
+      var countries = Object.keys(weeklyData);
 
+      // Prepare the data for the weekly chart (percentages and averages)
+      var weeklyChartData = [['Week', 'Total'].concat(countries)];
+
+      // Extract the week labels from the data
+      var weekLabels = Object.keys(weeklyData[countries[0]]['weeks']);
+
+      for (var week of weekLabels) {
+        var weekRow = ['Week ' + week];
+        var total = 0;
+        for (var i = 0; i < countries.length; i++) {
+          var value = weeklyData[countries[i]]['weeks'][week];
+          weekRow.push(value);
+          total += value;
+        }
+        weekRow.push(total);
+        weeklyChartData.push(weekRow);
+      }
+
+      var weeklyData = google.visualization.arrayToDataTable(weeklyChartData);
+
+      var weeklyOptions = {
+        title: 'Weekly Totals and Averages',
+        curveType: 'function',
+        seriesType: 'bars',
+        series: {1: {type: 'line'}},
+        vAxis: { title: 'Percentage' }, // Customize the Y-axis title
+        hAxis: { title: 'Week' } // Customize the X-axis title
+      };
+
+      var weeklyChart = new google.visualization.ComboChart(document.getElementById('weekly_combo_chart'));
+
+      weeklyChart.draw(weeklyData, weeklyOptions);
+    }
+
+    function drawMonthlyComboChart() {
+      // Use PHP to generate JavaScript data arrays for the monthly chart
+      var monthlyData = <?php echo json_encode($averages); ?>;
+
+      // Extract the country names from the data for the chart labels
+      var countries = Object.keys(monthlyData);
+
+      // Prepare the data for the monthly chart (percentages and averages)
+      var monthlyChartData = [['Month', 'Total'].concat(countries)];
+
+      // Extract the month labels from the data
+      var monthLabels = Object.keys(monthlyData[countries[0]]['months']);
+
+      for (var month of monthLabels) {
+        var monthShortLabel = formatMonthLabel(month);
+        var monthRow = [monthShortLabel];
+        var total = 0;
+        for (var i = 0; i < countries.length; i++) {
+          var value = monthlyData[countries[i]]['months'][month];
+          monthRow.push(value);
+          total += value;
+        }
+        monthRow.push(total);
+        monthlyChartData.push(monthRow);
+      }
+
+      var monthlyData = google.visualization.arrayToDataTable(monthlyChartData);
+
+      var monthlyOptions = {
+        title: 'Monthly Totals and Averages',
+        curveType: 'function',
+        seriesType: 'bars',
+        series: {1: {type: 'line'}},
+        vAxis: { title: 'Percentage' }, // Customize the Y-axis title
+        hAxis: { title: 'Month' } // Customize the X-axis title
+      };
+
+      var monthlyChart = new google.visualization.ComboChart(document.getElementById('monthly_combo_chart'));
+
+      monthlyChart.draw(monthlyData, monthlyOptions);
+    }
+
+    // Function to format month labels (e.g., "Jan-23")
+    function formatMonthLabel(month) {
+      var date = new Date(month);
+      var monthName = date.toLocaleString('default', { month: 'short' });
+      var year = date.getFullYear().toString().substr(-2); // Extract last 2 digits of the year
+      return monthName + '-' + year;
+    }
   </script>
+
 
 
 @stop

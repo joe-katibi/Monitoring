@@ -45,7 +45,7 @@ class CoachingController extends Controller
 
                                       $user_id = auth()->user()->id;
 
-                                      $userlogged = User::select('users.name','users.id',)->where('users.id','=',$userId)->first();
+                                      $userlogged = User::select('users.name','users.id',)->where('users.id','=',$user_id)->first();
 
 
                                       $qualitySignatureUrl= null;
@@ -139,8 +139,10 @@ class CoachingController extends Controller
 
 
         $coachingview = Coaching::Select('coachings.id','coachings.agent','coachings.record_id','coachings.supervisor','coachings.quality_analyst','coachings.scores','coachings.results_id',
-                                       'coachings.date_coaching','coachings.scores', 'coachings.coaching_status','coachings.areas_of_strength','coachings.pervious_actions','coachings.current_areas_improvement','coachings.action_points_taken','coachings.agent_signature','coachings.agent_date_sign','coachings.supervisor_signature','coachings.supervisor_date_sign','coachings.quality_analyst_signature','coachings.quality_analyst_date_sign','coachings.created_at','user_categories.category_id')
-                                ->join('user_categories','user_categories.user_id','=','coachings.agent')
+                                       'coachings.date_coaching','coachings.scores', 'coachings.coaching_status','coachings.areas_of_strength','coachings.pervious_actions','coachings.current_areas_improvement','coachings.action_points_taken','coachings.agent_signature','coachings.agent_date_sign','coachings.supervisor_signature','coachings.supervisor_date_sign','coachings.quality_analyst_signature','coachings.quality_analyst_date_sign','coachings.created_at',
+                                      // 'user_categories.category_id'
+                                       )
+                               // ->join('user_categories','user_categories.user_id','=','coachings.agent')
                                 ->where('coachings.agent','=',$agent )
                               //  ->where('user_categories.category_id','=',$categoryname)
                                 //->where('coachings.results_id','=',$results_id)

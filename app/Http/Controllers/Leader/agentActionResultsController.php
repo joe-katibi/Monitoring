@@ -92,6 +92,8 @@ class agentActionResultsController extends Controller
 
         $input= $request->all();
 
+
+
          $supervisor = $request->input('supervisor');
          $status = $request->input('status');
 
@@ -101,10 +103,12 @@ class agentActionResultsController extends Controller
 
 
         $qa_results = Result::select('results.id','results.agent_name','results.supervisor','results.quality_analysts','results.date_recorded','results.customer_account','results.recording_id',
-                                    'results.supervisor_comment','results.final_results','results.status','results.category','users.country','users.services','categories.category_name','services.service_name','countries.country_name','results.created_at',)
+                                    'results.supervisor_comment','results.final_results','results.status','results.category','users.country','users.services',
+                                   // 'categories.category_name',
+                                    'services.service_name','countries.country_name','results.created_at',)
                                      ->join('user_categories','user_categories.category_id','=','results.category')
                                      ->join('users','users.id','=','user_categories.user_id')
-                                     ->join('categories','categories.id','=','results.category')
+                                    // ->join('categories','categories.id','=','results.category')
                                      ->join('services','services.id','=','users.services')
                                      ->join('countries','countries.id','=','users.country')
                                      ->where('results.supervisor','=',$supervisor)

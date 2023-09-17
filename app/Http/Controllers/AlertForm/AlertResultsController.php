@@ -123,7 +123,6 @@ class AlertResultsController extends Controller
                                  'alert_forms.supervisor_comment','alert_forms.qa_signature','alert_forms.date_by_qa','alert_forms.supervisor_signature',
                                 'alert_forms.date_by_supervisor','alert_forms.agent_signature','alert_forms.date_by_agent','alert_forms.auto_status','alert_forms.results_id','results.category')
                                  ->join('results','results.id','=','alert_forms.results_id')
-                                 ->join('user_categories','user_categories.category_id','=','results.category')
                                  ->join('categories','categories.id','=','results.category')
                                  ->where('alert_forms.agent_name','=',$agent)
                                  ->where('results.category','=',$categoryname)

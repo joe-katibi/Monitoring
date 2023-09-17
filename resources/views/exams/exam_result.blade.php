@@ -40,7 +40,7 @@
                    </select>
                 </div> --}}
                 {{-- <div class="col-md-4">
-                <label for="section">Trainer</label>
+                <label for="section">Agent</label>
                  <div class="form-group">
                    <select class="form-control" required="required" name="trainer"><option selected="selected" value="">--Select Trainer--</option>
                     @foreach ($trainer as $trainers)
@@ -85,7 +85,7 @@
               <thead>
                   <tr>
                       {{-- <th style="width: 10px">No</th> --}}
-                      <th>Exam Name</th>
+                      <th style="width: 15%">Exam Name</th>
                       <th>Course</th>
                       <th>Service</th>
                       <th>Agent Name</th>
@@ -116,7 +116,7 @@
                                <td>{{ $row['name'] }}</td>
                                <td>{{ $row ['category_name']}}</td>
                                <td>{{ $row ['marks_achieved']}}%</td>
-                               <td>{{ $row['completion_date'] }}</td>
+                               <td>{{ $row['created_at'] }}</td>
                                {{-- <td>{{ $row }}</td> --}}
                                <td>
                                    <div class="btn-group btn-group-sm">

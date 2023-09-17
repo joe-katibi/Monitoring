@@ -25,28 +25,6 @@ class ExamsResultsController extends Controller
      */
     public function index()
     {
-
-        // $examresults = exam_results::select('exam_results.id','exam_results.question_id','exam_results.answers_selected','exam_results.marks_achieved','exam_results.created_by','exam_results.created_at',
-        //                                     'exam_results.conduct_id','exams_questions.question','answer_keys.choices','exams_questions.id','user_categories.category_id','user_categories.user_id',
-        //                                     'conduct_exams.course','conduct_exams.exam_name','conduct_exams.completion_date','conduct_exams.service','conduct_exams.trainer_qa','users.name',
-        //                                      'courses.course_name','services.service_name','services.id as s_id','categories.category_name',
-        //                                     )
-        //                                     ->join('conduct_exams','conduct_exams.id','=','exam_results.conduct_id')
-        //                                     ->join('exams_questions','exams_questions.id','=','exam_results.question_id')
-        //                                     ->join('answer_keys','answer_keys.question_id','=','exams_questions.id')
-        //                                     ->join('user_categories','user_categories.user_id','=','exam_results.created_by')
-        //                                     ->join('users','users.id','=','user_categories.user_id')
-        //                                     ->join('model_has_roles','model_id','=','exam_results.created_by')
-        //                                     ->join('courses','courses.id','=','conduct_exams.course')
-        //                                     ->join('categories','categories.id','=','user_categories.category_id')
-        //                                     ->join('services','services.id','=','conduct_exams.service')
-        //                                      //->where('exam_results.id','=',$id)
-        //                                    ->get();
-
-        //                                     //print_pre($examresults, true);
-
-
-
         // Retrieves from the services table and returns them as a collection
         $services = Services::select('services.id','services.service_name')->get();
 
@@ -116,16 +94,19 @@ class ExamsResultsController extends Controller
         $end_date = $start_end_date[1];
 
         $examresults = exam_results::select('exam_results.id','exam_results.question_id','exam_results.answers_selected','exam_results.marks_achieved','exam_results.created_by','exam_results.created_at',
-                                            'exam_results.conduct_id','exams_questions.question','exam_results.schedule_id','answer_keys.choices','exams_questions.id','user_categories.category_id','user_categories.user_id',
-                                            'conduct_exams.course','conduct_exams.exam_name','conduct_exams.completion_date','conduct_exams.service','conduct_exams.trainer_qa','users.name',
-                                             'courses.course_name','services.service_name','services.id as s_id','categories.category_name',
+                                            'exam_results.conduct_id','exams_questions.question','exam_results.schedule_id','answer_keys.choices',
+                                            'exams_questions.id','user_categories.category_id','user_categories.user_id',
+                                            'conduct_exams.course','conduct_exams.exam_name','conduct_exams.service','conduct_exams.trainer_qa',
+                                            'users.name',
+                                             'courses.course_name','services.service_name','services.id as s_id',
+                                            'categories.category_name',
                                             )
-                                             ->join('conduct_exams','conduct_exams.id','=','exam_results.conduct_id')
-                                             ->join('exams_questions','exams_questions.id','=','exam_results.question_id')
+                                            ->join('conduct_exams','conduct_exams.id','=','exam_results.conduct_id')
+                                            ->join('exams_questions','exams_questions.id','=','exam_results.question_id')
                                              ->join('answer_keys','answer_keys.question_id','=','exams_questions.id')
                                              ->join('user_categories','user_categories.user_id','=','exam_results.created_by')
                                              ->join('users','users.id','=','user_categories.user_id')
-                                             ->join('model_has_roles','model_id','=','exam_results.created_by')
+                                           //  ->join('model_has_roles','model_id','=','exam_results.created_by')
                                              ->join('courses','courses.id','=','conduct_exams.course')
                                              ->join('categories','categories.id','=','user_categories.category_id')
                                              ->join('services','services.id','=','conduct_exams.service')
@@ -136,6 +117,7 @@ class ExamsResultsController extends Controller
                                              ->where('user_categories.category_id','=',$departments)
                                             ->where('exam_results.created_at','>=',$start_date)
                                              ->where('exam_results.created_at','<=',$end_date)
+
                                            ->get();
 
                                     //print_pre($examresults, true);
