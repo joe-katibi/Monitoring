@@ -75,8 +75,8 @@
                 <fieldset>
                     <legend>Roles & Security</legend>
                     <div class="form-group">
-                        {{ Form::label('roles', 'Assigned Roles *') }}
-                        {{ Form::select('roles[]', $roles->pluck('description', 'id') , old('roles', $user->roles)  ,['class' => 'form-control select2', 'multiple' => true]) }}
+                        {{ Form::label('roles', 'Assigned Roles *',['class'=>'control-label label-left']) }}
+                        {{ Form::select('roles[]', $roles->pluck('description', 'id') , old('roles', $user->model_id)  ,['class' => 'form-control select2', 'multiple' => true ]) }}
                     </div>
 
                 </fieldset>
@@ -84,8 +84,8 @@
             <div class="col-md-12">
                 <fieldset>
                     <div class="form-group">
-                        {{ Form::label('category', 'category *') }}
-                        {{ Form::select('category[]', $category->pluck('category_name', 'id') , old('category_name', $user->category_name)  ,['class' => 'form-control select2', 'multiple' => true ]) }}
+                        {{ Form::label('category', 'Category *',['class'=>'control-label label-left']) }}
+                        {{ Form::select('category[]', $category->pluck('category_name', 'id') , old('category_name', $user->category_id)  ,['class' => 'form-control select2', 'multiple' => true ]) }}
                     </div>
 
                 </fieldset>

@@ -631,7 +631,7 @@ class PermissionsSeeder extends Seeder
                     'description' => 'Button for Exporting signed Alert PDF form',
                     'name' => 'view-export-PDF-alert-button'
             ],
-                  //Alertform-report supervisor request
+                  //Alert form-report supervisor request
             [
                     'module' => 'Audit Supervisor Report',
                     'sub_module' => 'Audit Supervisor Report',
@@ -639,19 +639,33 @@ class PermissionsSeeder extends Seeder
                     'name' => 'supervisor-report-request'
             ],
 
-                  //Alertform-report agent request
+                  //Alert form-report agent request
             [
                     'module' => 'Audit Agent Report',
                     'sub_module' => 'Audit Agent Report',
                     'description' => 'Agent to pull audit report',
                     'name' => 'agent-report-request'
             ],
-                //Alertform-report agent request
+                //Alert form-report Quality request
             [
                     'module' => 'Audit Quality Analysts Report',
                     'sub_module' => 'Audit Quality Analysts  Report',
                     'description' => 'Quality Analysts  to pull audit report',
                     'name' => 'quality-analysts-report-request'
+            ],
+                       //Exam -results agent request
+            [
+                    'module' => 'Exam Agent Results',
+                    'sub_module' => 'Exam Agent Results',
+                    'description' => 'Agent to pull exam Results',
+                    'name' => 'admin-agent-exam-results'
+            ],
+                //Exam-results Supervisor- Quality  request
+            [
+                    'module' => 'Exam Admin Supervisor Quality Analysts results',
+                    'sub_module' => 'Admin Supervisor and Quality Analysts  Exam Results',
+                    'description' => ' supervisor and Quality Analysts  to pull exam Results',
+                    'name' => 'admin-supervisor-quality-exam-results'
             ],
 
 

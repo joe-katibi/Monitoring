@@ -28,11 +28,15 @@ class ExamsResultsController extends Controller
         // Retrieves from the services table and returns them as a collection
         $services = Services::select('services.id','services.service_name')->get();
 
-        $trainerRole_id = Role::select('roles.id',)->where('name', '=', 'trainer')->first();
+        $userId = auth()->id();
 
-        $trainer = User::select('users.name','users.id','model_has_roles.role_id')
+        $userLogged = User::select('users.name','users.id',)->where('users.id','=',$userId)->first();
+
+        $agentRole_id = Role::select('roles.id',)->where('name', '=', 'Agent')->first();
+
+        $agents = User::select('users.name','users.id','model_has_roles.role_id')
                         ->join('model_has_roles','model_id','=','users.id')
-                       ->where('model_has_roles.role_id','=',$trainerRole_id->id)
+                       ->where('model_has_roles.role_id','=',$agentRole_id->id)
                         ->get();
 
 
@@ -40,7 +44,8 @@ class ExamsResultsController extends Controller
 
                                            $data['examresults']=$examresults;
                                            $data['services']=$services;
-                                           $data['trainer']=$trainer;
+                                           $data['agents']=$agents;
+                                           $data['userLogged']=$userLogged;
 
         return view('exams/exam_result')->with($data);
     }
@@ -66,11 +71,15 @@ class ExamsResultsController extends Controller
 
         $services = Services::select('services.id','services.service_name')->get();
 
-        $trainerRole_id = Role::select('roles.id',)->where('name', '=', 'trainer')->first();
+        $userId = auth()->id();
 
-        $trainer = User::select('users.name','users.id','model_has_roles.role_id')
+        $userLogged = User::select('users.name','users.id',)->where('users.id','=',$userId)->first();
+
+        $agentRole_id = Role::select('roles.id',)->where('name', '=', 'Agent')->first();
+
+        $agents = User::select('users.name','users.id','model_has_roles.role_id')
                         ->join('model_has_roles','model_id','=','users.id')
-                       ->where('model_has_roles.role_id','=',$trainerRole_id->id)
+                       ->where('model_has_roles.role_id','=',$agentRole_id->id)
                         ->get();
 
         $input = $request->all();
@@ -83,7 +92,7 @@ class ExamsResultsController extends Controller
 
         $examName = $request->input('exam_name');
 
-        $trainer = $request->input('trainer');
+        $agent = $request->input('agent');
 
         $departments = $request->input('department');
 
@@ -112,8 +121,7 @@ class ExamsResultsController extends Controller
                                              ->join('services','services.id','=','conduct_exams.service')
                                              ->where('conduct_exams.service','=',$service)
                                              ->where('conduct_exams.course','=',$courses)
-                                             //->where('conduct_exams.exam_name','=',$examName)
-                                             //->where('conduct_exams.trainer_qa','=',$trainer)
+                                             ->where('exam_results.created_by','=',$agent)
                                              ->where('user_categories.category_id','=',$departments)
                                             ->where('exam_results.created_at','>=',$start_date)
                                              ->where('exam_results.created_at','<=',$end_date)
@@ -127,7 +135,8 @@ class ExamsResultsController extends Controller
 
         $data['services']=$services;
         $data['examresults']=$examresults;
-        $data['trainer']=$trainer;
+        $data['agents']=$agents;
+        $data['userLogged']=$userLogged;
 
         return view('exams/exam_result')->with($data);
     }

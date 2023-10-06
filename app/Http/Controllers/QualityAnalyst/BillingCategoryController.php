@@ -55,11 +55,12 @@ class BillingCategoryController extends Controller
         //$agents = User::where('category', '=', $category)->where('position', '=', 'Agent')->get();
         $agentRole_id = Role::select('roles.id',)->where('name', '=', 'Agent')->first();
 
-        $agents = User::select('users.name','users.id','model_has_roles.role_id','user_categories.category_id','categories.category_name')
+        $agents = User::select('users.name','users.id','users.services','model_has_roles.role_id','user_categories.category_id','categories.category_name')
                           ->join('model_has_roles','model_id','=','users.id')
                            ->join('roles','roles.id','=','model_has_roles.role_id')
                           ->join('user_categories','user_categories.user_id','=','users.id')
                           ->join('categories','categories.id','=','user_categories.category_id')
+                          ->where('users.services','=', 1)
                           ->where('model_has_roles.role_id','=',$agentRole_id->id)
                           ->where('user_categories.category_id',$category)
                           ->get();
@@ -68,11 +69,12 @@ class BillingCategoryController extends Controller
         //$supervisor = User::where('category', '=', $category)->where('position', '=', 'Supervisor')->get();
         $supervisorRole_id = Role::select('roles.id',)->where('name', '=', 'team-leader')->first();
 
-        $supervisor= User::select('users.name','users.id','model_has_roles.role_id','user_categories.category_id','categories.category_name')
+        $supervisor= User::select('users.name','users.id','users.services','model_has_roles.role_id','user_categories.category_id','categories.category_name')
         ->join('model_has_roles','model_id','=','users.id')
          ->join('roles','roles.id','=','model_has_roles.role_id')
         ->join('user_categories','user_categories.user_id','=','users.id')
         ->join('categories','categories.id','=','user_categories.category_id')
+        ->where('users.services','=', 1)
         ->where('model_has_roles.role_id','=',$supervisorRole_id->id)
         ->where('user_categories.category_id',$category)
         ->get();

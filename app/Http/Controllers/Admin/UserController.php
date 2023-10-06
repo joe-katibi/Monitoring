@@ -36,47 +36,19 @@ class UserController extends Controller
      */
     public function index()
     {
-        // $user = User::with(['department' => function ($query) {
-        //             $query->select('id', 'department_name');
-        //             }])
-        //            ->join('countries','countries.id','=','users.country')
-        //            ->join('services','services.id','=','users.services')
-        //           // ->join('departments','departments.id','=','users.department_id')
-        //             ->get();
-
         $user = User::select('users.id','users.name','users.email','users.country','users.services','users.category','users.user_status','users.created_at',
                              'users.position','services.service_name','countries.country_name','departments.department_name',
-                              //'roles.description',
-                             //'user_categories.category_id','categories.category_name',
-                             //'model_has_roles.role_id'
+                              'roles.description', 'model_has_roles.role_id'
                              )
                             ->join('countries','countries.id','=','users.country')
                             ->join('services','services.id','=','users.services')
                             ->join('departments','departments.id','=','users.department_id')
-                           // ->join('user_categories','user_categories.user_id','=','users.id')
-                           // ->join('categories','categories.id','=','user_categories.category_id')
-                           // ->join('model_has_roles','model_has_roles.model_id','=','users.id')
-                         //  ->join('roles','roles.id','=','model_has_roles.role_id')
-                          ->get();
-
-                        //   if ($user->roles()) {
-                        //     $user->roles = $user->roles()->get()->pluck('name');
-                        // } else {
-                        //     $user->roles = new Collection();
-                        // }
-
-           //print_pre($user->roles,true);
-
-
+                            ->join('model_has_roles','model_has_roles.model_id','=','users.id')
+                            ->join('roles','roles.id','=','model_has_roles.role_id')
+                            ->get();
 
         $data['users'] = $user;
-
-
-        // auth()->user()->givePermissionTo('view-bat');
-        // auth()->user()->assignRole('Cashier');
-       // print_pre($data['users']->toArray(),true);
         return view('settings.users.index')->with($data);
-
 
     }
 
@@ -112,15 +84,13 @@ class UserController extends Controller
 
           $input = $request->all();
 
-          //print_pre($input,true);
-
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:users',
-            //'category' => 'required',
+            'category' => 'required',
             'email' => 'email|required|unique:users',
             'service' => 'required',
             'country' => 'required',
-           // 'username' => 'required'
+           'username' => 'required|unique:users'
         ]);
 
         if ($validator->fails()) {
@@ -128,6 +98,7 @@ class UserController extends Controller
         }
         $user = new User;
         $user->name = $request->input('name');
+        $user->username = $request->input('username');
         $user->email = $request->input('email');
         $user->country = $request->input('country');
         $user->services = $request->input('service');
@@ -153,22 +124,8 @@ class UserController extends Controller
 
         }
 
-         //print_pre($category_user,true);
-
-
-
-        /*   $response = $this->broker()->sendResetLink(
-               $request->only('email')
-           );*/
-        /*
-         * , function (Message $message) {
-            $message->subject('Set your ' . config('app.name') . ' password');
-        }
-         */
-       // $response = Password::sendResetLink(['email' => $request->input('email')]);
-
         return redirect()->back()->with([
-            'message' => 'User added. Link has been sent to their email to set password',
+            'message' => 'User added',
             'message_type' => 'success'
         ]);
     }
@@ -190,8 +147,19 @@ class UserController extends Controller
     public function edit($id)
     {
         /** @var User $user */
-        $user = User::findOrFail($id);
+       $user = User::findOrFail($id);
 
+        $user = User::select('users.id','users.name','users.username','users.email','users.country','users.services','users.department_id','users.user_status','users.created_at',
+                           'users.position','user_categories.category_id','categories.category_name',
+                         'model_has_roles.model_id'
+                           )
+                        ->join('user_categories','user_categories.user_id','=', 'users.id')
+                        ->join('categories','categories.id','=','user_categories.category_id')
+                     ->join('model_has_roles','model_has_roles.model_id','=','users.id')
+                        ->where('users.id','=',$id)
+                        ->first();
+
+       //print_pre($user, true);
 
         if ($user->roles()) {
             $user->roles = $user->roles()->get()->pluck('name');
@@ -203,8 +171,8 @@ class UserController extends Controller
         $department = Departments::all();
         $service = Services::all();
         $category = Categories::all();
-        // $category = UserCategory::select('user_categories.user_id','user_categories.category_id','categories.category_name')
-        //                                 ->join('categories','categories.id','=','user_categories.category_id')->get();
+        $userCategory = UserCategory::select('user_categories.user_id','user_categories.category_id','categories.category_name',)
+                                       ->join('categories','categories.id','=','user_categories.category_id')->get();
         $country = Countries::all();
 
 
@@ -214,6 +182,7 @@ class UserController extends Controller
             'service' => $service,
             'country' => $country,
             'category' => $category,
+            'userCategory' => $userCategory,
             'roles' => Role::all(),
             'permission_modules' => Permission::modules(),
             'permissions' => $permissions,
@@ -228,10 +197,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $input = $request->all();
-
-        //print_pre($input ,true);
 
         $validator = Validator::make($request->all(), [
             'email' => 'email|required|unique:users,email,' . $id, ',id',
@@ -255,8 +221,6 @@ class UserController extends Controller
         $user->services = $request->input('service');
 
          $user->save();
-
-        //print_pre($user ,true);
 
         $roles = $request->input('roles');
 

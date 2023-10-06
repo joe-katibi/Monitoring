@@ -13,7 +13,7 @@
     </div>
     @include('settings.users.form')
 </div>
-<div class="card">
+{{-- <div class="card">
     <div class="card-header with-border">
         <h3 class="card-title">Other Permissions</h3>
     </div>
@@ -53,7 +53,7 @@
         </div>
     </div>
     {!! Form::close() !!}
-</div>
+</div> --}}
 
 @stop
 

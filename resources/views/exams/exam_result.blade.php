@@ -15,6 +15,28 @@
         </div>
         <div class="card-body">
             <div class="row">
+            @can('admin-agent-exam-results')
+            <div class="col-md-4">
+                <label for="section">Agent</label>
+                 <div class="form-group">
+                   <select class="form-control" required="required" name="agent"><option selected="selected" value="">--Select Agent--</option>
+                    <option value="{{$userLogged['id']}}">{{ $userLogged['name'] }}</option>
+              </select>
+              </div>
+              </div>
+              @endcan
+              @can('admin-supervisor-quality-exam-results')
+              <div class="col-md-4">
+                <label for="section">Agent</label>
+                 <div class="form-group">
+                   <select class="form-control" required="required" name="agent"><option selected="selected" value="">--Select Agent--</option>
+                    @foreach ($agents as $agent)
+                    <option value="{{$agent['id']}}">{{ $agent['name'] }}</option>
+                    @endforeach
+              </select>
+              </div>
+              </div>
+              @endcan
                 <div class="col-md-4">
                     <label for="section">Service</label>
                      <div class="form-group">
@@ -39,16 +61,6 @@
 
                    </select>
                 </div> --}}
-                {{-- <div class="col-md-4">
-                <label for="section">Agent</label>
-                 <div class="form-group">
-                   <select class="form-control" required="required" name="trainer"><option selected="selected" value="">--Select Trainer--</option>
-                    @foreach ($trainer as $trainers)
-                    <option value="{{ $trainers['id'] }}">{{$trainers['name'] }}</option>
-                    @endforeach
-              </select>
-              </div>
-              </div> --}}
              <div class="col-md-4">
                <label for="section">Department</label>
                 <div class="form-group">
