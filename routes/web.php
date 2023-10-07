@@ -489,7 +489,7 @@ Route::resource('livecallsreport', LiveCallReportController::class);
 Route::get('reports/livecallsreports', [App\Http\Controllers\Reports\LiveCallReportController::class, 'index'])->name('livecallsreport.index');
 Route::get('reports/livecallsreports', [App\Http\Controllers\Reports\LiveCallReportController::class, 'show'])->name('livecallsreport.show');
 
-});
+
 
 Route::get('course-exam/{id}', function ($id) {
     $exam_name = App\Models\ConductExam::where('course',$id)->get();
@@ -513,7 +513,7 @@ Route::get('trainer-exam/{id}', function ($id) {
 });
 
 
-
+});
 
 /*Route::prefix('admin')->name('/admin/dashboard')->middleware(['auth:sanctum', 'verified', 'role: super-admin|admin|moderator|developer'])->group(function() {
     Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
