@@ -38,6 +38,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::post('/authenticate/user', [App\Http\Controllers\Auth\LoginController::class, 'authenticateUser']);
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -64,26 +66,26 @@ Route::group(['middleware' => ['role:admin']], function () {
     Route::get('admin/edit_parametors/Fiber/welcomequestion', [App\Http\Controllers\FiberQuestions\FiberWelcomeEditController::class, 'create'])->name('create_parametor');
     Route::post('admin/edit_parametors/Fiber/welcomequestionedit', [App\Http\Controllers\FiberQuestions\FiberWelcomeEditController::class, 'store'])->name('parametor.store');
     Route::get('admin/edit_parametors/Fiber/welcomequestionedit', [App\Http\Controllers\FiberQuestions\FiberWelcomeEditController::class, 'index'])->name('welcomequestionedit');
-    Route::delete('roles/{role}/roles',[RolesController::class,'roles.edit'])->name('roles.edit');
-    Route::delete('roles/{role}/edit',[RolesController::class,'roles.edit'])->name('roles.edit');
+    Route::delete('roles/{role}/roles', [RolesController::class, 'roles.edit'])->name('roles.edit');
+    Route::delete('roles/{role}/edit', [RolesController::class, 'roles.edit'])->name('roles.edit');
     Route::post('/roles/create', [App\Http\Controllers\admin\RoleController::class, 'store'])->name('roles.store');
     Route::get('/admin/role/edit', [App\Http\Controllers\admin\RoleController::class, 'edit'])->name('edit');
-    Route::get('roles/{role}/roles',[App\Http\Controllers\admin\RoleController::class,'edit'])->name('roles.update');
-    Route::put('users/{role}/users',[App\Http\Controllers\admin\UserController::class,'edit'])->name('users.update');
-    Route::delete('roles/{role}',[RoleController::class,'removeRole'])->name('users.roles.remove');
+    Route::get('roles/{role}/roles', [App\Http\Controllers\admin\RoleController::class, 'edit'])->name('roles.update');
+    Route::put('users/{role}/users', [App\Http\Controllers\admin\UserController::class, 'edit'])->name('users.update');
+    Route::delete('roles/{role}', [RoleController::class, 'removeRole'])->name('users.roles.remove');
     Route::get('/admin/Users/edit', [App\Http\Controllers\admin\UserController::class, 'edit'])->name('edit');
     Route::get('/admin/Users/create', [App\Http\Controllers\admin\UserController::class, 'update'])->name('update');
     Route::get('/admin/Users/{user}/view', [App\Http\Controllers\admin\UserController::class, 'show'])->name('show');
     Route::post('/users/create', [App\Http\Controllers\admin\UserController::class, 'store'])->name('store');
-    Route::post('roles/{role}/permissions',[App\Http\Controllers\admin\RoleController::class,'givePermission'])->name('roles.permissions');
-    Route::delete('roles/{role}/permissions/{permission}',[App\Http\Controllers\admin\RoleController::class,'revokePermission'])->name('roles.permissions.revoke');
+    Route::post('roles/{role}/permissions', [App\Http\Controllers\admin\RoleController::class, 'givePermission'])->name('roles.permissions');
+    Route::delete('roles/{role}/permissions/{permission}', [App\Http\Controllers\admin\RoleController::class, 'revokePermission'])->name('roles.permissions.revoke');
     Route::delete('/users/{user}/roles/{role}', [App\Http\Controllers\admin\UserController::class, 'removeRole'])->name('roles.remove');
     Route::post('/users/{user}/roles', [App\Http\Controllers\admin\UserController::class, 'assignRole'])->name('users.roles');
     Route::get('/users/{user}/user', [App\Http\Controllers\admin\UserController::class, 'destroy'])->name('users.destroy');
-    Route::delete('roles/{role}/role',[App\Http\Controllers\admin\RoleController::class,'destroy'])->name('roles.destroy');
+    Route::delete('roles/{role}/role', [App\Http\Controllers\admin\RoleController::class, 'destroy'])->name('roles.destroy');
     Route::get('admin/permission/create', [App\Http\Controllers\admin\PermissionController::class, 'create'])->name('permission.create');
     Route::get('/admin/permission/edit', [App\Http\Controllers\admin\PermissionController::class, 'update'])->name('permission.update');
-    Route::delete('permission/{role}',[App\Http\Controllers\admin\PermissionController::class,'destroy'])->name('permission.destroy');
+    Route::delete('permission/{role}', [App\Http\Controllers\admin\PermissionController::class, 'destroy'])->name('permission.destroy');
 
 
 
@@ -139,41 +141,41 @@ Route::get('results/Dth/dth_livecalls_results', [App\Http\Controllers\Results\Dt
 
 
 /* Exams Routes */
-Route::resource('conductexam',App\Http\Controllers\Exams\ConductExamController::class);
-Route::get('exams/conduct_exam',[App\Http\Controllers\Exams\ConductExamController::class,'index'])->name('conduct_exam');
-Route::get('exams/schedule_exam',[App\Http\Controllers\Exams\ConductExamController::class,'create'])->name('conductexam.create');
-Route::get('exams/{conductexam}/edit_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'edit'])->name('conductexam.edit');
-Route::get('exams/{conductexam}/view_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'show'])->name('conductexam.show');
-Route::get('exams/{conductexam}/edit_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'update'])->name('conductexam.update');
-Route::delete('exams/{conductexam}/view_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'destroy'])->name('conductexam.destroy');
-Route::post('exams/schedule_exam',[App\Http\Controllers\Exams\ConductExamController::class,'store'])->name('conductexam.store');
+Route::resource('conductexam', App\Http\Controllers\Exams\ConductExamController::class);
+Route::get('exams/conduct_exam', [App\Http\Controllers\Exams\ConductExamController::class, 'index'])->name('conduct_exam');
+Route::get('exams/schedule_exam', [App\Http\Controllers\Exams\ConductExamController::class, 'create'])->name('conductexam.create');
+Route::get('exams/{conductexam}/edit_conduct', [App\Http\Controllers\Exams\ConductExamController::class, 'edit'])->name('conductexam.edit');
+Route::get('exams/{conductexam}/view_conduct', [App\Http\Controllers\Exams\ConductExamController::class, 'show'])->name('conductexam.show');
+Route::get('exams/{conductexam}/edit_conduct', [App\Http\Controllers\Exams\ConductExamController::class, 'update'])->name('conductexam.update');
+Route::delete('exams/{conductexam}/view_conduct', [App\Http\Controllers\Exams\ConductExamController::class, 'destroy'])->name('conductexam.destroy');
+Route::post('exams/schedule_exam', [App\Http\Controllers\Exams\ConductExamController::class, 'store'])->name('conductexam.store');
 
-Route::resource('examination',App\Http\Controllers\Exams\ExaminationController::class);
-Route::get('exams/examination',[App\Http\Controllers\Exams\ExaminationController::class,'index'])->name('examination');
-Route::post('exams/examination',[App\Http\Controllers\Exams\ExaminationController::class,'store'])->name('examination.store');
-Route::get('exams/{examination}/examination',[App\Http\Controllers\Exams\ExaminationController::class,'show'])->name('examination.show');
+Route::resource('examination', App\Http\Controllers\Exams\ExaminationController::class);
+Route::get('exams/examination', [App\Http\Controllers\Exams\ExaminationController::class, 'index'])->name('examination');
+Route::post('exams/examination', [App\Http\Controllers\Exams\ExaminationController::class, 'store'])->name('examination.store');
+Route::get('exams/{examination}/examination', [App\Http\Controllers\Exams\ExaminationController::class, 'show'])->name('examination.show');
 
 
-Route::resource('examresult',App\Http\Controllers\Exams\ExamsResultsController::class);
-Route::get('exams/exam_result',[App\Http\Controllers\Exams\ExamsResultsController::class, 'index'])->name('exam_result');
-Route::get('/exams/view_exam_results',[App\Http\Controllers\Exams\ExamsResultsController::class, 'show'])->name('examresult.show');
-Route::post('exams/exam_result',[App\Http\Controllers\Exams\ExamsResultsController::class, 'store'])->name('examresult.store');
+Route::resource('examresult', App\Http\Controllers\Exams\ExamsResultsController::class);
+Route::get('exams/exam_result', [App\Http\Controllers\Exams\ExamsResultsController::class, 'index'])->name('exam_result');
+Route::get('/exams/view_exam_results', [App\Http\Controllers\Exams\ExamsResultsController::class, 'show'])->name('examresult.show');
+Route::post('exams/exam_result', [App\Http\Controllers\Exams\ExamsResultsController::class, 'store'])->name('examresult.store');
 
-Route::resource('exambank',App\Http\Controllers\Exams\ExamBankController::class);
-Route::get('exams/exam_bank',[App\Http\Controllers\Exams\ExamBankController::class, 'index'])->name('exam_bank');
-Route::get('exams/{exambank}/exam_bank',[App\Http\Controllers\Exams\ExamBankController::class, 'destroy'])->name('exambank.destroy');
-Route::post('/exams/create_exam',[App\Http\Controllers\Exams\ExamBankController::class, 'store'])->name('store');
-Route::get('/exams/create_exam',[App\Http\Controllers\Exams\ExamBankController::class, 'create'])->name('exambank.store');
-Route::get('exams/edit_exam',[App\Http\Controllers\Exams\ExamBankController::class, 'edit'])->name('exam_bank.edit');
-Route::get('exams/{question}/exam_view',[App\Http\Controllers\Exams\ExamBankController::class, 'show'])->name('exam_view.show');
+Route::resource('exambank', App\Http\Controllers\Exams\ExamBankController::class);
+Route::get('exams/exam_bank', [App\Http\Controllers\Exams\ExamBankController::class, 'index'])->name('exam_bank');
+Route::get('exams/{exambank}/exam_bank', [App\Http\Controllers\Exams\ExamBankController::class, 'destroy'])->name('exambank.destroy');
+Route::post('/exams/create_exam', [App\Http\Controllers\Exams\ExamBankController::class, 'store'])->name('store');
+Route::get('/exams/create_exam', [App\Http\Controllers\Exams\ExamBankController::class, 'create'])->name('exambank.store');
+Route::get('exams/edit_exam', [App\Http\Controllers\Exams\ExamBankController::class, 'edit'])->name('exam_bank.edit');
+Route::get('exams/{question}/exam_view', [App\Http\Controllers\Exams\ExamBankController::class, 'show'])->name('exam_view.show');
 
-Route::resource('create_course',App\Http\Controllers\Exams\CourseController::class);
-Route::get('/exams/course_view',[App\Http\Controllers\Exams\CourseController::class, 'index'])->name('course_view');
-Route::get('exams/create_course',[App\Http\Controllers\Exams\CourseController::class, 'create'])->name('create_course');
-Route::post('/exams/create_course',[App\Http\Controllers\Exams\CourseController::class, 'store'])->name('store');
-Route::delete('exams/{create_course}/create_course',[App\Http\Controllers\Exams\CourseController::class, 'destory'])->name('course.destory');
-Route::get('exams/{create_course}/edit_course',[App\Http\Controllers\Exams\CourseController::class, 'edit'])->name('create_course.edit');
-Route::get('exams/{create_course}/edit_course',[App\Http\Controllers\Exams\CourseController::class, 'update'])->name('create_course.update');
+Route::resource('create_course', App\Http\Controllers\Exams\CourseController::class);
+Route::get('/exams/course_view', [App\Http\Controllers\Exams\CourseController::class, 'index'])->name('course_view');
+Route::get('exams/create_course', [App\Http\Controllers\Exams\CourseController::class, 'create'])->name('create_course');
+Route::post('/exams/create_course', [App\Http\Controllers\Exams\CourseController::class, 'store'])->name('store');
+Route::delete('exams/{create_course}/create_course', [App\Http\Controllers\Exams\CourseController::class, 'destory'])->name('course.destory');
+Route::get('exams/{create_course}/edit_course', [App\Http\Controllers\Exams\CourseController::class, 'edit'])->name('create_course.edit');
+Route::get('exams/{create_course}/edit_course', [App\Http\Controllers\Exams\CourseController::class, 'update'])->name('create_course.update');
 
 
 
@@ -191,12 +193,12 @@ Route::post('/call_summary/create', [App\Http\Controllers\CallSummary\CallSummar
 
 
 /** Uplaod Good and Bad Calls of the month */
-Route::resource('upload',App\Http\Controllers\Upload\UploadCallController::class);
-Route::get('call_saved/upload_calls',[App\Http\Controllers\Upload\UploadCallController::class, 'index'])->name('upload.index');
-Route::post('call_saved/upload_calls',[App\Http\Controllers\Upload\UploadCallController::class, 'store'])->name('upload.store');
-Route::get('call_saved/{upload}/upload_calls',[App\Http\Controllers\Upload\UploadCallController::class, 'show'])->name('upload.show');
-Route::get('call_saved/{upload}/upload_calls',[App\Http\Controllers\Upload\UploadCallController::class, 'edit'])->name('upload.edit');
-Route::delete('call_saved/{upload}/upload_calls',[App\Http\Controllers\Upload\UploadCallController::class, 'destory'])->name('upload.destory');
+Route::resource('upload', App\Http\Controllers\Upload\UploadCallController::class);
+Route::get('call_saved/upload_calls', [App\Http\Controllers\Upload\UploadCallController::class, 'index'])->name('upload.index');
+Route::post('call_saved/upload_calls', [App\Http\Controllers\Upload\UploadCallController::class, 'store'])->name('upload.store');
+Route::get('call_saved/{upload}/upload_calls', [App\Http\Controllers\Upload\UploadCallController::class, 'show'])->name('upload.show');
+Route::get('call_saved/{upload}/upload_calls', [App\Http\Controllers\Upload\UploadCallController::class, 'edit'])->name('upload.edit');
+Route::delete('call_saved/{upload}/upload_calls', [App\Http\Controllers\Upload\UploadCallController::class, 'destory'])->name('upload.destory');
 
 
 
