@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('sub_call_trackers', function (Blueprint $table) {
             $table->id();
-            $table->string('sub_call_tracker');
-            $table->string('call_tracker_id');
+            $table->string('sub_call_tracker')->nullable();
+            $table->string('call_tracker_id')->nullable();
             $table->string('service_id');
 
             $table->timestamps();

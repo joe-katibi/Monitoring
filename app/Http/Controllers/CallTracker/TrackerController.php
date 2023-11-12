@@ -99,17 +99,21 @@ class TrackerController extends Controller
     {
         $input = $request->all();
 
+
+
         try{
 
             DB::beginTransaction();
 
-            $subcallcategory  = new SubCallTracker();
-            $subcallcategory->sub_call_tracker = isset($input['sub_call_tracker']) ? $input['sub_call_tracker']:"";
-            $subcallcategory->call_tracker_id = isset($input['call_tracker_id']) ? $input['call_tracker_id']:"";
+            $subCallCategory  = new SubCallTracker();
+            $subCallCategory->sub_call_tracker = isset($input['sub_call_tracker']) ? $input['sub_call_tracker']:"";
+            $subCallCategory->call_tracker_id = isset($input['call_tracker_id']) ? $input['call_tracker_id']:"";
+            $subCallCategory->service_id = isset($input['service_id']) ? $input['service_id']:"";
 
-            $subcallcategory->save();
 
-           //log::channel('subcallcategory')->info('sub call category Created : ------> ', ['200' , $subcallcategory->toArray() ] );
+            $subCallCategory->save();
+
+           //log::channel('subCallCategory')->info('sub call category Created : ------> ', ['200' , $subCallCategory->toArray() ] );
 
             DB::commit();
 

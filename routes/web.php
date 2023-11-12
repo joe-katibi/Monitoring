@@ -65,59 +65,13 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+//Route::get('/not-activated', 'NotActivatedController@showNotActivated')->name('notActivated');
+Route::get('/auth/notActivated', [App\Http\Controllers\Auth\NotActivatedController::class, 'showNotActivated'])->name('notActivated');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
 Route::group(['middleware' => ['auth']], function () {
-
-
-
-//     Route::get('/admin/user', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('user');
-//     Route::get('/admin/permissions', [App\Http\Controllers\Admin\PermissionController::class, 'index'])->name('permissions');
-//     Route::get('/admin/roles', [App\Http\Controllers\Admin\RoleController::class, 'index'])->name('role');
-//     Route::get('/admin/roles', [App\Http\Controllers\Admin\RoleController::class, 'index'])->name('roles');
-//     Route::post('/admin/roles', [App\Http\Controllers\Admin\RoleController::class, 'store'])->name('store');
-//     Route::get('/admin/usermanagement', [App\Http\Controllers\Admin\UserManagementController::class, 'index'])->name('usermanagement');
-//     Route::resource('roles', RoleController::class);
-//     Route::resource('permission', PermissionController::class);
-//     Route::resource('users', UserController::class);
-//     Route::delete('roles/{role}/roles',[RolesController::class,'roles.edit'])->name('roles.edit');
-//     Route::delete('roles/{role}/edit',[RolesController::class,'roles.edit'])->name('roles.edit');
-//     Route::post('/roles/create', [App\Http\Controllers\admin\RoleController::class, 'store'])->name('roles.store');
-//     Route::get('/admin/role/edit', [App\Http\Controllers\admin\RoleController::class, 'edit'])->name('edit');
-//     Route::get('roles/{role}/roles',[App\Http\Controllers\admin\RoleController::class,'edit'])->name('roles.update');
-//     Route::put('users/{role}/users',[App\Http\Controllers\admin\UserController::class,'edit'])->name('users.update');
-//     Route::delete('roles/{role}',[RoleController::class,'removeRole'])->name('users.roles.remove');
-//     Route::get('/admin/Users/edit', [App\Http\Controllers\admin\UserController::class, 'edit'])->name('edit');
-//     Route::get('/admin/Users/create', [App\Http\Controllers\admin\UserController::class, 'update'])->name('update');
-//     Route::get('/admin/Users/{user}/view', [App\Http\Controllers\admin\UserController::class, 'show'])->name('show');
-//     Route::post('/users/create', [App\Http\Controllers\admin\UserController::class, 'store'])->name('store');
-//     Route::post('roles/{role}/permissions',[App\Http\Controllers\admin\RoleController::class,'givePermission'])->name('roles.permissions');
-//     Route::delete('roles/{role}/permissions/{permission}',[App\Http\Controllers\admin\RoleController::class,'revokePermission'])->name('roles.permissions.revoke');
-//     Route::delete('/users/{user}/roles/{role}', [App\Http\Controllers\admin\UserController::class, 'removeRole'])->name('roles.remove');
-//     Route::post('/users/{user}/roles', [App\Http\Controllers\admin\UserController::class, 'assignRole'])->name('users.roles');
-//     Route::get('/users/{user}/user', [App\Http\Controllers\admin\UserController::class, 'destroy'])->name('users.destroy');
-//     Route::delete('roles/{role}/role',[App\Http\Controllers\admin\RoleController::class,'destroy'])->name('roles.destroy');
-//     Route::get('admin/permission/create', [App\Http\Controllers\admin\PermissionController::class, 'create'])->name('permission.create');
-//     Route::get('/admin/permission/edit', [App\Http\Controllers\admin\PermissionController::class, 'update'])->name('permission.update');
-//     Route::delete('permission/{role}',[App\Http\Controllers\admin\PermissionController::class,'destroy'])->name('permission.destroy');
-
-
-
-//     // Route::post('roles/{role}/permissions',[RolesController::class,'givePermission'])->name('roles.permissions');
-//     // Route::delete('roles/{role}/permissions/{permission}',[RolesController::class,'revokePermission'])->name('roles.permissions.revoke');
-
-
-//     // Route::delete('users/{user}',[UserController::class,'destroy'])->name('users.destroy');
-//     // Route::get('users/{user}',[UserController::class,'show'])->name('users.show');
-//     // Route::post('roles/{role}/roles',[UserController::class,'assignRole'])->name('users.destory');
-//     // Route::delete('roles/{role}',[UserController::class,'removeRole'])->name('users.roles.remove');
-//     // Route::post('roles/{role}/permissions',[UserController::class,'givePermission'])->name('users.permissions');
-//     // Route::delete('roles/{role}/permissions/{permission}',[UserController::class,'revokePermission'])->name('users.permissions.revoke');
-//     //Route::get('results/billing/billing_results', [App\Http\Controllers\QualityAnalyst\BillingCategoryController::class, 'index'])->name('result');
-
-
 
 Route::post('/home/store', [App\Http\Controllers\HomeController::class, 'store'])->name('home.store');
 Route::resource('home', HomeController::class);
@@ -127,8 +81,7 @@ Route::get('home/{id}/activate', [App\Http\Controllers\HomeController::class, 'a
 Route::get('home/{id}/deactivate',[App\Http\Controllers\HomeController::class,  'deactivate'])->name('home.deactivate');
 
 
-
-// settiing --- roles -- permissions---deartments//
+// setting --- roles -- permissions---departments//
 Route::prefix('settings')->group(function () {
 
     //users
@@ -302,7 +255,7 @@ Route::post('/call_tracker/{call_tracker}/edit_tracker', [App\Http\Controllers\C
 Route::post('/call_tracker/{call_tracker}/update', [App\Http\Controllers\CallTracker\TrackerController::class, 'update'])->name('call_tracker.update');
 Route::get('/call_tracker/{call_tracker}/show_tracker', [App\Http\Controllers\CallTracker\TrackerController::class, 'show'])->name('call_tracker.show');
 //Route::get('call_tracker/{call_tracker}/create', [App\Http\Controllers\CallTracker\TrackerController::class, 'storeSub'])->name('call_tracker.storeSub');
-Route::post('call_tracker/{call_tracker}/create', [App\Http\Controllers\CallTracker\TrackerController::class, 'storeSub'])->name('call_tracker.storeSub');
+Route::post('call_tracker/{call_tracker}/{service_id}/create', [App\Http\Controllers\CallTracker\TrackerController::class, 'storeSub'])->name('call_tracker.storeSub');
 Route::delete('/call_tracker/{call_tracker}/destroy', [App\Http\Controllers\CallTracker\TrackerController::class, 'destroy'])->name('call_tracker.destroy');
 
 Route::get('calltracker/{id}', function ($id) {
@@ -514,12 +467,3 @@ Route::get('trainer-exam/{id}', function ($id) {
 
 
 });
-
-/*Route::prefix('admin')->name('/admin/dashboard')->middleware(['auth:sanctum', 'verified', 'role: super-admin|admin|moderator|developer'])->group(function() {
-    Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-
-    Route::resource('admins', AdminController::class)->parameters(['admins' => 'user'])->only(['index', 'update']);
-    Route::resource('/admin/user', UserController::class)->except(['create', 'show', 'edit']);
-    Route::resource('/admin/permissions', PermissionController::class)->except(['create', 'show', 'edit']);
-    Route::resource('/admin/roles', RoleController::class)->except(['create', 'show', 'edit']);
-});*/

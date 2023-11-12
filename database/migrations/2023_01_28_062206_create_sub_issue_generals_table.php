@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('sub_issue_generals', function (Blueprint $table) {
             $table->id();
-            $table->string('sub_name');
-            $table->string('issue_general_id');
-            $table->string('service_id');
-            $table->string('category_id');
+            $table->string('sub_name')->nullable();
+            $table->string('issue_general_id')->nullable();
+            $table->string('service_id')->nullable();
+            $table->string('category_id')->nullable();
             $table->timestamps();
         });
     }

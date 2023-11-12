@@ -15,16 +15,12 @@ return new class extends Migration
     {
         Schema::create('exams_questions', function (Blueprint $table) {
             $table->id();
-            $table->string('service');
-            $table->string('category');
-            // $table->string('question_weight');
-            $table->string('course');
-            $table->string('answer_key');
-            $table->string('question');
-            // $table->string('answer_a');
-            // $table->string('answer_b');
-            // $table->string('answer_c');
-            // $table->string('answer_d');
+            $table->string('service')->nullable();
+            $table->string('category')->nullable();
+            $table->string('course')->nullable();
+            $table->string('answer_key')->nullable();
+            $table->string('question')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

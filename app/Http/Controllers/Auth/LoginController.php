@@ -37,4 +37,17 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    // protected function authenticated(Request $request, $user)
+    // {
+    //     if ($user->user_status == 0) {
+    //         // Redirect to the not activated view
+    //         return redirect()->route('notActivated');
+    //     }
+
+    //     // Store the activation status in the session
+    //     Session::put('user_status', $user->user_status);
+
+    //     return redirect()->intended($this->redirectPath());
+    // }
 }

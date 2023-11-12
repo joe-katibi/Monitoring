@@ -18,24 +18,25 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
-        //
-        // for ($i=1; $i < 10; $i++) {
-        //     $user = User::create([
-        //         'name' => 'Test '.$i,
-        //         'email' => 'test'.$i.'@test.com',
-        //         'is_admin' => 0,
-        //         'country'=>'country'.$i,
-        //         'services'=>'services'.$i,
-        //         'category'=>'category'.$i,
-        //         'position'=>'position'.$i,
-        //         'email_verified_at' => now(),
-        //         'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-        //         'remember_token' => Str::random(10),
-        //     ]);
-        //     $role = Role::where('id', 5)->first();
-        //     $permission = Permission::where('name', 'N/A')->first();
-        //     $user->syncRoles($role)->syncPermissions($permission);
-        //}
+
+        $user = User::create([
+            'name' => 'super-admin',
+            'username' => 'super admin',
+            'email' => 'super@admin.com',
+            'is_admin' => 1,
+            'country'=>'1',
+            'services'=>'1',
+            'category'=>'null',
+            'position'=>'5',
+            'user_status'=>'1',
+            'department_id'=>'1',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => Str::random(10),
+        ]);
+        $role = Role::where('id', 1)->first();
+        $permission = Permission::pluck('name', 'id');
+        $user->syncRoles($role)->syncPermissions($permission);
 
     }
 }

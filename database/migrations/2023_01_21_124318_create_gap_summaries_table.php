@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('gap_summaries', function (Blueprint $table) {
             $table->id();
-            $table->string('gap_title');
-            $table->string('gap_name');
-            $table->string('service_id');
+            $table->string('gap_title')->nullable();
+            $table->string('gap_name')->nullable();
+            $table->string('service_id')->nullable();
             $table->timestamps();
         });
     }

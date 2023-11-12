@@ -19,33 +19,33 @@ class CountriesTableSeeder extends Seeder
         DB::table('countries')->insert([
             [
 
-            'name'=>'Kenya',
+            'country_name'=>'Kenya',
             'country_id'=>'1'
 
             ],
             [
 
-            'name'=>'Uganda',
+            'country_name'=>'Uganda',
             'country_id'=>'2'
-    
+
             ],
             [
 
-            'name'=>'Tanzania',
+            'country_name'=>'Tanzania',
             'country_id'=>'3'
-    
+
             ],
             [
-    
-            'name'=>'Malawi',
+
+            'country_name'=>'Malawi',
             'country_id'=>'4'
-        
+
             ],
             [
-    
-            'name'=>'Zambia',
+
+            'country_name'=>'Zambia',
             'country_id'=>'5'
-        
+
             ]
     ]);
     }

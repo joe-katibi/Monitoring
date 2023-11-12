@@ -267,10 +267,15 @@ class ConductExamController extends Controller
         $uniqueID = $prefix . '-' . $formattedNumericValue;
 
         // Update the row with the new ID and set the status to 1 (reactivate)
-        DB::table('exam_statuses')->where('id', $id)->update([
-            'id' => $uniqueID,
+        // DB::table('exam_statuses')->where('id', $id)->update([
+        //     'id' => $uniqueID,
+        //     'status' => 1,
+        // ]);
+        DB::table('exam_statuses')->insert([
+            'schedule_id' => $uniqueID,
             'status' => 1,
         ]);
+
 
         // Save the new numeric value back to the database
         if ($lastNumericValue) {

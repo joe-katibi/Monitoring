@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -14,18 +15,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
 
         $this->call([
             PermissionsSeeder::class,
             RolesSeeder::class,
-            AssignRoleSeeder::class,
             UserTableSeeder::class,
+            AssignRoleSeeder::class,
+            DepartmentSeeder::class,
             ServicesTableSeeder::class,
             CountriesTableSeeder::class,
             CategoriesTableSeeder::class,
@@ -35,6 +31,9 @@ class DatabaseSeeder extends Seeder
             CallRatingTableSeeder::class,
             ReportTypeSeeder::class,
             TicketStatusSeeders::class,
+            SummarySeeder::class,
+            CounterSeeder::class,
+            StatusesSeeder::class,
         ]);
     }
 }

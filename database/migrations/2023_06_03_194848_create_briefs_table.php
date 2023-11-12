@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('briefs', function (Blueprint $table) {
             $table->id();
-            $table->string('brief_topic');
-            $table->string('brief_description');
-            $table->string('created_by');
-            $table->string('status');
+            $table->string('brief_topic')->nullable();
+            $table->string('brief_description')->nullable();
+            $table->string('created_by')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

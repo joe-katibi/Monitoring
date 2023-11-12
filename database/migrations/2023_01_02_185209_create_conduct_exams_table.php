@@ -15,16 +15,16 @@ return new class extends Migration
     {
         Schema::create('conduct_exams', function (Blueprint $table) {
             $table->id();
-            $table->string('schedule_name');
-            $table->string('time');
-            $table->string('course');
-            $table->string('exam_name');
-            $table->string('service');
-            $table->string('category');
-            $table->string('trainer_qa');
-            $table->string('start_date');
-            $table->string('completion_date');
-            $table->string('created_by');
+            $table->string('schedule_name')->nullable();
+            $table->string('time')->nullable();
+            $table->string('course')->nullable();
+            $table->string('exam_name')->nullable();
+            $table->string('service')->nullable();
+            $table->string('category')->nullable();
+            $table->string('trainer_qa')->nullable();
+            $table->string('start_date')->nullable();
+            $table->string('completion_date')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

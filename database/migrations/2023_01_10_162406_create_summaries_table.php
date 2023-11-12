@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('summaries', function (Blueprint $table) {
             $table->id();
-            $table->string('summary_title');
-            $table->string('summary_name');
-            $table->string('service_id');
+            $table->string('summary_title')->nullable();
+            $table->string('summary_name')->nullable();
+            $table->string('service_id')->nullable();
             $table->timestamps();
         });
     }

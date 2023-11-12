@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('vo_c_summaries', function (Blueprint $table) {
             $table->id();
-            $table->string('voc_title');
-            $table->string('voc_name');
-            $table->string('service_id');
+            $table->string('voc_title')->nullable();
+            $table->string('voc_name')->nullable();
+            $table->string('service_id')->nullable();
             $table->timestamps();
         });
     }

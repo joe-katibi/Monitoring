@@ -15,14 +15,14 @@ return new class extends Migration
     {
         Schema::create('upload_calls', function (Blueprint $table) {
             $table->id();
-            $table->string('agent_name');
-            $table->string('supervisor_name');
-            $table->string('call_category');
-            $table->string('qa_name');
-            $table->string('service_id');
-            $table->string('call_rating');
-            $table->string('call_date');
-            $table->string('call_file');
+            $table->string('agent_name')->nullable();
+            $table->string('supervisor_name')->nullable();
+            $table->string('call_category')->nullable();
+            $table->string('qa_name')->nullable();
+            $table->string('service_id')->nullable();
+            $table->string('call_rating')->nullable();
+            $table->string('call_date')->nullable();
+            $table->string('call_file')->nullable();
             $table->timestamps();
         });
     }

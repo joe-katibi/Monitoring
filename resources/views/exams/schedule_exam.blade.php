@@ -34,7 +34,8 @@
                         <div class="col-sm-6">
                             <div class="card-body">
                                   <label for="">Time</label>
-                                  <input type="time" class="form-control" required name="time" placeholder="time" value="{{ old('time') }}">
+                                  <input type="time" class="form-control" required  placeholder="time" value="{{ old('time') }}">
+                                  <input type="hidden" name="time" id="timeInMinutes" value="{{ old('time_in_minutes') }}">
                                   <span style="color:red">@error('time'){{ $message }}@enderror</span>
                             </div>
                          </div>
@@ -123,5 +124,24 @@
 @stop
 
 @section('js')
-    <script> console.log('Hi!'); </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var timeInput = document.getElementById('timeInput');
+        var timeInMinutesInput = document.getElementById('timeInMinutes');
+
+        // Update the hidden input when the time input changes
+        timeInput.addEventListener('input', function () {
+            var timeValue = timeInput.value;
+
+            // Convert time to minutes (hh:mm to minutes)
+            var parts = timeValue.split(':');
+            var hours = parseInt(parts[0], 10) || 0;
+            var minutes = parseInt(parts[1], 10) || 0;
+            var totalMinutes = hours * 60 + minutes;
+
+            // Update the hidden input with the total minutes
+            timeInMinutesInput.value = totalMinutes;
+        });
+    });
+</script>
 @stop

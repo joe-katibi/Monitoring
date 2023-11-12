@@ -15,24 +15,24 @@ return new class extends Migration
     {
         Schema::create('alert_forms', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->dateTime('date');
-            $table->string('agent_name');
-            $table->string('supervisor_name');
-            $table->string('qa_name');
-            $table->string('description');
-            $table->string('fatal_error');
-            $table->string('supervisor_comment');
-            $table->longText('qa_signature');
-            $table->dateTime('date_by_qa');
-            $table->longText('supervisor_signature');
-            $table->dateTime('date_by_supervisor');
-            $table->longText('agent_signature');
-            $table->dateTime('date_by_agent');
-            $table->string('category_id');
-            $table->string('results_id');
-            $table->string('auto_status');
-            $table->string('service_id');
+            $table->string('title')->nullable();
+            $table->dateTime('date')->nullable();
+            $table->string('agent_name')->nullable();
+            $table->string('supervisor_name')->nullable();
+            $table->string('qa_name')->nullable();
+            $table->string('description')->nullable();
+            $table->string('fatal_error')->nullable();
+            $table->string('supervisor_comment')->nullable();
+            $table->longText('qa_signature')->nullable();
+            $table->dateTime('date_by_qa')->nullable();
+            $table->longText('supervisor_signature')->nullable();
+            $table->dateTime('date_by_supervisor')->nullable();
+            $table->longText('agent_signature')->nullable();
+            $table->dateTime('date_by_agent')->nullable();
+            $table->string('category_id')->nullable();
+            $table->string('results_id')->nullable();
+            $table->string('auto_status')->nullable();
+            $table->string('service_id')->nullable();
             $table->timestamps();
         });
     }

@@ -15,9 +15,11 @@ return new class extends Migration
     {
         Schema::create('exam_statuses', function (Blueprint $table) {
             $table->id();
-            $table->string('schedule_id');
-            $table->string('exam_id');
-            $table->string('status');
+            $table->string('schedule_id')->nullable();
+            $table->string('exam_id')->nullable();
+            $table->string('start_time')->nullable();
+            $table->string('end_time')->nullable();
+            $table->string('status')->nullable();
             $table->string('service_id')->nullable();
             $table->string('category_id')->nullable();
             $table->string('created_by')->nullable();

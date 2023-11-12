@@ -69,7 +69,7 @@
                 </td>
                  <td>
                     @can( 'view-add-category-button')
-                    <a class="btn btn-warning" data-toggle="modal" data-target="#exampleModal" href="{{route('call_tracker.storeSub',$row->id)}}">Add</a>
+                    <a class="btn btn-warning" data-toggle="modal" data-target="#exampleModal" href="{{route('call_tracker.storeSub',[$row->id, $row->service_id])}}">Add</a>
                     @endcan
 
                 </td>
@@ -86,11 +86,12 @@
                 </button>
               </div>
               <div class="modal-body">
-                <form action="{{route('call_tracker.storeSub',$row->id)}}" method="POST">
+                <form action="{{route('call_tracker.storeSub',[$row->id, $row->service_id])}}" method="POST">
                   {{csrf_field()}}
                   <label for="name">SubCategory</label>
                   <input type="text" name="sub_call_tracker" class="form-control">
-                  <input type="text" name="call_tracker_id" value="{{$row->id}}" hidden>
+                  <input type="hidden" name="call_tracker_id" value="{{$row->id}}" >
+                  <input type="hidden" name="service_id" value="{{$row->service_id}}" >
                   <div class="col-ms-3">
                     <div class="card-body">
                         <div class="row">

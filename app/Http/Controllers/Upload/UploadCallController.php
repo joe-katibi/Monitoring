@@ -34,14 +34,12 @@ class UploadCallController extends Controller
          // Retrieves specific columns from the UploadCalls table and joins it with the CallRatings, Categories, Services, and Users tables to retrieve additional information
             $upload = UploadCalls::select('upload_calls.agent_name','upload_calls.supervisor_name','upload_calls.call_category','upload_calls.qa_name',
                                    'upload_calls.call_rating','upload_calls.call_date','upload_calls.call_file','call_ratings.rating_name',
-                                   'categories.service_id','services.service_name','categories.category_name','user_categories.user_id'
-                                   ,'users.country','countries.country_name',
+                                   'categories.service_id','services.service_name','categories.category_name','users.country','countries.country_name',
                                    )
                                   ->join('call_ratings','call_ratings.id','=','upload_calls.call_rating')
                                   ->join('categories','categories.id','=','upload_calls.call_category')
                                   ->join('services','services.id','=','categories.service_id')
-                                  ->join('user_categories','user_categories.category_id','=','upload_calls.call_category')
-                                  ->join('users','users.id','=','user_categories.user_id')
+                                  ->join('users','users.id','=','upload_calls.agent_name')
                                    ->join('countries','countries.id','=','users.country')
                                   ->get();
 
