@@ -63,9 +63,9 @@ use App\Http\Controllers\FiberQuestions\ServiceSupportQuestionController;
 Route::get('/', function () {
     return view('welcome');
 });
-
+//Route::post('/authenticate/user', [App\Http\Controllers\Auth\LoginController::class, 'authenticateUser']);
 Auth::routes();
-//Route::get('/not-activated', 'NotActivatedController@showNotActivated')->name('notActivated');
+
 Route::get('/auth/notActivated', [App\Http\Controllers\Auth\NotActivatedController::class, 'showNotActivated'])->name('notActivated');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
