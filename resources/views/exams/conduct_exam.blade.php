@@ -32,13 +32,13 @@
                       <th>Exam Code</th>
                       <th>Course</th>
                       <th>Total Questions</th>
-                      <th>Time</th>
+                      <th>Durations(minutes)</th>
                       <th>Trainier/QA</th>
                       <th>Department</th>
                       <th>Status</th>
                       <th>Re-activate</th>
                       <th>Created Date</th>
-                      <th style="width: 10%">Action</th>
+                      <th style="width: 10px">Action</th>
                   </tr>
               </thead>
                   <tbody>
@@ -51,7 +51,7 @@
                                <td>{{ $row->exam_name}}</td>
                                <td>{{ $row->schedule_id }}</td>
                                <td>{{ $row->course_name }}</td>
-                               <td>20</td>
+                               <td>{{ $row->total_questions }}</td>
                                <td>{{ $row->time }}</td>
                                <td>{{ $row->name }}</td>
                                <td>{{ $row->category_name }}</td>

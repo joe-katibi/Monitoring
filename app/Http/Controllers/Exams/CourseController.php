@@ -82,6 +82,7 @@ class CourseController extends Controller
             $course = new Courses();
             $course->course_name = isset($input['course_name']) ? $input['course_name']:"";
             $course->service_id = isset($input['service_id']) ? $input['service_id']:"";
+            $course->created_by = Auth::user()->id;
             $course->save();
 
             log::channel('course')->info('course Created : ------> ', ['200' , $course->toArray() ] );

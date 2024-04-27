@@ -28,6 +28,11 @@ class AlertResultsController extends Controller
 
         $user_id = auth()->user()->id;
 
+          // Get the authenticated user's ID
+          $userId = auth()->id();
+
+          $userlogged = User::select('users.name','users.id',)->where('users.id','=',$userId)->first();
+
         $supervisorlogged = Role::select('roles.id',)->where('name', '=', 'team-leader')->first();
 
         $agentlogged = Role::select('roles.id',)->where('name', '=', 'Agent')->first();
@@ -51,31 +56,13 @@ class AlertResultsController extends Controller
               $data['agentlogged']  = $agentlogged;
               $data['qualitylogged']  = $qualitylogged;
               $data['trainierlogged']  = $trainierlogged;
+              $data['userlogged']=$userlogged;
+
 
 
         return view('alert_forms/alert_forms_view')->with($data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      * Display the specified resource.
@@ -125,7 +112,7 @@ class AlertResultsController extends Controller
                                  ->join('results','results.id','=','alert_forms.results_id')
                                  ->join('categories','categories.id','=','results.category')
                                  ->where('alert_forms.agent_name','=',$agent)
-                                 ->where('results.category','=',$categoryname)
+                                 //->where('results.category','=',$categoryname)
                                  ->where('alert_forms.created_at','>=',$start_date)
                                  ->where('alert_forms.created_at','<=',$end_date)
                                    ->get();

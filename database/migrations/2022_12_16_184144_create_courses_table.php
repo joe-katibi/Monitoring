@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('course_name')->nullable();
             $table->string('service_id')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

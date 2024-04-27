@@ -71,6 +71,7 @@ class TrackerController extends Controller
             $callcategory = new CallTracker();
             $callcategory->call_tracker = isset($input['call_tracker']) ? $input['call_tracker']:"";
             $callcategory->service_id = isset($input['service_id']) ? $input['service_id']:"";
+            $callcategory->created_by = Auth::user()->id;
             $callcategory->save();
 
             DB::commit();
@@ -109,6 +110,7 @@ class TrackerController extends Controller
             $subCallCategory->sub_call_tracker = isset($input['sub_call_tracker']) ? $input['sub_call_tracker']:"";
             $subCallCategory->call_tracker_id = isset($input['call_tracker_id']) ? $input['call_tracker_id']:"";
             $subCallCategory->service_id = isset($input['service_id']) ? $input['service_id']:"";
+            $subCallCategory->created_by = Auth::user()->id;
 
 
             $subCallCategory->save();
@@ -177,6 +179,7 @@ class TrackerController extends Controller
         $input = $request->all();
         $updatesubcallcategory  = SubCallTracker::findOrFail($id);
         $updatesubcallcategory->sub_call_tracker = isset($input['edit_sub_call_tracker']) ? $input['edit_sub_call_tracker']:"";
+        $updatesubcallcategory->created_by = Auth::user()->id;
         $updatesubcallcategory->save();
 
         return redirect()->back();

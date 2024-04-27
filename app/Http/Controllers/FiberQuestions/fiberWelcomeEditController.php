@@ -76,6 +76,7 @@ class fiberWelcomeEditController extends Controller
         $parameterquestions->no = isset($input['no']) ? $input['no']:"";
         $parameterquestions->service = isset($input['service']) ? $input['service']:"";
         $parameterquestions->category = isset($input['category']) ? $input['category']:"";
+        $parameterquestions->created_by = Auth::user()->id;
 
         $parameterquestions->save();
 
@@ -172,6 +173,7 @@ class fiberWelcomeEditController extends Controller
             $updating->no = isset($input['no']) ? $input['no']:"";
             $updating->service = isset($input['service']) ? $input['service']:"";
             $updating->category = isset($input['category']) ? $input['category']:"";
+            $updating->created_by = Auth::user()->id;
 
             // dd($updating); exit;
 

@@ -37,7 +37,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label for="section">Select Country</label>
                         <div class="form-group">
                             <select class="form-control" required="required" id="country" name="country">
@@ -48,7 +48,15 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-2">
+                        <label for="section">Select Type</label>
+                        <select class="form-control" id="duration_unit" name="duration_unit">
+                            <option selected="selected" value="">--Select Type --</option>
+                            <option value="month">Month</option>
+                            <option value="week">Week</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
                         <!-- Date range -->
                         <div class="form-group">
                             <label>Date range:</label>
@@ -85,29 +93,26 @@
                     <tr>
                         <th>Country</th>
                         <th>Services</th>
-<th>Date</th>
-                        <th>Week</th>
-                            <th>Month</th>
-                        <th>Results</th>
+                        <th>Week/Month</th>
+                        <th>Average</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($auditresults as $audits)
-                        <tr>
-                            <td>{{ $audits['country_name'] }}</td>
-                            <td>
-                                @if ($audits->services == '1')
-                                    <a disable class="badge badge-success">Cable</a>
-                                @else
-                                    <a disable class="badge badge-primary">DTH</a>
-                                @endif
-                            </td>
-<td>{{ $audits['date_recorded'] }}</td>
-                            <td>{{ $audits['weekNumberWithPrefix'] }}</td>
-                                <td>{{ $audits['monthName'] }}</td>
-                            <td>{{ $audits['final_results'] }}%</td>
-                        </tr>
-                    @endforeach
+                    @foreach($groupedResults as $key => $group)
+                    <tr>
+                        <td>{{ $group['results']->first()->country_name }}</td>
+                        <td>
+                            @if ($group['results']->first()->services == '1')
+                                <a disable class="badge badge-success">Cable</a>
+                            @else
+                                <a disable class="badge badge-primary">DTH</a>
+                            @endif
+                        </td>
+                        <td>{{ $key }}</td>
+                        <td>{{ round($group['average'], 2) }}%</td>
+                    </tr>
+                @endforeach
+
                 </tbody>
             </table>
             @else
@@ -126,29 +131,25 @@
                         <tr>
                             <th>Country</th>
                             <th>Services</th>
-                            <th>Date</th>
-                            <th>Week</th>
-                            <th>Month</th>
-                            <th>Results</th>
+                            <th>Week/Month</th>
+                            <th>Average</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($examresults as $exams)
-                            <tr>
-                                <td>{{ $exams['country_name'] }}</td>
-                                <td>
-                                    @if ($exams->services == '1')
-                                        <a disable class="badge badge-success">Cable</a>
-                                    @else
-                                        <a disable class="badge badge-primary">DTH</a>
-                                    @endif
-                                </td>
-                                <td>{{ $exams['created_at'] }}</td>
-                                <td>{{ $exams['weekNumberWithPrefix'] }}</td>
-                                <td>{{ $exams['monthName'] }}</td>
-                                <td>{{ $exams['marks_achieved'] }}%</td>
-                            </tr>
-                        @endforeach
+                        @foreach($groupedResultsExam as $key => $group)
+                        <tr>
+                            <td>{{ $group['results']->first()->country_name }}</td>
+                            <td>
+                                @if ($group['results']->first()->services == '1')
+                                    <a disable class="badge badge-success">Cable</a>
+                                @else
+                                    <a disable class="badge badge-primary">DTH</a>
+                                @endif
+                            </td>
+                            <td>{{ $key }}</td>
+                            <td>{{ round($group['average'], 2) }}%</td>
+                        </tr>
+                    @endforeach
                     </tbody>
                 </table>
             @else

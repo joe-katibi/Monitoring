@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('call_rating')->nullable();
             $table->string('call_date')->nullable();
             $table->string('call_file')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

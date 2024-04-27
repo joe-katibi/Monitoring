@@ -33,6 +33,7 @@ return new class extends Migration
             $table->string('quality_analyst_date_sign')->nullable();
             $table->string('results_id')->nullable();
             $table->string('category_id')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

@@ -202,7 +202,7 @@ class CoachingController extends Controller
              $newCoachingForm->coaching_status = 1;
              $newCoachingForm->quality_analyst_signature = isset($input['quality_signature']) ? $input['quality_signature'] :"";
              $newCoachingForm->quality_analyst_date_sign = isset($input['date_qa_sign']) ? Carbon::parse($input['date_qa_sign'])->format('Y-m-d H:i:s') : Carbon::now()->format('Y-m-d H:i:s');
-
+             $newCoachingForm->created_by = Auth::user()->id;
             // $newCoachingForm->action_points_taken = isset($input['action_taken']) ? $input['action_taken'] :"";
             // $newCoachingForm->agent_signature = isset($input['agent_signature']) ? $input['agent_signature'] :"";
             // $newCoachingForm->agent_date_sign = isset($input['date_agent_sign']) ? $input['date_agent_sign'] :"";
@@ -373,6 +373,7 @@ class CoachingController extends Controller
             $updateagentcoaching->agent_date_sign = isset($input['agent_date_sign']) ? Carbon::parse($input['agent_date_sign'])->format('Y-m-d H:i:s') : Carbon::now()->format('Y-m-d H:i:s');
             $updateagentcoaching->agent_signature  = isset($input['agent_signature']) ? $input['agent_signature']:"";
             $updateagentcoaching->coaching_status='3';
+            $updateagentcoaching->created_by = Auth::user()->id;
 
             $updateagentcoaching->save();
 
@@ -407,6 +408,7 @@ class CoachingController extends Controller
             $updatecoaching->supervisor_signature = isset($input['supervisor_signature']) ? $input['supervisor_signature']:"";
             $updatecoaching->supervisor_date_sign = isset($input['dateOfSupevisor']) ? Carbon::parse($input['dateOfSupevisor'])->format('Y-m-d H:i:s') : Carbon::now()->format('Y-m-d H:i:s');
             $updatecoaching->coaching_status='2';
+            $updateagentcoaching->created_by = Auth::user()->id;
 
             $updatecoaching->save();
 

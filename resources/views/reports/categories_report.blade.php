@@ -41,11 +41,16 @@
                     <label for="service[]">Select Category</label>
                     <div class="form-group">
                         <select class="form-control" required="required" id="category" name="category"><option  value="">--Select Category--</option>
-                            {{-- @foreach ($category as $item)
-                            <option value="{{ $item['id'] }}">{{ $item['category_name'] }}</option>
-                            @endforeach --}}
                         </select>
                     </div>
+                </div>
+                <div class="col-md-2">
+                    <label for="section">Select Type</label>
+                    <select class="form-control" id="duration_unit" name="duration_unit">
+                        <option selected="selected" value="">--Select Type --</option>
+                        <option value="month">Month</option>
+                        <option value="week">Week</option>
+                    </select>
                 </div>
                        <div class="col-md-4">
                         <!-- Date range -->
@@ -85,34 +90,29 @@
                                         <th>Category</th>
                                         <th>Country</th>
                                         <th>Services</th>
-                                        <th>date</th>
-                                        <th>Week</th>
-                                        <th>Month</th>
+                                        <th>Date/week/month</th>
                                         <th>Percentage</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($categoryreport as $categorys)
-
-                                    <tr>
-                                        <td>{{ $categorys['category_name'] }}</td>
-                                        <td>{{ $categorys['country_name'] }}</td>
-                                        <td>
-                                            {{-- {{ $categorys['service_name'] }} --}}
-
-                                            @if ($categorys->s_id == '1')
-                                            <a disable class="badge badge-success" >Cable</a>
-                                            @else
-                                            <a disable class="badge badge-primary" >DTH</a>
-                                            @endif
-
-                                        </td>
-                                        <td>{{ $categorys['date_recorded'] }}</td>
-                                        <td>{{ $categorys['weekNumberWithPrefix'] }}</td>
-                                        <td>{{ $categorys['monthName'] }}</td>
-                                        <td>{{ $categorys['final_results'] }}%</td>
-                                    </tr>
+                                    @foreach($groupedResults as $key => $group)
+                                    @foreach($group['results'] as $result)
+                                        <tr>
+                                            <td>{{ $result->category_name }}</td>
+                                            <td>{{ $result->country_name }}</td>
+                                            <td>
+                                                @if ($result->s_id == '1')
+                                                    <span class="badge badge-success">Cable</span>
+                                                @else
+                                                    <span class="badge badge-primary">DTH</span>
+                                                @endif
+                                            </td>
+                                            <td>{{ $key }}</td>
+                                            <td>{{ round($group['average'], 2) }}%</td>
+                                        </tr>
+                                        @break <!-- Break after displaying the parameter value once for each group -->
                                     @endforeach
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>

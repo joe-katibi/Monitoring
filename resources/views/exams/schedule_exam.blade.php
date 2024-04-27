@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Create Conduct')
 
 @section('content_header')
     <h1 hidden>Scheduled</h1>
@@ -18,57 +18,56 @@
         <div class="container-fluid p-4">
             <div class="row jusify-content-md-center">
                 <div class="row">
+                    <div class="col-sm-6">
+                        <div class="card-body">
+                            <label for="">Services</label>
+                                <select class="form-control" required="required" id="service" name="service">
+                                 <option selected="selected" value="">--Select service--</option>
+                                 @foreach ($service as $service)
+                                 <option value="{{ $service['id'] }}">{{$service['service_name'] }}</option>
+                                 @endforeach
+                             </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="card-body">
+                            <label for="">Category</label>
+                                <select class="form-control" required="required" id="category" name="category">
+                                    <option  value="">--Select Category--</option>
+                                </select>
+                       </div>
+                   </div>
                          <div class="col-sm-6">
                            <div class="card-body">
                                  <label for="">Course</label>
-                                 <select class="custom-select" placeholder="course" required id="course" name="course" value="{{ old('course') }}">
-
-                                    <option disabled selected>select a course</option>
-                                    @foreach($course as $row )
-                                    <option value="{{ $row['id'] }}">{{$row['course_name']}}</option>
-                                    @endforeach
-                                  </select>
+                                 <select class="form-control" required="required" id="course" name="course">
+                                 <option selected="selected" value="">--Select Course--</option>
+                                 </select>
                                   <span style="color:red">@error('course'){{ $message }}@enderror</span>
                            </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="card-body">
-                                  <label for="">Time</label>
-                                  <input type="time" class="form-control" required  placeholder="time" value="{{ old('time') }}">
-                                  <input type="hidden" name="time" id="timeInMinutes" value="{{ old('time_in_minutes') }}">
-                                  <span style="color:red">@error('time'){{ $message }}@enderror</span>
+                                  <label for="duration">Duration</label>
+                                  <div class="row">
+                                    <div class="col-sm-6">
+                                        <input type="number" class="form-control" id="duration" name="time" placeholder="Enter duration" value="{{ old('time') }}">
+                                        <span style="color:red">@error('time'){{ $message }}@enderror</span>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" id="duration_unit" name="duration_unit">
+                                            <option value="hours">Hours</option>
+                                            <option value="minutes">Minutes</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                          </div>
-
                     <div class="col-sm-6">
                         <div class="card-body">
                              <label for="">Exam name</label>
                              <input type="text" class="form-control" required name="exam_name" placeholder="Exam name" value="{{ old('exam_name') }}">
                              <span style="color:red">@error('exam_name'){{ $message }}@enderror</span>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                         <div class="card-body">
-                             <label for="">Services</label>
-                             <select class="custom-select" placeholder="service" required id="service" name="service" value="{{ old('service') }}">
-                                <span style="color:red">@error('service'){{ $message }}@enderror</span>
-                                <option disabled selected>select a service</option>
-                                @foreach($service as $row )
-                                <option value="{{ $row['id'] }}">{{$row['service_name']}}</option>
-                                @endforeach
-                              </select>
-                         </div>
-                     </div>
-                     <div class="col-sm-6">
-                         <div class="card-body">
-                             <label for="">Category</label>
-                            <select class="custom-select" placeholder="category" required id="category" name="category" value="{{ old('category') }}">
-                                <span style="color:red">@error('category'){{ $message }}@enderror</span>
-                                <option disabled selected>select a category</option>
-                                @foreach($category as $row )
-                                <option value="{{ $row['id'] }}">{{$row['category_name']}}</option>
-                                @endforeach
-                              </select>
                         </div>
                     </div>
                     <div class="col-sm-6">
@@ -144,4 +143,108 @@
         });
     });
 </script>
+
+<script>
+    $(document).ready(function () {
+
+        /*------------------------------------------
+        --------------------------------------------
+        Service Dropdown Change Event
+        --------------------------------------------
+        --------------------------------------------*/
+        $('#service').on('change', function () {
+            var qaa_call_category = this.value;
+            //console.log(qaa_call_category);
+            $("#course").html('');
+            $.ajax({
+                url: '/course-report/'+qaa_call_category,
+                type: "GET",
+                data: {
+                    service: qaa_call_category,
+                    _token: '{{csrf_token()}}'
+                },
+                dataType: 'json',
+                success: function (result) {
+                    $('#course').html('<option value="">-- Select --</option>');
+                    console.log(result);
+                    $.each(result, function (key, value) {
+                        $("#course").append('<option value="' + value
+                            .id + '">' + value.course_name + '</option>');
+                    });
+
+                }
+            });
+        });
+
+    });
+</script>
+<script>
+    $(document).ready(function () {
+
+        /*------------------------------------------
+        --------------------------------------------
+        Service Dropdown Change Event
+        --------------------------------------------
+        --------------------------------------------*/
+        $('#course').on('change', function () {
+            var qaa_call_category = this.value;
+            //console.log(qaa_call_category);
+            $("#exam").html('');
+            $.ajax({
+                url: '/course-exam/'+qaa_call_category,
+                type: "GET",
+                data: {
+                    service: qaa_call_category,
+                    _token: '{{csrf_token()}}'
+                },
+                dataType: 'json',
+                success: function (result) {
+                    $('#exam').html('<option value="">-- Select --</option>');
+                    console.log(result);
+                    $.each(result, function (key, value) {
+                        $("#exam").append('<option value="' + value
+                            .id + '">' + value.exam_name + '</option>');
+                    });
+
+                }
+            });
+        });
+
+    });
+</script>
+<script>
+    $(document).ready(function () {
+
+        /*------------------------------------------
+        --------------------------------------------
+        Service Dropdown Change Event
+        --------------------------------------------
+        --------------------------------------------*/
+        $('#service').on('change', function () {
+            var qaa_call_category = this.value;
+            //console.log(qaa_call_category);
+            $("#category").html('');
+            $.ajax({
+                url: '/auto-fail/'+qaa_call_category,
+                type: "GET",
+                data: {
+                    service: qaa_call_category,
+                    _token: '{{csrf_token()}}'
+                },
+                dataType: 'json',
+                success: function (result) {
+                    $('#category').html('<option value="">-- Select --</option>');
+                    console.log(result);
+                    $.each(result, function (key, value) {
+                        $("#category").append('<option value="' + value
+                            .id + '">' + value.category_name + '</option>');
+                    });
+
+                }
+            });
+        });
+
+    });
+</script>
+
 @stop

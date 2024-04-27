@@ -63,6 +63,7 @@ class ExamBankController extends Controller
         $examination->question = isset($input['question']) ? $input['question'] : "";
 
 
+
         $examination->save();
 
         log::channel('examination')->info('examination Created : ------> ', ['200', $examination->toArray()]);
@@ -199,6 +200,8 @@ class ExamBankController extends Controller
          $firstQuestion = $questions[0];
          $examQuestion = ExamsQuestions::findOrFail($firstQuestion['id']);
          $examQuestion->question = $firstQuestion['question'];
+         $examQuestion->created_by = Auth::user()->id;
+
          $examQuestion->update();
 
          $choicesData = $firstQuestion['choices'];

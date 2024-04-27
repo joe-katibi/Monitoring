@@ -94,6 +94,7 @@ class QaAlertFormController extends Controller
             $agentalertfrom->results_id = isset($input['results_id']) ? $input['results_id']:"";
             $agentalertfrom->category_id = isset($input['category_id']) ? $input['category_id']:"";
             $agentalertfrom->auto_status = '1';
+            $agentalertfrom->created_by = Auth::user()->id;
 
             $agentalertfrom->save();
 
@@ -201,6 +202,7 @@ class QaAlertFormController extends Controller
             $updatealert->supervisor_signature = isset($input['supervisor_signature']) ? $input['supervisor_signature']:"";
             $updatealert->date_by_supervisor = isset($input['date_supervisor']) ? Carbon::parse($input['date_supervisor'])->format('Y-m-d H:i:s') : Carbon::now()->format('Y-m-d H:i:s');
             $updatealert->auto_status = '2';
+            $updatealert->created_by = Auth::user()->id;
 
             $updatealert->save();
 
@@ -280,10 +282,6 @@ class QaAlertFormController extends Controller
     {
         //
     }
-     /**
-     * alertformsview the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
 
 }

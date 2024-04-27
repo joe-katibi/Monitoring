@@ -120,19 +120,20 @@ class AgentAlertFormController extends Controller
 
         try {
             DB::beginTransaction();
-            $updatealert = AlertForm::where('id','=',$id)->first();
-            $updatealert->agent_signature = isset($input['agent_signature']) ? $input['agent_signature']:"";
-            $updatealert->date_by_agent = isset($input['date_agent']) ? Carbon::parse($input['date_agent'])->format('Y-m-d H:i:s') : Carbon::now()->format('Y-m-d H:i:s');
-            $updatealert->auto_status = '3';
+            $updateAlert = AlertForm::where('id','=',$id)->first();
+            $updateAlert->agent_signature = isset($input['agent_signature']) ? $input['agent_signature']:"";
+            $updateAlert->date_by_agent = isset($input['date_agent']) ? Carbon::parse($input['date_agent'])->format('Y-m-d H:i:s') : Carbon::now()->format('Y-m-d H:i:s');
+            $updateAlert->auto_status = '3';
+            $updateAlert->created_by = Auth::user()->id;
 
-            $updatealert->save();
+            $updateAlert->save();
 
 
-            log::channel('agentSignAlertForm')->info('agent signed alert form : ------> ', ['200' , $updatealert->toArray() ] );
+            log::channel('agentSignAlertForm')->info('agent signed alert form : ------> ', ['200' , $updateAlert->toArray() ] );
 
             DB::commit();
 
-            return redirect('/alert_forms/alert_view_full/'.$updatealert->id);
+            return redirect('/alert_forms/alert_view_full/'.$updateAlert->id);
 
 
         } catch (\Throwable $e) {

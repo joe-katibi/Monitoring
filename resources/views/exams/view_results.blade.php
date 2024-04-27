@@ -58,19 +58,19 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="form-label">Agent Name:</label>
-                    <input readonly value="{{ $exam_results[0]['name'] }}" type="text" class="form-control">
+                    <input readonly value="{{ $exam_results['name'] }}" type="text" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="form-label">Date:</label>
-                    <input readonly value="{{ $exam_results[0]['created_at'] }}"  class="form-control">
+                    <input readonly value="{{ $exam_results['created_at'] }}"  class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="form-label">Exam Name:</label>
-                    <input readonly value="{{ $exam_results[0]['exam_name'] }}" type="text" class="form-control">
+                    <input readonly value="{{ $exam_results['exam_name'] }}" type="text" class="form-control">
                 </div>
             </div>
             <div class="col-md-6">
@@ -107,7 +107,7 @@
             <div class="card bg-warning text-white">
                 <div class="card-body">
                     <h6>Marks Achieved</h6>
-                    <p>{{ $totalMarks }} %</p>
+                    <p>{{ $percentage }} %</p>
                 </div>
             </div>
         </div>

@@ -18,7 +18,7 @@
             <div class="small-box bg-info">
               <div class="inner">
                 <h3>150</h3>
-
+                     HELLO
                 <p>New Orders</p>
               </div>
               <div class="icon">
@@ -74,15 +74,15 @@
           </div>
           <!-- ./col -->
         </div>
-       
-              
+
+
                   <!-- ./col -->
                 </div>
                 <!-- /.row -->
               </div>
               <!-- /.card-footer -->
             </div>
-            
+
           </section>
           <!-- right col -->
         </div>
@@ -95,7 +95,7 @@
    <footer class="main-footer">
     <strong>Copyright &copy; 2022 .</strong>
     All rights reserved.
-    
+
   </footer>
 
 
@@ -127,7 +127,7 @@
 
 @section('js')
     <script> console.log('Hi!'); </script>
-    
+
 <!-- jQuery -->
 <script src="plugins/jquery/jquery.min.js"></script>
 <!-- jQuery UI 1.11.4 -->

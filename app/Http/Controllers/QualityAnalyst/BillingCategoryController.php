@@ -197,6 +197,7 @@ class BillingCategoryController extends Controller
             $results->date_updated = isset($input['date_recorded']) ?  Carbon::parse($input['date_recorded'])->format('Y-m-d H:i:s') :  Carbon::now()->format('Y-m-d H:i:s');
             $results->status = '1';
             $results->report_type_id = isset($input['reporttype']) ? $input['reporttype'] :"";
+            $results->created_by = Auth::user()->id;
 
 
             // Save the new results object to the database.
@@ -313,6 +314,7 @@ class BillingCategoryController extends Controller
                         $coachingForm->coaching_status = '1';
                         $coachingForm->results_id = $results->id;
                         $coachingForm->category_id = $results->category;
+                        $coachingForm->created_by = Auth::user()->id;
                         //save required details on coaching DB
 
                         // dd($totalMarks);

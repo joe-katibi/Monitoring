@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', ' Edit Conduct')
 
 @section('content_header')
     <h1 hidden>edit Conduct</h1>
@@ -10,7 +10,7 @@
 @include('sweetalert::alert')
 <form action="{{ route('conductexam.update',$examedit['id']) }}" method="POST">
     @csrf
-    @method('PUT')
+    @method('POST')
     <div class="card card-success">
         <div class="card-header">
             <input readonly class="form-control" style="color: green" name="" value="Edit Conduct">
@@ -18,6 +18,32 @@
         <div class="container-fluid p-4">
             <div class="row jusify-content-md-center">
                 <div class="row">
+                    <div class="col-sm-6">
+                        <div class="card-body">
+                            <label for="">Services</label>
+                            <select class="custom-select" placeholder="service" id="service" name="service" value="{{ old('service') }}">
+                               <span style="color:red">@error('service'){{ $message }}@enderror</span>
+                               <option value="{{$examedit->service }}" >{{$service[0]['service_name']}}</option>
+                               {{-- <option disabled selected>select a service</option> --}}
+                               @foreach($service as $row )
+                               <option value="{{ $row['id'] }}">{{$row['service_name']}}</option>
+                               @endforeach
+                             </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="card-body">
+                            <label for="">Category</label>
+                           <select class="custom-select" placeholder="category" id="category" name="category" value="{{ old('category') }}">
+                               <span style="color:red">@error('category'){{ $message }}@enderror</span>
+                               <option value="{{$examedit->category }}" >{{$category[0]['category_name']}}</option>
+                               {{-- <option disabled selected>select a category</option> --}}
+                               @foreach($category as $row )
+                               <option value="{{ $row['id'] }}">{{$row['category_name']}}</option>
+                               @endforeach
+                             </select>
+                       </div>
+                   </div>
                          <div class="col-sm-6">
                            <div class="card-body">
                                  <label for="">Course</label>
@@ -33,43 +59,26 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="card-body">
-                                  <label for="">Time</label>
-                                  <input type="time" class="form-control" name="time" placeholder="time" value="{{ $examedit->time }}">
-                                  <span style="color:red">@error('time'){{ $message }}@enderror</span>
+                                  <label for="duration">Duration</label>
+                                  <div class="row">
+                                    <div class="col-sm-6">
+                                        <input type="number" class="form-control" id="duration" name="time" placeholder="Enter duration" value="{{ $examedit->time }}">
+                                        <span style="color:red">@error('time'){{ $message }}@enderror</span>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" id="duration_unit" name="duration_unit">
+                                            {{-- <option value="hours">Hours</option> --}}
+                                            <option value="minutes">Minutes</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                          </div>
-
                     <div class="col-sm-6">
                         <div class="card-body">
                              <label for="">Exam name</label>
-                             <input type="text" class="form-control" name="exam_name" placeholder="Exam name" value="{{ $examedit->category_name  }}">
+                             <input type="text" class="form-control" name="exam_name" placeholder="Exam name" value="{{ $examedit->exam_name  }}">
                              <span style="color:red">@error('exam_name'){{ $message }}@enderror</span>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                         <div class="card-body">
-                             <label for="">Services</label>
-                             <select class="custom-select" placeholder="service" id="service" name="service" value="{{ old('service') }}">
-                                <span style="color:red">@error('service'){{ $message }}@enderror</span>
-                                <option value="{{$examedit->service }}" >{{$service[0]['service_name']}}</option>
-                                {{-- <option disabled selected>select a service</option> --}}
-                                @foreach($service as $row )
-                                <option value="{{ $row['id'] }}">{{$row['service_name']}}</option>
-                                @endforeach
-                              </select>
-                         </div>
-                     </div>
-                     <div class="col-sm-6">
-                         <div class="card-body">
-                             <label for="">Category</label>
-                            <select class="custom-select" placeholder="category" id="category" name="category" value="{{ old('category') }}">
-                                <span style="color:red">@error('category'){{ $message }}@enderror</span>
-                                <option value="{{$examedit->category }}" >{{$category[0]['category_name']}}</option>
-                                {{-- <option disabled selected>select a category</option> --}}
-                                @foreach($category as $row )
-                                <option value="{{ $row['id'] }}">{{$row['category_name']}}</option>
-                                @endforeach
-                              </select>
                         </div>
                     </div>
                     <div class="col-sm-6">
@@ -77,7 +86,7 @@
                             <label for="">Trainer/QA</label>
                             <select class="custom-select" placeholder="trainer_qa" id="trainer_qa" name="trainer_qa" value="{{ old('trainer_qa') }}">
                                 <span style="color:red">@error('trainer_qa'){{ $message }}@enderror</span>
-                                <option value="{{$examedit->trainer_qa }}" >{{$examedit->trainer_qa}}</option>
+                                <option value="{{$examedit->name }}" >{{$examedit->trainer_qa}}</option>
                                 {{-- <option disabled selected>select a Trainer</option> --}}
                                 @foreach($trainer as $row )
                                 <option value="{{$row->id }}">{{$row->name }}</option>

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('no')->nullable();
             $table->string('service')->nullable();
             $table->string('category')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

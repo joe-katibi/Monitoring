@@ -16,7 +16,7 @@
         <form method="GET" action="{{ route('percentile.show') }}" accept-charset="UTF-8" class="form" enctype="multipart/form-data"><input name="_token" type="hidden" value="">
             @csrf
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <label for="section">Select type of Report</label>
                 <div class="form-group">
                    <select class="form-control" required="required" id="report_type_id" name="report_type_id"><option selected="selected" value="">--Select Type of Report--</option>
@@ -26,7 +26,7 @@
                 </select>
                 </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label for="service"> Country</label>
                     <div class="form-group">
                         <select class="form-control" required="required" id="country" name="country"><option selected="selected" value="">--Select Country--</option>
@@ -36,7 +36,7 @@
                         </select>
                     </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <label for="section">Select service</label>
                         <div class="form-group">
                            <select class="form-control" required="required" id="service" name="service">
@@ -47,15 +47,23 @@
                         </select>
                         </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label for="service[]">Select Category</label>
                             <div class="form-group">
                                 <select class="form-control" required="required" id="category" name="category"><option  value="">--Select Category--</option>
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <label for="section">Select Type</label>
+                            <select class="form-control" id="duration_unit" name="duration_unit">
+                                <option selected="selected" value="">--Select Type --</option>
+                                <option value="month">Month</option>
+                                <option value="week">Week</option>
+                            </select>
+                        </div>
 
-                      <div class="col-md-4">
+                      <div class="col-md-3">
                        <!-- Date range -->
                           <div class="form-group">
                            <label>Date range:</label>
@@ -94,43 +102,34 @@
                             <th>Parameter</th>
                             <th>Service</th>
                             <th>Country</th>
-                            <th>Date</th>
-                            <th>Week</th>
-                            <th>Month</th>
+                            <th>Date/week/month</th>
                             <th>Percentage</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($percentileresults as $percentileresult)
-
-
-                        <tr>
-                            <td>{{ $percentileresult['category_name'] }}</td>
-                            <td>{{ $percentileresult['summarized'] }}</td>
-                            <td>
-
-                                @if ($percentileresult->s_id == '1')
-                                <a disable class="badge badge-success" >Cable</a>
-                                @else
-                                <a disable class="badge badge-primary" >DTH</a>
-                                @endif
-
-
-                            </td>
-                            <td>{{ $percentileresult['country_name'] }}</td>
-                            <td>{{ $percentileresult['date_recorded'] }}</td>
-                            <td>{{ $percentileresult['weekNumberWithPrefix'] }}</td>
-                            <td>{{ $percentileresult['monthName'] }}</td>
-                            <td>{{ $percentileresult['marks'] }}%</td>
-
-                        </tr>
+                        @foreach($groupedResults as $key => $group)
+                        @foreach($group['results'] as $result)
+                            <tr>
+                                <td>{{ $result->category_name }}</td>
+                                <td>{{ $result->summarized }}</td> <!-- Accessing the parameter value from the result -->
+                                <td>
+                                    @if ($result->s_id == '1')
+                                        <span class="badge badge-success">Cable</span>
+                                    @else
+                                        <span class="badge badge-primary">DTH</span>
+                                    @endif
+                                </td>
+                                <td>{{ $result->country_name }}</td>
+                                <td>{{ $key }}</td>
+                                <td>{{ round($group['average'], 2) }}%</td>
+                            </tr>
+                            @break <!-- Break after displaying the parameter value once for each group -->
                         @endforeach
+                    @endforeach
+
                     </tbody>
                 </table>
             </div>
-
-
-
     @else
     <p>No results found.</p>
     @endif
@@ -150,29 +149,30 @@
                             <th>Category</th>
                             <th>Service</th>
                             <th>Country</th>
+                            <th>Date/week/month</th>
                             <th>Percentage</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($percentilecourse as $percentilecourses)
-
-                        <tr>
-                            <td>{{ $percentilecourses['course_name'] }}</td>
-                            <td>{{ $percentilecourses['category_name'] }}</td>
-                            <td>
-                                {{-- {{ $percentilecourses['service_name'] }} --}}
-                                @if ($percentilecourses->s_id == '1')
-                                <a disable class="badge badge-success" >Cable</a>
-                                @else
-                                <a disable class="badge badge-primary" >DTH</a>
-                                @endif
-
-                            </td>
-                            <td>{{ $percentilecourses['country_name'] }}</td>
-                            <td>{{ $percentilecourses['marks_achieved'] }}%</td>
-
-                        </tr>
+                        @foreach($groupedResultsCourse as $key => $group)
+                        @foreach($group['results'] as $result)
+                            <tr>
+                                <td>{{ $result->course_name }}</td>
+                                <td>{{ $result->category_name }}</td> <!-- Accessing the parameter value from the result -->
+                                <td>
+                                    @if ($result->s_id == '1')
+                                        <span class="badge badge-success">Cable</span>
+                                    @else
+                                        <span class="badge badge-primary">DTH</span>
+                                    @endif
+                                </td>
+                                <td>{{ $result->country_name }}</td>
+                                <td>{{ $key }}</td>
+                                <td>{{ round($group['average'], 2) }}%</td>
+                            </tr>
+                            @break <!-- Break after displaying the parameter value once for each group -->
                         @endforeach
+                    @endforeach
                     </tbody>
                 </table>
             </div>

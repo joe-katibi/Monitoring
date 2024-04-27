@@ -9,8 +9,8 @@
 @section('content')
 @include('sweetalert::alert')
 {{-- action="{{ route('examination.store') }}" --}}
-    <form  method="POST" action="{{ route('examination.store',$conduct[0]->id) }}" name="listForm">
-        <input  type="hidden" name="conduct_id"  id="conductId" data-conduct-id="{{ $conduct[0]->id}}" value="{{ $conduct[0]->id}}">
+    <form  method="POST" action="{{ route('examination.store',$conduct->id) }}" name="listForm">
+        <input  type="hidden" name="conduct_id"  id="conductId" data-conduct-id="{{ $conduct->id}}" value="{{ $conduct->id}}">
         <input  type="hidden" name="created_by" id="createdBy" data-created-by="{{ Auth::user()->id  }}" value="{{ Auth::user()->id }}">
         <input type="hidden" name="reporttype" value="{{ $reporttype['type_id']}}">
         <input type="hidden" name="examId" value="{{ $examID['schedule_id']}}">
@@ -38,17 +38,17 @@
                     <div class="col-2">
                         <label>Trainer/QA</label>
                         <input readonly type="text" class="form-control" placeholder="Trainer"
-                            value="{{ $conduct[0]->name }}">
+                            value="{{ $conduct->name }}">
                     </div>
                     <div class="col-2">
                         <label>Department</label>
                         <input readonly type="text" class="form-control" placeholder="Department"
-                            value="{{ $conduct[0]->category_name }}">
+                            value="{{ $conduct->category_name }}">
                     </div>
                     <div class="col-2">
                         <label>Exam Name</label>
                         <input readonly type="text" class="form-control" placeholder="Exam Name"
-                            value="{{ $conduct[0]->exam_name }}">
+                            value="{{ $conduct->exam_name }}">
                     </div>
                     <div class="col-2">
                         <label>No of Questions</label>
@@ -215,7 +215,7 @@
                 // ...
 
                 // var xhr = new XMLHttpRequest();
-                // xhr.open('POST', '{{ route('examination.store', $conduct[0]->id) }}', true);
+                // xhr.open('POST', '{{ route('examination.store', $conduct->id) }}', true);
                 // xhr.onload = function() {
                 //     if (xhr.status === 200) {
                 //         // The request was successful
@@ -250,7 +250,7 @@
         const formData = new FormData(document.forms.namedItem("listForm"));
 
         // Perform an AJAX request to save answers
-        fetch("{{ route('examination.store', $conduct[0]->id) }}", {
+        fetch("{{ route('examination.store', $conduct->id) }}", {
             method: "POST",
             body: formData,
             headers: {

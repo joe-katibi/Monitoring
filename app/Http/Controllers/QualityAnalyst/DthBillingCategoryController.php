@@ -192,6 +192,7 @@ class DthBillingCategoryController extends Controller
             $results->date_updated = isset($input['date_recorded']) ?  Carbon::parse($input['date_recorded'])->format('Y-m-d H:i:s') :  Carbon::now()->format('Y-m-d H:i:s');
             $results->status = '1';
             $results->report_type_id = isset($input['reporttype']) ? $input['reporttype'] :"";
+            $results->created_by = Auth::user()->id;
 
 
             // Save the new results object to the database.
@@ -306,6 +307,7 @@ class DthBillingCategoryController extends Controller
                         $coachingForm->scores = $totalMarks;
                         $coachingForm->results_id = $results->id;
                         $coachingForm->category_id = $results->category;
+                        $coachingForm->created_by = Auth::user()->id;
                         //save required details on coaching DB
 
                         // dd($totalMarks);
@@ -353,48 +355,4 @@ class DthBillingCategoryController extends Controller
     }
 
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

@@ -61,6 +61,7 @@ class CallSummaryController extends Controller
             $summarystergth->summary_title= isset($input['summary_title']) ? $input['summary_title'] : "";
             $summarystergth->summary_name= isset($input['summary_name']) ? $input['summary_name'] : "";
             $summarystergth->service_id = isset($input['service']) ? $input['service'] : "";
+            $summarystergth->created_by = Auth::user()->id;
             $summarystergth->save();
 
              log::channel('summarystergth')->info('summary Created : ------> ', ['200' , $summarystergth->toArray() ] );
@@ -98,6 +99,8 @@ class CallSummaryController extends Controller
             $summarygap->gap_title= isset($input['gap_title']) ? $input['gap_title'] : "";
             $summarygap->gap_name= isset($input['gap_name']) ? $input['gap_name'] : "";
             $summarystergth->service_id = isset($input['service']) ? $input['service'] : "";
+            $summarystergth->created_by = Auth::user()->id;
+
             $summarygap->save();
 
             log::channel('summarygap')->info('summary Created : ------> ', ['200' , $summarygap->toArray() ] );
@@ -164,6 +167,7 @@ class CallSummaryController extends Controller
             $vocSummary->voc_title = isset($input['VOC_title']) ? $input['VOC_title'] : "";
             $vocSummary->voc_name  = isset($input['voc_name']) ? $input['voc_name'] : "";
             $vocSummary->service_id  = isset($input['service']) ? $input['service'] : "";
+            $vocSummary->created_by = Auth::user()->id;
             $vocSummary->save();
 
             log::channel('summaryvoc')->info('VOC Created : ------> ', ['200' , $vocSummary->toArray() ] );

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('summary_title')->nullable();
             $table->string('summary_name')->nullable();
             $table->string('service_id')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

@@ -40,11 +40,17 @@
                             <label for="service[]">Select Courses</label>
                             <div class="form-group">
                                 <select class="form-control" required="required" id="course" name="course"><option selected="selected" value="">--Select Courses--</option>
-                                    {{-- @foreach ($course as $item)
-                                    <option value="{{ $item['id'] }}">{{ $item['course_name'] }}</option>
-                                    @endforeach --}}
+
                                 </select>
                             </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="section">Select Type</label>
+                                <select class="form-control" id="duration_unit" name="duration_unit">
+                                    <option selected="selected" value="">--Select Type --</option>
+                                    <option value="month">Month</option>
+                                    <option value="week">Week</option>
+                                </select>
                             </div>
                            <div class="col-md-4">
                             <!-- Date range -->
@@ -76,7 +82,7 @@
 
             <div class="card card">
                 <div class="card-body">
-                    @if ($services[0]['id'] > 0)
+                    @if (count ($coursereports) > 0)
                     <div class="table-responsive">
                         <table class="table table-bordered" id="questionsTable">
                             <thead>
@@ -84,35 +90,30 @@
                                             <th>Course</th>
                                             <th>Country</th>
                                             <th>Services</th>
-                                            <th>Date</th>
-                                            <th>Week</th>
-                                            <th>Month</th>
+                                            <th>Date/week/month</th>
                                             <th>Percentage</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($coursereports as $course)
-                                        <tr>
-                                            <td>{{ $course['course_name'] }}</td>
-                                            <td>{{ $course['country_name'] }}</td>
-                                            <td>
-                                                {{-- {{ $course['service_name'] }} --}}
+                                                                         @foreach($groupedResults as $key => $group)
+                                                                            @foreach($group['results'] as $result)
+                                                                                <tr>
+                                                                                    <td>{{ $result->course_name }}</td>
+                                                                                    <td>{{ $result->country_name }}</td>
+                                                                                    <td>
+                                                                                        @if ($result->s_id == '1')
+                                                                                            <span class="badge badge-success">Cable</span>
+                                                                                        @else
+                                                                                            <span class="badge badge-primary">DTH</span>
+                                                                                        @endif
+                                                                                    </td>
+                                                                                    <td>{{ $key }}</td>
+                                                                                    <td>{{ round($group['average'], 2) }}%</td>
+                                                     </tr>
+                                            @break <!-- Break after displaying the parameter value once for each group -->
+                                    @endforeach
+                                          @endforeach
 
-                                                @if ($course->s_id == '1')
-                                                <a disable class="badge badge-success" >Cable</a>
-                                                @else
-                                                <a disable class="badge badge-primary" >DTH</a>
-                                                @endif
-
-                                            </td>
-                                            <td>{{ $course['created_at'] }}</td>
-                                            <td>{{ $course['weekNumberWithPrefix'] }}</td>
-                                            <td>{{ $course['monthName'] }}</td>
-                                            <td>{{ $course['marks_achieved'] }}%</td>
-
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
                                 </table>
                             </div>
                         </div>

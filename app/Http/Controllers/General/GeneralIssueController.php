@@ -60,6 +60,7 @@ class GeneralIssueController extends Controller
 
             $issuegeneral = new IssueGeneral();
             $issuegeneral->name =isset($input['name']) ? $input['name']:"";
+            $issuegeneral->created_by = Auth::user()->id;
 
             $issuegeneral->save();
 
@@ -100,6 +101,7 @@ class GeneralIssueController extends Controller
 
             $subissuegeneral->sub_name = isset($input['sub_name'])? $input['sub_name']:"";
             $subissuegeneral->issue_general_id = isset($input['issue_general_id'])? $input['issue_general_id']:"";
+            $subissuegeneral->created_by = Auth::user()->id;
 
             $subissuegeneral->save();
 
@@ -163,6 +165,7 @@ class GeneralIssueController extends Controller
 
         $editsubissuegeneral= SubIssueGeneral::findOrFail($id);
         $editsubissuegeneral->sub_name =isset($input['edit_sub_call_tracker']) ? $input['edit_sub_call_tracker']:"";
+        $editsubissuegeneral->created_by = Auth::user()->id;
         $editsubissuegeneral->save();
         return redirect()->back();
     }

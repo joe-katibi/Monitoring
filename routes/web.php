@@ -203,8 +203,8 @@ Route::get('exams/conduct_exam',[App\Http\Controllers\Exams\ConductExamControlle
 Route::get('exams/schedule_exam',[App\Http\Controllers\Exams\ConductExamController::class,'create'])->name('conductexam.create');
 Route::get('exams/{conductexam}/edit_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'edit'])->name('conductexam.edit');
 Route::get('exams/{conductexam}/view_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'show'])->name('conductexam.show');
-Route::get('exams/{conductexam}/edit_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'update'])->name('conductexam.update');
-Route::delete('exams/{conductexam}/view_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'destroy'])->name('conductexam.destroy');
+Route::post('exams/{conductexam}/edit_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'update'])->name('conductexam.update');
+Route::delete('exams/{conductexam}/delete',[App\Http\Controllers\Exams\ConductExamController::class,'destroy'])->name('conductexam.destroy');
 Route::post('exams/schedule_exam',[App\Http\Controllers\Exams\ConductExamController::class,'store'])->name('conductexam.store');
 Route::post('exams/conduct_exams/{id}/deactivate', [App\Http\Controllers\Exams\ConductExamController::class,'deactivate'])->name('exams.conduct_exams.deactivate');
 //Route::post('exams/{conductexam}/edit_conduct',[App\Http\Controllers\Exams\ConductExamController::class,'deactivate'])->name('conductexam.deactivate');

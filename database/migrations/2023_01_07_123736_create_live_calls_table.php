@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('voc_summary')->nullable();
             $table->string('voc_description')->nullable();
             $table->string('report_type_id')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

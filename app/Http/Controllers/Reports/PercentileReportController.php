@@ -88,26 +88,24 @@ class PercentileReportController extends Controller
 
         $category = Categories::select('Categories.id','Categories.category_name')->get();
 
-
         $agents = User::select('users.id','users.name')->where('position', '=', 'Agent')->first();
 
-
         $input = $request->all();
-
-        //print_pre([$agents] , true);
-
-
-
 
         $type = $request->input('report_type_id');
 
         $service = $request->input('service');
 
-       // $agent = $request->input('agent');
-
         $categoryname = $request->input('category');
 
         $countryname = $request->input('country');
+
+        $duration = $request->input('duration_unit');
+        if ($duration == 'month') {
+            $groupBy = 'month';
+        } else {
+            $groupBy = 'week';
+        }
 
         $start_end_date = explode(' - ', $request->input('created_at'));
         $start_date = $start_end_date[0];
@@ -129,20 +127,30 @@ class PercentileReportController extends Controller
                                                      ->where('results.date_recorded','<=',$end_date)
                                                     ->get();
 
+        $groupedResults = $percentileresults->groupBy(function($item) use ($groupBy) {
+                                                        $date = Carbon::parse($item->date_recorded);
+                                                        $parameter = $item->summarized; // assuming "summarized" is the parameter name
+                                                        if ($groupBy == 'month') {
+                                                            return $date->format('F Y') . ' - ' . $parameter; // Month, Year, and Parameter
+                                                        } else {
+                                                            return 'Week ' . $date->weekOfYear . ' - ' . $parameter; // Week number and Parameter
+                                                        }
+                                                    })->map(function($group) {
 
-     foreach ($percentileresults as $key => $value) {
+                                                        $totalResults = $group->pluck('marks')->map(function ($mark) {
+                                                            return intval($mark);
+                                                        })->sum();
+                                                        $average = $group->pluck('marks')->map(function ($mark) {
+                                                            return intval($mark);
+                                                        })->avg();
+                                                        return [
+                                                            'average' => $average,
+                                                            'results' => $group,
+                                                        ];
+                                                    });
 
-                                    $createdAt = $value->date_recorded;
-
-                                    $monthName = Carbon::parse($createdAt)->format('F');
-                                     $value['monthName'] =  isset($createdAt)  ?  $monthName: '';
-
-                                     $weekNumber = Carbon::parse($createdAt)->format('W');
-                                     $weekNumberWithPrefix = "week " . $weekNumber;
-                                     $value['weekNumberWithPrefix'] =  isset($createdAt)  ?  $weekNumberWithPrefix: '';
 
 
-    }
         $percentilecourse =   exam_results::select('exam_results.id','exam_results.question_id','exam_results.marks_achieved','exam_results.conduct_id','exam_results.report_type_id','exam_results.created_by',
                                                    'exam_results.created_at','conduct_exams.course','conduct_exams.service','conduct_exams.category','conduct_exams.trainer_qa','report_types.type_name','services.service_name','categories.category_name','courses.course_name','countries.country_name','users.name','services.id as s_id')
                                                   ->join('conduct_exams','conduct_exams.id','=','exam_results.conduct_id')
@@ -162,18 +170,28 @@ class PercentileReportController extends Controller
                                                   ->get()
                                                   ;
 
-       foreach ($percentilecourse as $key => $value) {
+        $groupedResultsCourse = $percentilecourse->groupBy(function($item) use ($groupBy) {
+                                                        $date = Carbon::parse($item->created_at);
+                                                        $parameter = $item->course_name; // assuming "summarized" is the parameter name
+                                                        if ($groupBy == 'month') {
+                                                            return $date->format('F Y') . ' - ' . $parameter; // Month, Year, and Parameter
+                                                        } else {
+                                                            return 'Week ' . $date->weekOfYear . ' - ' . $parameter; // Week number and Parameter
+                                                        }
+                                                    })->map(function($group) {
 
-                                                    $createdAt = $value->created_at;
-                                                    $monthName = Carbon::parse($createdAt)->format('F');
-                                                    $value['monthName'] =  isset($createdAt)  ?  $monthName: '';
+                                                        $totalResults = $group->pluck('marks_achieved')->map(function ($mark) {
+                                                            return intval($mark);
+                                                        })->sum();
+                                                        $average = $group->pluck('marks_achieved')->map(function ($mark) {
+                                                            return intval($mark);
+                                                        })->avg();
+                                                        return [
+                                                            'average' => $average,
+                                                            'results' => $group,
+                                                        ];
+                                                    });
 
-                                                    $weekNumber = Carbon::parse($createdAt)->format('W');
-                                                    $weekNumberWithPrefix = "week " . $weekNumber;
-                                                    $value['weekNumberWithPrefix'] =  isset($createdAt)  ?  $weekNumberWithPrefix: '';
-
-
-                                                }
 
     //  print_pre([$percentilecourse] , true);
 
@@ -185,6 +203,8 @@ class PercentileReportController extends Controller
         $data['category']= $category;
         $data['percentileresults']= $percentileresults;
         $data['percentilecourse']= $percentilecourse;
+        $data['groupedResults'] = $groupedResults;
+        $data['groupedResultsCourse'] = $groupedResultsCourse;
 
 
 

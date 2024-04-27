@@ -33,6 +33,7 @@ return new class extends Migration
             $table->string('results_id')->nullable();
             $table->string('auto_status')->nullable();
             $table->string('service_id')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

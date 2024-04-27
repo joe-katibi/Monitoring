@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'View Scheduled Exam')
 
 @section('content_header')
     <h1 hidden>View Conduct</h1>
@@ -15,30 +15,36 @@
         </div>
     <div class="card-body ">
         <div class="row">
-             <div class="col-md-2">
+             <div class="col-md-3">
                  <label>Exam Name</label>
                  <input readonly type="text" name="exam_name" class="form-control" placeholder="exam_name" value="{{ $viewquestion[0]['exam_name']}}">
                  </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <label>Exam Code</label>
               <input readonly type="text" name="exam_code" class="form-control" placeholder="exam_code" value="{{ $viewquestion[0]['schedule_id'] }}">
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <label>Course</label>
                 <input readonly type="text" name="course" class="form-control" placeholder="course" value="{{ $viewquestion[0]['course_name']}}">
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <label>Trainer/QA</label>
                 <input readonly type="text" name="trainer_qa" class="form-control" placeholder="trainer_qa" value="{{$viewquestion[0]['name'] }}">
             </div>
-            <div class="col-md-2">
-                <label>Department</label>
-                <input readonly type="text" name="department" class="form-control" placeholder="department" value="{{ $viewquestion[0]['category_name'] }}">
-            </div>
-            <div class="col-md-2">
-                <label>Status</label>
-                <input readonly type="text" name="status" class="form-control" placeholder="status" value="{{ $viewquestion[0]['status_name'] }}">
-            </div>
+
+           <div class="col-md-3">
+               <label>Duration (minutes)</label>
+               <input readonly type="text" name="course" class="form-control" placeholder="course" value="{{ $viewquestion[0]['time']}}">
+           </div>
+
+           <div class="col-md-3">
+               <label>Department</label>
+               <input readonly type="text" name="department" class="form-control" placeholder="department" value="{{ $viewquestion[0]['category_name'] }}">
+           </div>
+           <div class="col-md-3">
+               <label>Status</label>
+               <input readonly type="text" name="status" class="form-control" placeholder="status" value="{{ $viewquestion[0]['status_name'] }}">
+           </div>
         </div>
     </div>
 

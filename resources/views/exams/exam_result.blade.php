@@ -293,31 +293,5 @@
     });
 </script>
 
-{{-- <script>
-    $(document).ready(function () {
-
-        $('#course').on('change', function () {
-            var qaa_call_category = this.value;
-            $("#trainer").html('');
-            $.ajax({
-                url: '/trainer-exam/' + qaa_call_category,
-                type: "GET",
-                data: {
-                    service: qaa_call_category,
-                    _token: '{{csrf_token()}}'
-                },
-                dataType: 'json',
-                success: function (result) {
-                    $('#trainer').html('<option value="">-- Select --</option>');
-                    console.log(result);
-                    $.each(result, function (key, value) {
-                        $("#trainer").append('<option value="' + value.trainer_qa + '">' + value.username + '</option>');
-                    });
-                }
-            });
-        });
-
-    });
-</script> --}}
 
 @stop

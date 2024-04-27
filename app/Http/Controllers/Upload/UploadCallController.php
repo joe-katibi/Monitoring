@@ -90,19 +90,6 @@ class UploadCallController extends Controller
        // Get all the input data from the request
             $input = $request->all();
 
-
-       // Validate that required fields are present and the call_file is a valid mp3 file
-        //    $request->validate([
-        //                     'service' => 'service',
-        //                    'agent' => 'required',
-        //                    'supervisor' => 'required',
-        //                    'category' => 'required',
-        //                    'qa_name' => 'required',
-        //                    'call_rating' => 'required',
-        //                    'call_date' => 'required',
-        //                    'call_file' => 'required|mimes:mp3',
-        //                    ]);
-
       // Check if the uploaded file is valid
             if ($request->hasFile('call_file') && $request->file('call_file')->isValid()) {
                 // Get the file name and extension
@@ -131,6 +118,7 @@ class UploadCallController extends Controller
                     $callrecord->service_id = isset($input['service']) ? $input['service'] : "";
                      $callrecord->call_rating = isset($input['call_rating']) ? $input['call_rating'] : "";
                     $callrecord->call_date = isset($input['call_date']) ? $input['call_date'] : "";
+                    $callrecord->created_by = Auth::user()->id;
 
 
                     // print_pre([$callrecord] , true);

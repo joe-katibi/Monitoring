@@ -167,7 +167,7 @@ class AutoFailReportController extends Controller
             $data['country']= $country;
             $data['category']= $category;
 
-          //print_pre([$autofailreports] , true);
+        
 
         return view('reports/auto_fail_report')->with($data);
     }

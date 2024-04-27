@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('answer_name')->nullable();
             $table->string('answer_id')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

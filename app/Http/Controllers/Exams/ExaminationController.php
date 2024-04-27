@@ -37,7 +37,7 @@ class ExaminationController extends Controller
     {
 
 
-        $conduct = ConductExam::select('conduct_exams.id','conduct_exams.schedule_name','conduct_exams.time','conduct_exams.course',
+        $conduct = ConductExam::select('conduct_exams.id','conduct_exams.schedule_name','conduct_exams.time as duration','conduct_exams.course',
                                          'conduct_exams.exam_name','conduct_exams.service','conduct_exams.category','conduct_exams.trainer_qa',
                                          'conduct_exams.start_date','conduct_exams.completion_date','conduct_exams.created_at','users.name',
                                          'exams_questions.question','categories.category_name','services.service_name','exam_statuses.schedule_id','exams_questions.id as q_id',
@@ -52,7 +52,8 @@ class ExaminationController extends Controller
                                          ->join('exam_statuses','exam_statuses.exam_id','=','conduct_exams.id')
 
                                          ->where('conduct_exams.id','=',$id)
-                                          ->get();
+                                          ->first();
+
         $reporttype = ReportType::select('report_types.type_id','report_types.type_name')->where('id', '=', 2)->first();
 
         $courseID = ConductExam::select('id' , 'course', 'time')->where('id', '=' , $id )->first();
@@ -72,22 +73,13 @@ class ExaminationController extends Controller
 
 
            $start_time = now();
-           $end_time = now()->addMinutes(30);
-          // $exam->created_by=  Auth::user()->name;
-             //dd($exam);
-
-          //$exam->save();
-
-
-           // Dispatch the ExamStatusJob to check the status of the exam
-           //ExamStatusJob::dispatch($exam)->delay($end_time );
+           $end_time = now()->addMinutes($conduct->duration);
 
            // Calculate the time remaining for the exam
            $diff = now()->diff($end_time);
            $minutes = $diff->i;
            $seconds = $diff->s;
            $timeRemaining = "$minutes minutes, $seconds seconds";
-
 
            // Return a response with the exam details
           toast('Exam started successfully','success');
@@ -100,39 +92,22 @@ class ExaminationController extends Controller
                                             $data['timeRemaining'] = $timeRemaining;
                                             $data['reporttype'] = $reporttype;
 
-                                        //    print_pre($data , true);
-
-                                       // dd($examID);
         return view('exams/examination', )->with($data);
     }
-
 
     public function deactivate()
     {
         //Deactivate the exam here
-
         return redirect()->route('exams/agent_examination')->with('status','Exam Has been Deactivated');
 
-
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function store(Request $request)
     {
-        //
-    }
+      $input = $request->all();
 
-
-public function store(Request $request)
-{
-    $input = $request->all();
-
-    try {
-        foreach ($input['question-answer-'] as $question_id => $answer_id) {
+      try {
+          foreach ($input['question-answer-'] as $question_id => $answer_id) {
 
             $answer_key = AnswerKeys::where('id', $answer_id )->select('question_weight')->first();
 
@@ -147,20 +122,18 @@ public function store(Request $request)
             $exam_results->schedule_id = isset($input['examId']) ? $input['examId'] : null;
 
             $exam_results->save();
-        }
+          }
 
         DB::commit();
-
         toast('Exam completed successfully', 'success')->position('top-end');
-
         return redirect('exams/view_results/'.$exam_results->conduct_id.'/'.$exam_results->created_by.'/'.$exam_results->schedule_id);
 
-    } catch (\Throwable $e) {
+      } catch (\Throwable $e) {
         DB::rollBack();
         Log::info($e->getMessage());
         throw $e;
+      }
     }
-}
 
     /**
      * Display the specified resource.
@@ -183,10 +156,12 @@ public function store(Request $request)
                                       ->orderby('conduct_exams.id','desc')
                                       ->get();
 
+             foreach ($data['conduct'] as $conduct) {
+                                        $conduct->total_questions = ExamsQuestions::where('exams_questions.course', '=', $conduct->course)->count('exams_questions.question');
+                                    }
+
         // Get the currently authenticated user's ID
         $userId = Auth::user()->id;
-
-        // Get all exams for the user
 
         // Get the IDs of the exams being shown in the table
         $examIds = $data['conduct']->pluck('id')->toArray();
@@ -196,8 +171,6 @@ public function store(Request $request)
             ->whereIn('conduct_id', $examIds)
             ->orWhereIn('schedule_id', $examIds)
             ->get();
-
-            // dd($data['conduct']);
 
         // Process the results to create a map of exam IDs to exam attempts
         $examAttempts = [];
@@ -212,41 +185,7 @@ public function store(Request $request)
         $data['examAttempts'] = $examAttempts;
         $data['userId'] = $userId;
 
-
         return view('exams/agent_examination')->with($data);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

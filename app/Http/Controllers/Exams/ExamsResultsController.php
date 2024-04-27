@@ -39,7 +39,6 @@ class ExamsResultsController extends Controller
                        ->where('model_has_roles.role_id','=',$agentRole_id->id)
                         ->get();
 
-
         $examresults = [];
 
                                            $data['examresults']=$examresults;
@@ -48,16 +47,6 @@ class ExamsResultsController extends Controller
                                            $data['userLogged']=$userLogged;
 
         return view('exams/exam_result')->with($data);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -83,8 +72,6 @@ class ExamsResultsController extends Controller
                         ->get();
 
         $input = $request->all();
-
-        // dd($input);
 
         $service = $request->input('service');
 
@@ -127,11 +114,6 @@ class ExamsResultsController extends Controller
                                              ->where('exam_results.created_at','<=',$end_date)
 
                                            ->get();
-
-                                    //print_pre($examresults, true);
-
-
-
 
         $data['services']=$services;
         $data['examresults']=$examresults;
@@ -195,51 +177,79 @@ class ExamsResultsController extends Controller
         return view('exams.view_exam_results', $data);
     }
 
-    public function viewResults($conduct_id, $created_by,$schedule_id)
-{
+    public function viewResults($conduct_id, $created_by, $schedule_id)
+    {
+        // Fetch exam results
+        $exam_results = exam_results::select('exam_results.question_id','exam_results.answers_selected','exam_results.marks_achieved','exam_results.conduct_id','exam_results.created_by',
+                                             'exam_results.schedule_id','exam_results.created_at',
+                                             'answer_keys.question_id','answer_keys.choices','answer_keys.question_weight','answer_keys.created_by','answer_keys.is_correct','exams_questions.question','conduct_exams.exam_name','conduct_exams.course','users.name'
+                                             )
+                                      ->where('exam_results.conduct_id','=',$conduct_id)
+                                      ->where('exam_results.created_by','=',$created_by)
+                                      ->where('exam_results.schedule_id','=',$schedule_id)
+                                      ->join('answer_keys','answer_keys.question_id','=','exam_results.question_id')
+                                      ->join('exams_questions','exams_questions.id','=','exam_results.question_id')
+                                      ->join('conduct_exams','conduct_exams.schedule_name','=','exam_results.schedule_id')
+                                      ->join('users','users.id','=','exam_results.created_by')
+                                      ->get();
 
-    $exam_results = exam_results::select('exam_results.question_id','exam_results.answers_selected','exam_results.marks_achieved','exam_results.conduct_id','exam_results.created_by',
-                                         'exam_results.schedule_id','exam_results.created_at','answer_keys.question_id','answer_keys.choices','answer_keys.question_weight','answer_keys.created_by','answer_keys.is_correct','exams_questions.question','conduct_exams.exam_name','users.name')
-                                          ->where('exam_results.conduct_id','=',$conduct_id)
-                                          ->where('exam_results.created_by','=',$created_by)
-                                          ->where('exam_results.schedule_id','=',$schedule_id)
-                                        //  ->where('answer_keys.is_correct','=',1)
-                                  ->join('answer_keys','answer_keys.question_id','=','exam_results.question_id')
-                                  ->join('exams_questions','exams_questions.id','=','exam_results.question_id')
-                                  ->join('conduct_exams','conduct_exams.schedule_name','=','exam_results.schedule_id')
-                                  ->join('users','users.id','=','exam_results.created_by')
-                                  ->get();
+        // Count correct answers
+        $correctAnswers = exam_results::where('exam_results.conduct_id', '=', $conduct_id)
+                                      ->where('exam_results.created_by', '=', $created_by)
+                                      ->where('exam_results.schedule_id', '=', $schedule_id)
+                                      ->where('exam_results.marks_achieved', '>', 0) // Filter where marks_achieved is greater than 0
+                                      ->count();
 
-                                //   dd($schedule_id);
-//  print_pre($exam_results, true);
+   
+        foreach ($exam_results as $exam_results) {
+            $exam_results->total_questions = ExamsQuestions::where('exams_questions.course', '=', $exam_results->course)->count('exams_questions.question');
 
-    $totalQuestions = $exam_results->count();
-    $correctAnswers = $exam_results->filter(function ($result) {
-        return $result->marks_achieved > 0;
-    })->count();
+        }
 
-    $wrongAnswers = $totalQuestions - $correctAnswers;
+        // Calculate total questions
+        $totalQuestions = $exam_results->total_questions;
 
-    $totalMarks = $exam_results->sum('marks_achieved');
+        // Count wrong answers
+        $wrongAnswers = $totalQuestions - $correctAnswers;
 
-    $averageMarks = $totalMarks;
+        // Sum the total marks achieved
+        $totalMarks = $exam_results->sum('marks_achieved');
 
-    $grade = '';
+          // Sum the question_weight and marks_achieved for the given exam
+        $questionWeight = exam_results::selectRaw('SUM(answer_keys.question_weight) as total_question_weight')
+                            ->where('exam_results.conduct_id','=',$conduct_id)
+                            ->where('exam_results.created_by','=',$created_by)
+                            ->where('exam_results.schedule_id','=',$schedule_id)
+                            ->join('answer_keys','answer_keys.question_id','=','exam_results.question_id')
+                            ->first();
 
-    if ($averageMarks >= 90) {
-        $grade = 'Excellent';
-    } elseif ($averageMarks >= 80 && $averageMarks < 90) {
-        $grade = 'Good';
-    } elseif ($averageMarks >= 70 && $averageMarks < 80) {
-        $grade = 'Poor';
-    } else {
-        $grade = 'Fail';
+        $marksAchieved = exam_results::selectRaw('SUM(exam_results.marks_achieved) as total_marks_achieved')
+                            ->where('exam_results.conduct_id','=',$conduct_id)
+                            ->where('exam_results.created_by','=',$created_by)
+                            ->where('exam_results.schedule_id','=',$schedule_id)
+                            ->first();
+
+         // Calculate the percentage
+        if ($questionWeight && $questionWeight->total_question_weight > 0) {
+                 $percentage = ($marksAchieved->total_marks_achieved / $questionWeight->total_question_weight) * 100;
+            } else {
+              $percentage = 0; // Set percentage to 0 if there are no results or total_question_weight is 0
+            }
+                // Calculate average marks
+                $averageMarks = $percentage;
+                // Determine grade
+                if ($averageMarks >= 90) {
+                    $grade = 'Excellent';
+                } elseif ($averageMarks >= 80 && $averageMarks < 90) {
+                    $grade = 'Good';
+                } elseif ($averageMarks >= 70 && $averageMarks < 80) {
+                    $grade = 'Poor';
+                } else {
+                    $grade = 'Fail';
+                }
+
+        return view('exams.view_results', compact('exam_results', 'totalQuestions', 'correctAnswers', 'wrongAnswers', 'totalMarks', 'grade', 'percentage'));
     }
-
-
-
-    return view('exams.view_results', compact('exam_results', 'totalQuestions', 'correctAnswers', 'wrongAnswers', 'totalMarks','grade'));
-}
 
     /**
      * Show the form for editing the specified resource.
@@ -293,32 +303,7 @@ class ExamsResultsController extends Controller
                 $grade = 'Fail';
             }
 
-            // print_pre($averageMarks, true);
-
-
         return view('exams.exams_show', compact('exam_results', 'totalQuestions', 'correctAnswers', 'wrongAnswers', 'totalMarks','grade'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

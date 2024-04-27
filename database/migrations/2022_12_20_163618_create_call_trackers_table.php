@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('call_tracker')->nullable();
             $table->string('service_id')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

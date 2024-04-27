@@ -86,6 +86,13 @@ class CategoriesReportController extends Controller
 
         $countryname = $request->input('country');
 
+        $duration = $request->input('duration_unit');
+        if ($duration == 'month') {
+            $groupBy = 'month';
+        } else {
+            $groupBy = 'week';
+        }
+
         $start_end_date = explode(' - ', $request->input('created_at'));
         $start_date = $start_end_date[0];
         $end_date = $start_end_date[1];
@@ -106,28 +113,29 @@ class CategoriesReportController extends Controller
                                            ->where('results.date_recorded','<=',$end_date)
                                           ->get();
 
-
-    foreach($categoryreport as $key => $value){
-
-                                            $createdAt = $value->date_recorded;
-
-                                            $monthName = Carbon::parse($createdAt)->format('F');
-                                            $value['monthName'] =  isset($createdAt)  ?  $monthName: '';
-
-                                            $weekNumber = Carbon::parse($createdAt)->format('W');
-                                            $weekNumberWithPrefix = "week " . $weekNumber;
-                                            $value['weekNumberWithPrefix'] =  isset($createdAt)  ?  $weekNumberWithPrefix: '';
-
-                                        }
-      //print_pre([$categoryreport] , true);
-
-
+        $groupedResults = $categoryreport->groupBy(function($item) use ($groupBy) {
+                                       $date = Carbon::parse($item->date_recorded);
+                                       $parameter = $item->category_name; // assuming "summarized" is the parameter name
+                                      if ($groupBy == 'month') {
+                                         return $date->format('F Y'); // Month, Year, and Parameter
+                                    } else {
+                                     return 'Week ' . $date->weekOfYear; // Week number and Parameter
+                                    }
+                                })->map(function($group) {
+                                     $totalResults = $group->pluck('final_results')->sum();
+                                     $average = $group->pluck('final_results')->avg();
+                                     return [
+                                     'average' => $average,
+                                   'results' => $group,
+                                ];
+                            });
 
 
         $data['services']= $services;
         $data['country']= $country;
         $data['category']= $category;
         $data['categoryreport']= $categoryreport;
+        $data['groupedResults'] = $groupedResults;
 
         return view('reports/categories_report')->with($data);
     }

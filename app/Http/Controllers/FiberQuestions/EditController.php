@@ -93,7 +93,7 @@ class EditController extends Controller
     public function update(Request $request)
     {
         //
-
+        
         $request->validate([
             'number'=>'required',
             'question'=>'required',
@@ -114,6 +114,7 @@ class EditController extends Controller
             'no' => $request->input('no'),
             'service' => $request->input('service'),
             'category' => $request->input('category'),
+            'created_by' => Auth::user()->id,
 
 
         ]);

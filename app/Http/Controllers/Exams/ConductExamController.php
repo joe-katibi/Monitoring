@@ -37,17 +37,20 @@ class ConductExamController extends Controller
     {
 
         $data['conduct'] = ConductExam::select('conduct_exams.id','conduct_exams.schedule_name','conduct_exams.time','conduct_exams.course',
-                                      'conduct_exams.exam_name','conduct_exams.service','conduct_exams.category','conduct_exams.trainer_qa','conduct_exams.start_date','conduct_exams.completion_date','conduct_exams.created_at','exam_statuses.schedule_id','courses.course_name','users.name','categories.category_name','exam_statuses.status',
+                                      'conduct_exams.exam_name','conduct_exams.service','conduct_exams.category','conduct_exams.trainer_qa','conduct_exams.start_date','conduct_exams.completion_date','conduct_exams.created_at','exam_statuses.schedule_id','courses.course_name','users.name','categories.category_name','exam_statuses.status','exams_questions.question',
                                       'exam_statuses.id as status_id')
                                       ->join('users','users.id','=','conduct_exams.trainer_qa')
                                       ->join('categories','categories.id','=','conduct_exams.category')
                                       ->join('services','services.id','=','conduct_exams.service')
                                       ->join('exam_statuses','exam_statuses.exam_id','=','conduct_exams.id')
                                       ->join('courses','courses.id','=','conduct_exams.course')
+                                      ->join('exams_questions','exams_questions.course','=','conduct_exams.course')
                                       ->orderby('conduct_exams.id','desc')
                                       ->get();
 
-                                   //  dd($data);
+                                      foreach ($data['conduct'] as $conduct) {
+                                        $conduct->total_questions = ExamsQuestions::where('exams_questions.course', '=', $conduct->course)->count('exams_questions.question');
+                                    }
 
         return view('exams/conduct_exam', )->with($data);
     }
@@ -92,13 +95,24 @@ class ConductExamController extends Controller
     {
       $input = $request->all();
 
+          // Get the duration and unit from the request
+        $duration = $request->input('time');
+        $duration_unit = $request->input('duration_unit');
+
+       // Convert the duration to minutes
+        if ($duration_unit === 'hours') {
+          $duration_in_minutes = $duration * 60; // 1 hour = 60 minutes
+        } else {
+          $duration_in_minutes = $duration;
+        }
+
       try {
         DB::beginTransaction();
 
         // Create a new ConductExam object
         $schedule = new ConductExam();
         $schedule->schedule_name = isset($input['schedule_name']) ? $input['schedule_name'] : "";
-        $schedule->time = isset($input['time']) ? $input['time'] : "";
+        $schedule->time = $duration_in_minutes;
         $schedule->course = isset($input['course']) ? $input['course'] : "";
         $schedule->exam_name = isset($input['exam_name']) ? $input['exam_name'] : "";
         $schedule->service = isset($input['service']) ? $input['service'] : "";
@@ -107,6 +121,8 @@ class ConductExamController extends Controller
         $schedule->start_date = isset($input['start_date']) ? $input['start_date'] : "";
         $schedule->completion_date = isset($input['completion_date']) ? $input['completion_date'] : "";
         $schedule->created_by = isset($input['created_by']) ? $input['created_by'] : "";
+
+
 
         $schedule->save();
 
@@ -198,9 +214,6 @@ class ConductExamController extends Controller
     }
 
     $data['viewquestion'] = $viewquestion;
-
-    // dd($question->choices);
-
     return view('exams/view_conduct')->with($data);
 }
 
@@ -225,16 +238,13 @@ class ConductExamController extends Controller
                           ->where('model_has_roles.role_id','=',$trainerRole_id)
                           ->get();
 
-                        //   dd( $trainerRole_id);
-
-
         $service = Services::all()->toArray();
         $category = Categories::all()->toArray();
 
 
         $data['conduct'] = ConductExam::select('conduct_exams.id','conduct_exams.category','conduct_exams.time','conduct_exams.course','conduct_exams.exam_name','conduct_exams.service',
         'conduct_exams.category','conduct_exams.trainer_qa','conduct_exams.start_date','conduct_exams.completion_date','conduct_exams.created_at','exam_statuses.schedule_id','courses.course_name',
-        'users.name','categories.category_name','user_categories.category_id')
+        'users.name as trainerName','categories.category_name','user_categories.category_id')
         ->join('users','users.id','=','conduct_exams.trainer_qa')
         ->join('categories','categories.id','=','conduct_exams.category')
         ->join('user_categories','user_categories.user_id','=','conduct_exams.trainer_qa')
@@ -256,6 +266,9 @@ class ConductExamController extends Controller
 
     public function reactivate($id)
     {
+
+        // Get the currently authenticated user's ID
+        $userId = Auth::user()->id;
         // Find the row in the exam_statuses table with the given ID
         $row = DB::table('exam_statuses')->where('id', $id)->first();
 
@@ -266,14 +279,10 @@ class ConductExamController extends Controller
         $formattedNumericValue = str_pad($numericValue, 8, '0', STR_PAD_LEFT);
         $uniqueID = $prefix . '-' . $formattedNumericValue;
 
-        // Update the row with the new ID and set the status to 1 (reactivate)
-        // DB::table('exam_statuses')->where('id', $id)->update([
-        //     'id' => $uniqueID,
-        //     'status' => 1,
-        // ]);
         DB::table('exam_statuses')->insert([
             'schedule_id' => $uniqueID,
             'status' => 1,
+            'created_by' => $userId,
         ]);
 
 
@@ -345,15 +354,9 @@ class ConductExamController extends Controller
     {
 
         $examstatus = ExamStatus::where('exam_id','=', $id)->first();
-
         $examstatus->status = 0;
-
         $examstatus->save();
-
-       // Show the Sweet Alert toast
         toast('Exam Deactivated', 'success')->position('top-end');
-
-       // Redirect back
        return redirect()->back();
     }
 
@@ -367,7 +370,37 @@ class ConductExamController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $input = $request->all();
+
+        try {
+            DB::beginTransaction();
+
+            $updating = ConductExam::where('id','=',$id)->first();
+            $updating->time = $duration_in_minutes;
+            $updating->course = isset($input['course']) ? $input['course'] : "";
+            $updating->exam_name = isset($input['exam_name']) ? $input['exam_name'] : "";
+            $updating->service = isset($input['service']) ? $input['service'] : "";
+            $updating->category = isset($input['category']) ? $input['category'] : "";
+            $updating->trainer_qa = isset($input['trainer_qa']) ? $input['trainer_qa'] : "";
+            $updating->start_date = isset($input['start_date']) ? $input['start_date'] : "";
+            $updating->completion_date = isset($input['completion_date']) ? $input['completion_date'] : "";
+            $updating->created_by = isset($input['created_by']) ? $input['created_by'] : "";
+
+            $updating->save();
+
+            log::channel('update conduct')->info('update Conduct Created : ------> ', ['200' , $updating->toArray() ] );
+
+            DB::commit();
+            toast('Parameter edited successfully','success')->position('top-end');
+
+            return redirect('exams/view_conduct');
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Log::info($e->getMessage() );
+            throw $e;
+            toast('Something Went Wrong','warning')->position('top-end');
+        }
     }
 
     /**
@@ -378,6 +411,20 @@ class ConductExamController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // Retrieve the record with the given ID
+        $conductExam = ConductExam::find($id);
+
+        // Check if the record exists
+        if ($conductExam) {
+            // Delete the record
+            $conductExam->delete();
+
+            // Optionally, you can redirect the user to a specific route or page
+            return redirect()->route('exams/conduct_exam')->with('success', 'Record deleted successfully.');
+        } else {
+            // Handle the case where the record does not exist
+            return redirect()->route('exams/conduct_exam')->with('error', 'Record not found.');
+        }
     }
+
 }

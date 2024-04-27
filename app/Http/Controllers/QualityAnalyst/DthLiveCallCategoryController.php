@@ -92,16 +92,6 @@ class DthLiveCallCategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -152,10 +142,8 @@ class DthLiveCallCategoryController extends Controller
           $dthlivecalls->voc_description = isset($input['voc_description']) ? $input['voc_description'] : "";
           $dthlivecalls->report_type_id = isset($input['reporttype']) ? $input['reporttype'] :"";
           $dthlivecalls->service_id = 2;
-
-
-           //print_pre([$dthlivecalls] , true);
-
+          $dthlivecalls->created_by = Auth::user()->id;
+          
           // Save the new LiveCalls object to the database.
           $dthlivecalls->save();
 

@@ -82,13 +82,18 @@ class CourseReportController extends Controller
 
         $input = $request->all();
 
-
-
         $coursename = $request->input('course');
 
         $service = $request->input('service');
 
         $countryname = $request->input('country');
+
+        $duration = $request->input('duration_unit');
+        if ($duration == 'month') {
+            $groupBy = 'month';
+        } else {
+            $groupBy = 'week';
+        }
 
         $start_end_date = explode(' - ', $request->input('created_at'));
         $start_date = $start_end_date[0];
@@ -110,25 +115,31 @@ class CourseReportController extends Controller
                                             ->where('exam_results.created_at','<=',$end_date)
                                             ->get();
 
-        foreach($coursereports as $key => $value){
+        $groupedResults = $coursereports->groupBy(function($item) use ($groupBy) {
+                                                $date = Carbon::parse($item->created_at);
+                                                $parameter = $item->course_name; // assuming "summarized" is the parameter name
+                                               if ($groupBy == 'month') {
+                                                  return $date->format('F Y');
+                                             } else {
+                                              return 'Week ' . $date->weekOfYear; // Week number and Parameter
+                                             }
+                                         })->map(function($group) {
+                                              $totalResults = $group->pluck('marks_achieved')->sum();
+                                              $average = $group->pluck('marks_achieved')->avg();
+                                              return [
+                                              'average' => $average,
+                                            'results' => $group,
+                                         ];
+                                     });
 
-                                                $createdAt = $value->created_at;
-
-                                                $monthName = Carbon::parse($createdAt)->format('F');
-                                                $value['monthName'] =  isset($createdAt)  ?  $monthName: '';
-
-                                                $weekNumber = Carbon::parse($createdAt)->format('W');
-                                                $weekNumberWithPrefix = "week " . $weekNumber;
-                                                $value['weekNumberWithPrefix'] =  isset($createdAt)  ?  $weekNumberWithPrefix: '';
-
-                                            }
-
-                // print_pre([$coursereports] , true);
 
         $data['services']= $services;
         $data['course']= $course;
         $data['country']= $country;
         $data['coursereports']= $coursereports;
+        $data['groupedResults'] = $groupedResults;
+
+        // dd($data);
 
 
         return view('reports/course_report')->with($data);
