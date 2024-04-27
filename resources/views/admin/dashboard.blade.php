@@ -7,24 +7,27 @@
 @stop
 
 @section('content')
+<div class="card card-success">
+    <div class="card-header">
+        <input readonly class="form-control" style="color: green"  value="Trainer Dashboard">
+    </div>
 
  <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
+         <!-- Small boxes (Stat box) -->
+         <div class="card-header">
+            <input readonly class="form-control" style="color: green" value="Exams">
+           </div>
         <!-- Small boxes (Stat box) -->
         <div class="row">
           <div class="col-lg-3 col-6">
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>150</h3>
-                     HELLO
-                <p>New Orders</p>
+                <h3>{{ $examTotalDone }}</h3>
+                <p>Total Exams done</p>
               </div>
-              <div class="icon">
-                <i class="ion ion-bag"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -32,14 +35,9 @@
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
-
-                <p>Bounce Rate</p>
+                <h3>{{ $courseTotal }}</h3>
+                <p>Total Courses </p>
               </div>
-              <div class="icon">
-                <i class="ion ion-stats-bars"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -47,14 +45,9 @@
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3>44</h3>
-
-                <p>User Registrations</p>
+                <h3>{{ $totalExams }}</h3>
+                <p>All Exams</p>
               </div>
-              <div class="icon">
-                <i class="ion ion-person-add"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -62,41 +55,68 @@
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3>65</h3>
+                <h3>{{ $totalQuestions }}</h3>
 
-                <p>Unique Visitors</p>
+                <p>All Questions</p>
               </div>
-              <div class="icon">
-                <i class="ion ion-pie-graph"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
         </div>
+        <div class="card-header">
+    <input readonly class="form-control" style="color: green" value="Auto Fails">
+   </div>
+   <div class="row">
+    <div class="col-lg-3 col-4">
+      <!-- small box -->
+      <div class="small-box bg-info">
+        <div class="inner">
+          <h3>{{ $autoTotal }}</h3>
 
-
-                  <!-- ./col -->
-                </div>
-                <!-- /.row -->
-              </div>
-              <!-- /.card-footer -->
-            </div>
-
-          </section>
-          <!-- right col -->
+          <p>Agents with Auto Fails</p>
         </div>
-        <!-- /.row (main row) -->
-      </div><!-- /.container-fluid -->
+      </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-4">
+      <!-- small box -->
+      <div class="small-box bg-success">
+        <div class="inner">
+          <h3>{{ $autoCompleted }}</h3>
+          {{-- <sup style="font-size: 20px">%</sup> --}}
+          <p>Completed Auto Fails</p>
+        </div>
+      </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-4">
+      <!-- small box -->
+      <div class="small-box bg-warning">
+        <div class="inner">
+          <h3>{{ $autoPending  }}</h3>
+
+          <p>Pending Auto Fails</p>
+        </div>
+
+      </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-4">
+      <!-- small box -->
+      <div class="small-box bg-danger">
+        <div class="inner">
+          <h3>{{ $autoSlipping }}</h3>
+          <p>Slipping Auto Fails</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
     </section>
     <!-- /.content -->
   </div>
-   <!-- /.content-wrapper -->
-   <footer class="main-footer">
-    <strong>Copyright &copy; 2022 .</strong>
-    All rights reserved.
 
-  </footer>
 
 
 @stop

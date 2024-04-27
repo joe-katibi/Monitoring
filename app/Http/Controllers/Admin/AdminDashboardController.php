@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Role;
 use App\Models\User;
@@ -16,6 +17,9 @@ use App\Models\exam_results;
 use App\Models\Categories;
 use App\Models\ReportType;
 use App\Models\LiveCalls;
+use App\Models\Courses;
+use App\Models\ConductExam;
+use App\Models\ExamsQuestions;
 use Datatables;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -34,9 +38,44 @@ class AdminDashboardController extends Controller
     public function index()
     {
 
+        $userId = auth()->id();
+
+        $examTotalDone = DB::table('exam_results')->distinct('conduct_id')->count();
+
+        $courseTotal =Courses::select('id')->count();  
+        
+        $totalExams =ConductExam::select('schedule_name')->count();
+
+        $totalQuestions = ExamsQuestions::select('exams_questions')->count();
+
+        $autoSlipping = AlertForm::select('alert_forms.results_id','alert_forms.auto_status','results.id','alert_forms.qa_name')
+        ->join('results','results.id','=','alert_forms.results_id')
+        ->where('auto_status','=',1)
+        ->count();
+        $autoCompleted = AlertForm::select('alert_forms.results_id','alert_forms.auto_status','results.id','alert_forms.qa_name')
+                                    ->join('results','results.id','=','alert_forms.results_id')
+                                    ->where('auto_status','=',3)
+                                    ->count();
+        $autoPending = AlertForm::select('alert_forms.results_id','alert_forms.auto_status','results.id','alert_forms.qa_name')
+                                    ->join('results','results.id','=','alert_forms.results_id')
+                                    ->where('auto_status','=',2)
+                                    ->count();      
+        $autoTotal = AlertForm::select('alert_forms.results_id','alert_forms.auto_status','results.id','alert_forms.qa_name')
+                                    ->join('results','results.id','=','alert_forms.results_id')
+                                    ->count();                     
 
 
-        return view('admin/dashboard');
+
+        $data['examTotalDone'] = $examTotalDone;
+        $data['courseTotal'] = $courseTotal;
+        $data['totalExams'] = $totalExams;
+        $data['totalQuestions'] = $totalQuestions;
+        $data['autoSlipping'] = $autoSlipping;
+        $data['autoPending'] = $autoPending;
+        $data['autoCompleted'] = $autoCompleted;
+        $data['autoTotal'] = $autoTotal;
+
+        return view('admin/dashboard')->with($data);
 
     }
 

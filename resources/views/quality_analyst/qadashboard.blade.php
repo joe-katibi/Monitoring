@@ -88,11 +88,7 @@
             <div class="small-box bg-info">
               <div class="inner">
                 <h3>{{ $autoTotal }}</h3>
-
                 <p>Agents with Auto Fails</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-person"></i>
               </div>
             </div>
           </div>
@@ -105,9 +101,6 @@
                 {{-- <sup style="font-size: 20px">%</sup> --}}
                 <p>Completed Auto Fails</p>
               </div>
-              <div class="icon">
-                <i class="ion ion-stats-bars"></i>
-              </div>
             </div>
           </div>
           <!-- ./col -->
@@ -119,9 +112,6 @@
 
                 <p>Pending Auto Fails</p>
               </div>
-              <div class="icon">
-                <i class="ion ion-person-add"></i>
-              </div>
             </div>
           </div>
           <!-- ./col -->
@@ -132,9 +122,6 @@
                 <h3>{{ $autoSlipping }}</h3>
 
                 <p>Slipping Auto Fails</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-pending-actions"></i>
               </div>
             </div>
           </div>
@@ -189,13 +176,7 @@
                 borderColor: 'orange',
                 borderWidth: 1,
                 type: 'bar'
-            }, {
-                label: 'Trend',
-                data: weeklyData,
-                borderColor: 'blue',
-                borderWidth: 1,
-                type: 'line'
-            }]
+            }, ]
         },
         options: {
             scales: {
@@ -267,13 +248,7 @@
                 borderColor: 'green',
                 borderWidth: 1,
                 type: 'bar'
-            }, {
-                label: 'Trend',
-                data: monthlyData,
-                borderColor: 'blue',
-                borderWidth: 1,
-                type: 'line'
-            }]
+            }, ]
         },
         options: {
             scales: {

@@ -24,23 +24,6 @@ class HomeController extends Controller
     public function index()
     {
 
-    //   echo 1; exit;
-
-    //   $users =DB::table('users')->limit(200)->get();
-
-    //   foreach($users as $key=>$user){
-
-    //     $olduser = DB::connection('old_monitoring_mysql')->table('socialmedia')->where('agentname','=',$user->name);
-    //     $olduser = DB::connection('old_monitoring_mysql')->table('socialmedia')->where('supervisor','=',$user->name);
-    //     $olduser = DB::connection('old_monitoring_mysql')->table('socialmedia')->where('qcname','=',$user->name);
-
-    //   }
-
-    //    dd($olduser);
-
-
-        //$agents = [];
-        //Agent::take(10)->get();
         $briefs = Briefs::select('briefs.brief_topic','briefs.created_by','briefs.brief_description','briefs.created_by','briefs.status','briefs.created_at','briefs.id','users.name')
                            ->join('users','users.id','=','briefs.created_by')->get();
         $briefView = Briefs::select('briefs.brief_topic','briefs.created_by','briefs.brief_description','briefs.created_by','briefs.status','briefs.created_at','briefs.id','users.name')

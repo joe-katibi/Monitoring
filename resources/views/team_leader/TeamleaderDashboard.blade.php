@@ -184,13 +184,7 @@
                 borderColor: 'orange',
                 borderWidth: 1,
                 type: 'bar'
-            }, {
-                label: 'Trend',
-                data: weeklyData,
-                borderColor: 'blue',
-                borderWidth: 1,
-                type: 'line'
-            }]
+            },]
         },
         options: {
             scales: {
@@ -262,13 +256,7 @@
                 borderColor: 'green',
                 borderWidth: 1,
                 type: 'bar'
-            }, {
-                label: 'Trend',
-                data: monthlyData,
-                borderColor: 'blue',
-                borderWidth: 1,
-                type: 'line'
-            }]
+            },]
         },
         options: {
             scales: {
