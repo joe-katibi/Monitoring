@@ -173,6 +173,9 @@ class ExamsResultsController extends Controller
 
         $data['exam_results'] = $grouped_results_array;
 
+        // print_r($data);
+        // exit;
+
 
         return view('exams.view_exam_results', $data);
     }
@@ -200,7 +203,7 @@ class ExamsResultsController extends Controller
                                       ->where('exam_results.marks_achieved', '>', 0) // Filter where marks_achieved is greater than 0
                                       ->count();
 
-   
+
         foreach ($exam_results as $exam_results) {
             $exam_results->total_questions = ExamsQuestions::where('exams_questions.course', '=', $exam_results->course)->count('exams_questions.question');
 

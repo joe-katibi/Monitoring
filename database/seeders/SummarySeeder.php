@@ -19,14 +19,14 @@ class SummarySeeder extends Seeder
         DB::table('summaries')->insert([
             [
 
-            'summary_title'=>'Strength Summary            ',
+            'summary_title'=>'Strength Summary',
             'summary_name'=>'Customer education',
             'service_id'=>'1'
 
             ],
             [
 
-            'summary_title'=>'Strength Summary            ',
+            'summary_title'=>'Strength Summary',
             'summary_name'=>'call personalization',
             'service_id'=>'1'
 
@@ -34,7 +34,7 @@ class SummarySeeder extends Seeder
             ,
             [
 
-            'summary_title'=>'Strength Summary            ',
+            'summary_title'=>'Strength Summary',
             'summary_name'=>'Offer Further Assistance',
             'service_id'=>'1'
 

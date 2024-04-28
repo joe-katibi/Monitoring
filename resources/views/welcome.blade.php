@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Zuku Monitoring</title>
 
         <!-- Fonts -->
         <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -37,9 +37,9 @@
             @endif
 
             <div class="content">
-                
-                <img src="vendor/adminlte/dist/img/logo_wananchi.png" alt ="Monitoring logo">         
-               
+
+                <img src="vendor/adminlte/dist/img/logo_wananchi.png" alt ="Monitoring logo">
+
 
                     </div>
                 </div>

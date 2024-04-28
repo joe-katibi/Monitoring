@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'MonitoringTool'),
+    'name' => env('APP_NAME', 'Zuku Monitoring'),
 
     /*
     |--------------------------------------------------------------------------

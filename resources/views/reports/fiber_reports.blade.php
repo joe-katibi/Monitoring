@@ -1,13 +1,13 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Fiber Report')
 
 @section('content_header')
     <h1>Fiber Reports</h1>
 @stop
 
-@section('content') 
-   
+@section('content')
+
 <form method="POST" action="" accept-charset="UTF-8" class="form" enctype="multipart/form-data"><input name="_token" type="hidden" value="">
 
     <div class="col-md-12">
@@ -71,19 +71,19 @@
 @section('js')
     <script> console.log('Hi!'); </script>
     <script src="vendor/js/bootstrap-datepicker.min.js"></script>
-    <script> 
-    
+    <script>
+
     $(function () {
 //Initialize Select2 Elements
 $('.select2').select2()
- $('.date').datepicker( { 
+ $('.date').datepicker( {
      format: 'dd-mm-yyyy',
      autoclose: true,
      orientation: "bottom auto"
  })})
 
-    
-    
-    
+
+
+
     </script>
 @stop

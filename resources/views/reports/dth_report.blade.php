@@ -1,37 +1,37 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'DTH Report')
 
 @section('content_header')
     <h1>DTH report</h1>
 @stop
 
-@section('content') 
+@section('content')
 <!-- Page Wrapper -->
 <div class="page-wrapper">
     <!-- Page Content -->
     <div class="content container-fluid">
         <!-- Page Header -->
-       
+
         <!-- /Page Header -->
-        
+
         <!-- Search Filter -->
         <div class="row ">
-            <div class="col-sm-6 col-md-3"> 
+            <div class="col-sm-6 col-md-3">
                 <div class="form-group form-focus">
                     <label class="focus-label">Country</label>
                     <div class="cal-icon">
                         <select class="custom-select" placeholder="" id="country" name="country" value="{{ old('country') }}">
                             <span style="color:red">@error('category'){{ $message }}@enderror</span>
-                           
+
                             <option>Kenya</option>
 
                           </select>
-                        
+
                     </div>
                 </div>
                </div>
-                <div class="col-sm-6 col-md-3">  
+                <div class="col-sm-6 col-md-3">
                 <div class="form-group form-focus">
                     <div class="cal-icon">
                         <label class="focus-label">From</label>
@@ -39,7 +39,7 @@
                     </div>
                 </div>
                </div>
-                <div class="col-sm-6 col-md-3">  
+                <div class="col-sm-6 col-md-3">
                 <div class="form-group form-focus">
                     <div class="cal-icon">
                         <label class="focus-label">To</label>
@@ -47,17 +47,17 @@
                     </div>
                 </div>
                </div>
-                <div class="col-sm-6 col-md-3"> 
+                <div class="col-sm-6 col-md-3">
                 <div class="form-group form-focus">
                     <div class="cal-icon">
                     <label class="focus-label">To</label>
                     <button type="button" class="btn btn-success">Search</button>
-                </div> 
-                </div> 
-               </div>     
+                </div>
+                </div>
+               </div>
               </div>
         <!-- /Search Filter -->
-        
+
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">

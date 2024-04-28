@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'View exams Results')
 
 @section('content_header')
     <h1 hidden>View exams Results</h1>

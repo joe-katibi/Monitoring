@@ -49,7 +49,7 @@
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <label for="section">Select Type</label>
+                        <label for="section">Select Period</label>
                         <select class="form-control" id="duration_unit" name="duration_unit">
                             <option selected="selected" value="">--Select Type --</option>
                             <option value="month">Month</option>

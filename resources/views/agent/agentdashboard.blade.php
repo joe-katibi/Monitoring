@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Agent Dashboard')
 
 @section('content_header')
 <h1 hidden></h1>

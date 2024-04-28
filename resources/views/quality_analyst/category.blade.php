@@ -20,12 +20,6 @@
                     @foreach ($fiber as $fbr)
                         <div class="col-md-2 margin-all-4">
                             <a href="/quality_analyst/{{ $fbr->category_id }}/billingteamcategory" type="button" class="btn btn-block btn-success">{{ $fbr->category_name }}</a>
-                            {{-- <button type="button" class="btn btn-success dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                          <span class="sr-only">Toggle Dropdown</span>
-                      </button>
-                      <div class="dropdown-menu" role="menu">
-                          <a class="dropdown-item" href="/quality_analyst/billing/billingteamcategory">Audit this Team</a>
-                      </div> --}}
                         </div>
                     @endforeach
                 </div>
@@ -66,26 +60,12 @@
 
 @section('js')
     <script>
-        // var previous = null
+       
 
         $(".nav-link").click(function() {
 
-            // alert(previous);
-
-            // $("#"+this.id).addClass("active")
             $("#" + this.id).addClass("show active")
-
-            // previous = "#"+this.id+"-t"
-            // $(previous).removeClass("show active")
-
-            // alert(this.id+"-t");
         });
 
-        // $(".tab-pane").click(function(){
-
-        //   alert(this.id);
-
-        // $(this.id).addClass("show active")
-        // });
     </script>
 @stop

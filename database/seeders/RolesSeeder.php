@@ -109,21 +109,21 @@ class RolesSeeder extends Seeder
            }
 
 
-         // Test
-         try {
-            $roleTest = Role::create(['name' => 'Test', 'description' => 'Test']);
-        } catch (\Spatie\Permission\Exceptions\RoleAlreadyExists $e) {
-            // Ignore
-        }
-        $roleTest = Role::findByName('Test');
-         // Find or create specific permissions
-        $permissions = ['', ''];
-        foreach ($permissions as $permissionName) {
-        $permission = Permission::where('name', $permissionName)->first();
+        //  // Test
+        //  try {
+        //     $roleTest = Role::create(['name' => 'Test', 'description' => 'Test']);
+        // } catch (\Spatie\Permission\Exceptions\RoleAlreadyExists $e) {
+        //     // Ignore
+        // }
+        // $roleTest = Role::findByName('Test');
+        //  // Find or create specific permissions
+        // $permissions = ['', ''];
+        // foreach ($permissions as $permissionName) {
+        // $permission = Permission::where('name', $permissionName)->first();
 
-        // Assign the permission to the role
-        $roleTest->givePermissionTo($permission);
-         }
+        // // Assign the permission to the role
+        // $roleTest->givePermissionTo($permission);
+        //  }
 
 
          // Quality-Analyst- WGKL

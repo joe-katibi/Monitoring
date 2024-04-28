@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'ALERT FORM')
 
 @section('content_header')
 <style>
