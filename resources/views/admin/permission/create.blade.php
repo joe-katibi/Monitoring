@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Create Permission')
+@section('title', 'Create Permission | Zuku Monitoring')
 
 @section('content_header')
     <h1>Create Permissions</h1>

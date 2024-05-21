@@ -5,6 +5,7 @@ namespace App\Http\Controllers\QualityAnalyst;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use App\Models\FiberWelcomeQuestion;
@@ -187,7 +188,7 @@ class DthBillingCategoryController extends Controller
             $results->supervisor_comment = isset($input['supervisor_comment']) ? $input['supervisor_comment'] : "";
             $results->agent_comment = isset($input['agent_comment']) ? $input['agent_comment'] : "";
             $results->feedback_from_qc = isset($input['feedback_from_qc']) ? $input['feedback_from_qc'] : "";
-            $results->percentage = isset($input['percentage']) ? $input['percentage'] : "";
+            $results->percentage = isset($input['percentage']) ? $input['percentage'] : "0";
             $results->results = isset($input['results']) ? $input['results'] : 0;
             $results->date_updated = isset($input['date_recorded']) ?  Carbon::parse($input['date_recorded'])->format('Y-m-d H:i:s') :  Carbon::now()->format('Y-m-d H:i:s');
             $results->status = '1';

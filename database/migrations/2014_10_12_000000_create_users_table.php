@@ -19,15 +19,17 @@ return new class extends Migration
             $table->string('username');
             $table->boolean('is_admin')->default(0);
             $table->string('email')->unique();
-            $table->string('country')->nullable();
-            $table->string('services')->nullable();
-            $table->string('category')->nullable();
-            $table->string('position')->nullable();
-            $table->string('user_status')->nullable()->default(1);
-            $table->string('department_id')->nullable();
+            $table->integer('country')->nullable(); 
+            $table->integer('services')->nullable();
+            $table->integer('category')->nullable();
+            $table->integer('position')->nullable();
+            $table->integer('user_status')->nullable()->default(1);
+            $table->integer('department_id')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->integer('created_by')->nullable();
+            $table->integer('updated_by')->nullable();
             $table->timestamps();
         });
     }

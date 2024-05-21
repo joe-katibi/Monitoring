@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Exam edit')
+@section('title', 'Exam edit | Zuku Monitoring')
 
 @section('content_header')
 <h1 hidden></h1>

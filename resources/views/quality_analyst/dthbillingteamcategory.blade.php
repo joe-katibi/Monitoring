@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'DTH-Categories')
+@section('title', 'DTH-Categories | Zuku Monitoring')
 
 @section('content_header')
 @stop
@@ -22,7 +22,7 @@
             <div class="row">
                 <div class="col-2">
                     <label>Supervisor</label>
-                    <select required class="custom-select" id="final" name="supervisor" aria-placeholder="select an option">
+                    <select required class="custom-select" id="supervisor" name="supervisor" aria-placeholder="select an option">
                         <option disabled selected>Select Agent</option>
                         @foreach ($supervisor as $supervisors)
                             <option value="{{ $supervisors->id }}">{{ $supervisors->name }}</option>
@@ -32,7 +32,7 @@
                 </div>
                 <div class="col-2">
                     <label>Agent name</label>
-                    <select required class="custom-select" id="final" name="agent_name" aria-placeholder="select an option">
+                    <select required class="custom-select" id="agent_name" name="agent_name" aria-placeholder="select an option">
                         <option disabled selected>Select Agent</option>
                         @foreach ($agents as $agent)
                             <option value="{{ $agent->id }}">{{ $agent->name }}</option>

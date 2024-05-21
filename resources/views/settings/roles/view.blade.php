@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Permissions View | Roles')
+@section('title', 'Permissions View | Roles | Zuku Monitoring')
 @section('content_header')
 <div class="container-fluid">
     <div class="row mb-2">

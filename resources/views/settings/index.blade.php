@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Administration Settings')
+@section('title', 'Administration Settings | Zuku Monitoring')
 
 @section('content_header')
 <h1></i> Administration Settings </h1>

@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Call tracker category')
+@section('title', 'Call tracker category | Zuku Monitoring')
 
 @section('content_header')
 

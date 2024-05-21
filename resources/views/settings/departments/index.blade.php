@@ -1,6 +1,6 @@
 
 @extends('adminlte::page')
-@section('title', 'Departments')
+@section('title', 'Departments | Zuku Monitoring')
 @section('content_header')
 @include('sweetalert::alert')
 

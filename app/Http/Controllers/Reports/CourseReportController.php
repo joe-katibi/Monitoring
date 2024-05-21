@@ -18,6 +18,7 @@ use App\Models\ReportType;
 use Datatables;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Auth;
 
 class CourseReportController extends Controller
 {

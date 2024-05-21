@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Cable-Category')
+@section('title', 'Cable-Category | Zuku Monitoring')
 
 @section('content_header')
 <h1 hidden></h1>

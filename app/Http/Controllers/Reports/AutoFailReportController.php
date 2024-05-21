@@ -16,6 +16,7 @@ use App\Models\Categories;
 use App\Models\ReportType;
 use Datatables;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class AutoFailReportController extends Controller

@@ -1,9 +1,19 @@
 @extends('adminlte::page')
 
-@section('title', 'Coaching Form')
+@section('title', 'Coaching Form | Zuku Monitoring')
 
 @section('content_header')
     <h1 hidden >Coaching Form</h1>
+    <head>
+    <style>
+        .container {
+            text-align: center;
+        }
+        .centered-div {
+            display: inline-block; /* This ensures the div itself does not take full width */
+        }
+    </style>
+</head>
 @stop
 
 @section('content')
@@ -16,8 +26,10 @@
         <input type="hidden" name="id" value="{{ $coachingForm->id }}">
     </div>
 <div class="card-body">
-    <div center class="container">
-    <h3 >WANANCHI QUALITY COACHING FORM</h3>
+<div class="container">
+        <div class="centered-div">
+            <h3>WANANCHI QUALITY COACHING FORM</h3>
+        </div>
     </div>
     <div class="card-body">
         <div class="col">
@@ -144,6 +156,7 @@
                     <label class="form-label">Agent Signature:</label>
                     {{-- <input  readonly name="agent_signature" value=""  class="form-control"> --}}
                     <img src="{{$coachingForm->agent_signature }}" alt="Agent Signature" style="max-width: 100px; max-height: 100px; display: block;">
+                   
                 </div>
             </div>
             <div class="col-md-6">

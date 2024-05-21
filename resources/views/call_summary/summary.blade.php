@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'summary')
+@section('title', 'summary | Zuku Monitoring')
 
 @section('content_header')
     <h1 hidden>Summary</h1>
@@ -31,31 +31,31 @@
             <table class="table table-bordered" id="strengthSummaryTable">
                 <thead>
                     <tr>
-                        <th>Gap Summary</th>
+                        <th>Strength Summary</th>
                         <th>Service</th>
                         <th>Created Date</th>
                         <th style="width: 10%">Action</th>
                     </tr>
                 </thead>
                     <tbody>
-                          @foreach ($sumry as $row)
+                          @foreach ($sumry as $rows)
                            <tr>
-                            <td>{{$row->summary_name}}</td>
+                            <td>{{$rows->summary_name}}</td>
                             <td>
-                                @if ($row->service_name == 'Cable')
+                                @if ($rows->service_name == 'Cable')
                                 <a disable class="badge badge-success" >Cable</a>
                                 @else
                                 <a disable class="badge badge-primary" >DTH</a>
                                 @endif
                             </td>
-                            <td>{{$row->created_at}}</td>
+                            <td>{{$rows->created_at}}</td>
                                  <td>
                                     @can('view-strength-edit-delete-action')
 
                                      <div class="btn-group btn-group-sm">
-                                         <a  data-toggle="modal" data-target="#editModal" href="{{ route('summary.edit',$row->id) }}" class="btn btn-success"><i class="fas fa-edit" ></i></a>
+                                         <a  data-toggle="modal" data-target="#editModal2" href="{{ route('summary.voc',$rows->id) }}" class="btn btn-success"><i class="fas fa-edit" ></i></a>
                                          @method('DELETE')
-                                          <a href="{{ route('summary.destroy',$row->id) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                                          <a href="{{ route('summary.destroy',$rows->id) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
                                      </div>
                                      @endcan
                             </td>
@@ -72,7 +72,7 @@
 <form>
     <div class="card card-success">
         <div class="card-header">
-            <input readonly class="form-control" style="color: green" name="category" value="VOC Summary">
+            <input readonly class="form-control" style="color: green"  value="VOC Summary">
         </div>
         <div class="card-body">
             <div class="row">
@@ -94,23 +94,23 @@
                     </tr>
                 </thead>
                     <tbody>
-                        @foreach ($sumvoc as $row)
+                        @foreach ($sumvoc as $sumvocs)
                         <tr>
 
-                            <td>{{$row->voc_name}}</td>
+                            <td>{{$sumvocs->voc_name}}</td>
                             <td>
-                                @if ($row->service_name == 'Cable')
+                                @if ($sumvocs->service_name == 'Cable')
                                 <a disable class="badge badge-success" >Cable</a>
                                 @else
                                 <a disable class="badge badge-primary" >DTH</a>
                                 @endif
                             </td>
-                            <td>{{$row->created_at}}</td>
+                            <td>{{$sumvocs->created_at}}</td>
                               <td>
                                 @can('view-voc-edit-delete-action')
                                   <div class="btn-group btn-group-sm">
-                                    <a  data-toggle="modal" data-target="#editModal" href="{{ route('summary.edit',$row->id) }}" class="btn btn-success"><i class="fas fa-edit" ></i></a>
-                                       <a href="{{ route('summary.destroy',$row->id) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                                    <a  data-toggle="modal" data-target="#editModal" href="{{ route('summary.edit',$sumvocs->id) }}" class="btn btn-success"><i class="fas fa-edit" ></i></a>
+                                       <a href="{{ route('summary.destroy',$sumvocs->id) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
                                   </div>
                                   @endcan
                          </td>
@@ -164,7 +164,7 @@
                               <td>
                                 @can('view-gap-edit-delete-action')
                                   <div class="btn-group btn-group-sm">
-                                    <a  data-toggle="modal" data-target="#editModal" href="{{ route('summary.edit',$row->id) }}" class="btn btn-success"><i class="fas fa-edit" ></i></a>
+                                    <a  data-toggle="modal" data-target="#editModal1" href="{{ route('summary.show',$row->id) }}" class="btn btn-success"><i class="fas fa-edit" ></i></a>
                                        <a href="{{ route('summary.destroy',$row->id) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
                                   </div>
                                   @endcan
@@ -332,16 +332,19 @@
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel"> edit Summary</h5>
+                      <h5 class="modal-title" id="exampleModalLabel"> Edit VOC Summary</h5>
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
+                    
                     <div class="modal-body">
-                      <form action="{{ route('summary.edit',$row->id) }}" method="POST">
+                      <form action="{{ route('summary.edit',$sumvocs->id) }}" method="POST">
                         {{csrf_field()}}
-                        <label for="name">edit Summary</label>
-                        <input type="text" name="{{$row->summary_name}}" class="form-control">
+                        <label for="name">Edit VOC Summary</label>
+                        <input type="text" name="voc_name" value="{{$sumvocs->voc_name}}" class="form-control">
+                        <input type="hidden" name="service" value="{{$sumvocs['service_id']}}">
+                        <input type="hidden" name="voc_name_id" value="{{$sumvocs['id']}}">
                         <div class="col-ms-3">
                           <div class="card-body">
                             @can('view-edit-summary-button')
@@ -361,6 +364,87 @@
 
                     </div>
                   </div>
+                </div>
+                </div>
+
+                             <!--edit  Modal  4-->
+            <div class="modal fade" id="editModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel"> Edit Summary</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form action="{{ route('summary.show',$row->id) }}" method="POST">
+                        {{csrf_field()}}
+                        <label for="name">Edit Summary</label>
+                        <input type="text" name="gap_name" value="{{$row->gap_name}}" class="form-control">
+                        <input type="hidden" name="service" value="{{$row['service_id']}}">
+                        <input type="hidden" name="gap_name_id" value="{{$row['id']}}">
+                        <div class="col-ms-3">
+                          <div class="card-body">
+                            @can('view-edit-summary-button')
+                              <div class="row">
+                                  <div class="col">
+                        <button type="submit" class="btn btn-success float-right">Save changes</button>
+                            </div>
+                            </div>
+                            @endcan
+                      </div>
+
+                      </div>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                    </div>
+                  </div>
+                </div>
+                </div>
+                </div>
+
+                                             <!--edit  Modal  5-->
+            <div class="modal fade" id="editModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel"> Edit Strength Summary</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form action="{{ route('summary.voc',$rows->id) }}" method="POST">
+                        {{csrf_field()}}
+                        <label for="name">Edit Strength Summary</label>
+                        <input type="text" name="summary_name" value="{{$rows->summary_name}}" class="form-control">
+                        <input type="hidden" name="service" value="{{$rows['service_id']}}">
+                        <input type="hidden" name="strength_name_id" value="{{$rows['id']}}">
+                        <div class="col-ms-3">
+                          <div class="card-body">
+                            @can('view-edit-summary-button')
+                              <div class="row">
+                                  <div class="col">
+                        <button type="submit" class="btn btn-success float-right">Save changes</button>
+                            </div>
+                            </div>
+                            @endcan
+                      </div>
+
+                      </div>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                    </div>
+                  </div>
+                </div>
+                </div>
                 </div>
           </div>
 

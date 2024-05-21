@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('supervisor')->nullable();
             $table->string('category')->nullable();
-            $table->string('agent_name')->nullable();
-            $table->string('quality_analysts')->nullable();
+            $table->integer('agent_name')->nullable();
+            $table->integer('quality_analysts')->nullable();
             $table->dateTime('date_recorded');
             $table->integer('customer_account')->nullable();
             $table->integer('recording_id')->nullable();
@@ -32,12 +32,13 @@ return new class extends Migration
             $table->string('supervisor_comment')->nullable();
             $table->string('agent_comment')->nullable();
             $table->string('status')->nullable();
-            $table->string('percentage')->nullable();
+            $table->integer('percentage')->nullable()->default(0);
             $table->integer('results')->nullable();
             $table->integer('totals')->nullable();
+            $table->integer('report_type_id ')->nullable();
             $table->integer('final_results')->nullable();
             $table->dateTime('date_updated')->nullable();
-            $table->dateTime('created_by')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
         });
     }

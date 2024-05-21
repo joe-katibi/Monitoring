@@ -26,7 +26,7 @@ class UserTableSeeder extends Seeder
             'is_admin' => 1,
             'country'=>'1',
             'services'=>'1',
-            'category'=>'null',
+            'category'=>'0',
             'position'=>'5',
             'user_status'=>'1',
             'department_id'=>'1',

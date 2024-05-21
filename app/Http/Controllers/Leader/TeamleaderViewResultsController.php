@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Leader;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\FiberWelcomeQuestion;
 use App\Models\User;

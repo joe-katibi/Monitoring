@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Upload;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\Services;
 use App\Models\User;
@@ -33,14 +34,15 @@ class UploadCallController extends Controller
 
          // Retrieves specific columns from the UploadCalls table and joins it with the CallRatings, Categories, Services, and Users tables to retrieve additional information
             $upload = UploadCalls::select('upload_calls.agent_name','upload_calls.supervisor_name','upload_calls.call_category','upload_calls.qa_name',
-                                   'upload_calls.call_rating','upload_calls.call_date','upload_calls.call_file','call_ratings.rating_name',
-                                   'categories.service_id','services.service_name','categories.category_name','users.country','countries.country_name',
+                                   'upload_calls.call_rating','upload_calls.call_date','upload_calls.call_file',
+                                    'call_ratings.rating_name','categories.service_id','categories.category_name', 'services.service_name', 
+                                    'countries.country_name','users.country',
                                    )
                                   ->join('call_ratings','call_ratings.id','=','upload_calls.call_rating')
                                   ->join('categories','categories.id','=','upload_calls.call_category')
                                   ->join('services','services.id','=','categories.service_id')
                                   ->join('users','users.id','=','upload_calls.agent_name')
-                                   ->join('countries','countries.id','=','users.country')
+                                  ->join('countries','countries.id','=','users.country')
                                   ->get();
 
         // Loop through each element of the $upload array
@@ -56,9 +58,6 @@ class UploadCallController extends Controller
         $value['qualityName'] =  isset($qualityName)  ?  $qualityName->name : '';
 
     }
-
-     // print_pre([$upload] , true);
-
         // Assigns the retrieved data to variables in an associative array called $data
              $data['callrating']=  $callrating;
             $data['upload']=  $upload;
@@ -67,16 +66,6 @@ class UploadCallController extends Controller
          // Renders a view called 'call_saved/upload_calls' and passes it the $data array as a parameter
           return view('call_saved/upload_calls')->with($data);
 
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -119,10 +108,6 @@ class UploadCallController extends Controller
                      $callrecord->call_rating = isset($input['call_rating']) ? $input['call_rating'] : "";
                     $callrecord->call_date = isset($input['call_date']) ? $input['call_date'] : "";
                     $callrecord->created_by = Auth::user()->id;
-
-
-                    // print_pre([$callrecord] , true);
-
 
                   // Save the UploadCalls model instance
                $callrecord->save();

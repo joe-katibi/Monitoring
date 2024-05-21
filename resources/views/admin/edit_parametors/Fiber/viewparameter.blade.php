@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Parameter')
+@section('title', 'Parameter | Zuku Monitoring')
 
 @section('content_header')
 <h1 hidden ></h1>
@@ -11,7 +11,9 @@
 
 <div class="card card-success">
     <div class="card-header">
-        <input readonly class="form-control" style="color: green" name="category" value="{{ $list[0]['category_name'] }}">
+    <input readonly class="form-control" style="color: green" name="category" 
+       value="{{ isset($list[0]['category_name']) ? $list[0]['category_name'] : ' Empty parameter please create new parameters' }}">
+
     </div>
     <div class="card-body">
         <label for="total">Total Marks</label>

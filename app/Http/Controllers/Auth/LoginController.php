@@ -28,80 +28,81 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
+   use AuthenticatesUsers;
 
-    // public function showLoginForm()
-    // {
-    //     return view('auth.login');
-    // }
+    public function showLoginForm()
+    {
 
-    // public function authenticateUser(Request $request)
-    // {
-    //     $username = strtolower($request->input('username'));
-    //     $password = $request->input('password');
-    //     $domain = $request->input('domain');
+        
+        return view('auth.login');
+    }
 
-    //     if ($domain == 1) {
-    //         $adldap = new adLDAP();
-    //     } else {
-    //         $adldap = new adLDAPVendor();
-    //     }
+    public function authenticateUser(Request $request)
+    {
+        $username = strtolower($request->input('username'));
+        $password = $request->input('password');
+        $domain = $request->input('domain');
 
-
-    //     $authUser = $adldap->authenticate($username, $password);
-
-    //     if ($authUser == true) {
-    //         $userinfo = $adldap->user_info($username, array("name", "samaccountname", "userPrincipalName", "mail",));
-
-    //         foreach ($userinfo as $key => $value) {
-    //             $userinfo = $value;
-    //         }
-
-    //         $name = $userinfo['name'][0];
-    //         $username = $userinfo['samaccountname'][0];
+        if ($domain == 1) {
+            $adldap = new adLDAP();
+        } else {
+            $adldap = new adLDAPVendor();
+        }
 
 
-    //         $name = $userinfo['name'][0];
-    //         $username = strtolower($userinfo['samaccountname'][0]);
-    //         $email = $userinfo['mail'][0];
+        $authUser = $adldap->authenticate($username, $password);
 
-    //         $user_names =  User::select('username')->pluck('username')->toArray();
+        if ($authUser == true) {
+            $userinfo = $adldap->user_info($username, array("name", "samaccountname", "userPrincipalName", "mail",));
 
+            foreach ($userinfo as $key => $value) {
+                $userinfo = $value;
+            }
 
-    //         if (in_array($username, $user_names)) {
-    //             $credentials = $request->only('username', 'password');
-    //             //dd($credentials);
-    //             DB::table('users')->where(array('username' => $username))->update(array(
-    //                 'password' => Hash::make($password)
-    //             ));
+            $name = $userinfo['name'][0];
+            $username = $userinfo['samaccountname'][0];
 
 
-    //             if (Auth::attempt($credentials)) {
+            $name = $userinfo['name'][0];
+            $username = strtolower($userinfo['samaccountname'][0]);
+            $email = $userinfo['mail'][0];
 
-    //                 return redirect('/home');
-    //             }
-    //         } else {
-    //             $user = new User();
-    //             $user->name = ucwords($name);
-    //             $user->email = $email;
-    //             $user->username = $username;
-    //             $user->password = Hash::make($password);
-    //             $user->save();
+            $user_names =  User::select('username')->pluck('username')->toArray();
 
-    //             $credentials = $request->only(
-    //                 'username',
-    //                 'password'
-    //             );
 
-    //             if (Auth::attempt($credentials, $request->has('remember'))) {
-    //                 return redirect('/auth/notActivated');
-    //             } else {
-    //             }
-    //         }
-    //     } else {
-    //         return back()->with('error', 'Incorrect username or password');
-    //     }
-    // }
+            if (in_array($username, $user_names)) {
+                $credentials = $request->only('username', 'password');
+                DB::table('users')->where(array('username' => $username))->update(array(
+                    'password' => Hash::make($password)
+                ));
+
+
+                if (Auth::attempt($credentials)) {
+
+                    return redirect('/home');
+                }
+            } else {
+                $user = new User();
+                $user->name = ucwords($name);
+                $user->email = $email;
+                $user->username = $username;
+                $user->password = Hash::make($password);
+                $user->save();
+
+                $credentials = $request->only(
+                    'username',
+                    'password'
+                );
+
+                if (Auth::attempt($credentials, $request->has('remember'))) {
+                    return redirect('/auth/notActivated');
+                } else {
+                }
+            }
+        } else {
+            return back()->with('error', 'Incorrect username or password');
+        }
+    }
 
 
     /**
@@ -112,22 +113,22 @@ class LoginController extends Controller
     protected $redirectTo = RouteServiceProvider::HOME;
 
 
-    // public function logout(Request $request)
-    // {
-    //     $this->guard()->logout();
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
 
-    //     $request->session()->invalidate();
+        $request->session()->invalidate();
 
-    //     $request->session()->regenerateToken();
+        $request->session()->regenerateToken();
 
-    //     if ($response = $this->loggedOut($request)) {
-    //         return $response;
-    //     }
+        if ($response = $this->loggedOut($request)) {
+            return $response;
+        }
 
-    //     return $request->wantsJson()
-    //         ? new JsonResponse([], 204)
-    //         : redirect('/');
-    // }
+        return $request->wantsJson()
+            ? new JsonResponse([], 204)
+            : redirect('/');
+    }
 
 
     /**
@@ -140,16 +141,16 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    // protected function authenticated(Request $request, $user)
-    // {
-    //     if ($user->user_status == 0) {
-    //         // Redirect to the not activated view
-    //         return redirect()->route('notActivated');
-    //     }
+     protected function authenticated(Request $request, $user)
+     {
+         if ($user->user_status == 0) {
+             // Redirect to the not activated view
+             return redirect()->route('notActivated');
+        }
 
-    //     // Store the activation status in the session
-    //     Session::put('user_status', $user->user_status);
+         // Store the activation status in the session
+       Session::put('user_status', $user->user_status);
 
-    //     return redirect()->intended($this->redirectPath());
-    // }
+         return redirect()->intended($this->redirectPath());
+     }
 }

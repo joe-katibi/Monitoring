@@ -10,6 +10,7 @@ use App\Models\AlertForm;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 
@@ -35,6 +36,12 @@ class teamleaderdashboardController extends Controller
                             ->first();
 
        $agents =UserCategory::select('user_id','category_id')->where('user_id','=',$agentId)->orwhere('category_id','=',$supervisorCategory->category_id)->first();
+
+    //    $agents = UserCategory::select('user_id', 'category_id')
+    // ->where('user_id', '=', $agentId)
+    // ->orWhere('category_id', '=', optional($supervisorCategory)->category_id)
+    // ->first();
+
 
        $agentSlipping = Result::select('agent_name')->where('status','=',1)->where('category','=',$supervisorCategory->category_id)->count();
 

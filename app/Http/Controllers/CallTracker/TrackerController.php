@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Datatables;
 use App\Models\CallTracker;
 use App\Models\SubCallTracker;
@@ -139,10 +140,25 @@ class TrackerController extends Controller
     public function show($id)
     {
 
+        $callTracker = CallTracker::find($id);
+
+        if (!$callTracker) {
+            // Course not found, you can handle this case accordingly.
+            return redirect()->back()->with('error', 'CallTracker not found.');
+        }
+
         $subcall['list']= SubCallTracker::select('sub_call_trackers.id','sub_call_trackers.sub_call_tracker','sub_call_trackers.call_tracker_id','call_trackers.call_tracker','sub_call_trackers.created_at','call_trackers.service_id',)
                                                 ->join('call_trackers','call_trackers.id', '=','sub_call_trackers.id' )
                                                 ->join('services','services.id','=','call_trackers.service_id')
                                                 ->where('sub_call_trackers.call_tracker_id','=',$id)->get();
+
+            if ($subcall['list']->isEmpty()) {
+                                         // No questions found, display the error/alert message
+                                                    $message = "No SubcallTracker/s found. Please create subcategory for call Tracker called {$callTracker->call_tracker}.";
+                                                     toast( $message , 'warning')->position('center');
+                                  
+                                                    return redirect()->back()->with('message', $message);
+                                                    }
 
 
         return view('/call_tracker/show_tracker')->with($subcall);

@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Billing Results')
+@section('title', 'Billing Results Edit | Zuku Monitoring')
 
 @section('content_header')
 <h1 hidden></h1>
@@ -8,9 +8,9 @@
 
 @section('content')
 @include('sweetalert::alert')
-<form action="{{ route('billing_edit',$audit_agent[0]['id']) }}" method="POST">
+<form action="{{ route('billing_update',$audit_agent[0]['id']) }}" method="POST">
     @csrf
-     @method('PUT')
+     @method('POST')
   <!-- /.card -->
   <div class="card card-success">
     <div class="card-header">
@@ -84,11 +84,11 @@
                     <div class="form-group row">
                         <div class="col">
                             <label>Feedback From QC</label>
-                            <input type="text" class="form-control float-center" rows="3" value="{{ $audit_agent[0]['feedback_from_qc'] }}">
+                            <input type="text" required name="feedback_from_qc" class="form-control float-center" rows="3" value="{{ $audit_agent[0]['feedback_from_qc'] }}">
                           </div>
                   </div>
                   <div class="card-footer">
-                    <button type="submit" class="btn btn-success float-right">edit Audit</button>
+                    <button type="submit" class="btn btn-success float-right">Edit Audit</button>
                   </div>
                   <!-- /.card-footer -->
 

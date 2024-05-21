@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Result;
 use App\Models\AlertForm;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class AgentDashboardController extends Controller

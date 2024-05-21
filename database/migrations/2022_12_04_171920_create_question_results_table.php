@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('question_results', function (Blueprint $table) {
             $table->id();
-            $table->string('results')->nullable();
-            $table->string('question_no')->nullable();
+            $table->integer('results')->nullable();
+            $table->integer('question_no')->nullable();
             $table->string('marks')->nullable();
-            $table->string('created_by')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
         });
     }

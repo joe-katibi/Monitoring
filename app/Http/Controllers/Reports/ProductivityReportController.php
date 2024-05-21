@@ -28,6 +28,7 @@ use App\Models\VoCSummaries;
 use Datatables;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Auth;
 
 class ProductivityReportController extends Controller
 {

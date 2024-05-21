@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Coaching Form')
+@section('title', 'Coaching Form | Zuku Monitoring')
 
 @section('content_header')
     <h1 hidden >Coaching Form</h1>

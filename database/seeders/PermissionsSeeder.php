@@ -442,6 +442,13 @@ class PermissionsSeeder extends Seeder
                 'name' => 'view-strength-edit-delete-action'
             ],
 
+            [
+                'module' => 'Call Trackers',
+                'sub_module' => 'view edit summary button',
+                'description' => 'view edit summary button',
+                'name' => 'view-edit-summary-button'
+            ],
+
 
             //Examination
             [
@@ -496,7 +503,7 @@ class PermissionsSeeder extends Seeder
                 'module' => 'Examination',
                 'sub_module' => 'button for saving exams',
                 'description' => 'button for saving exams',
-                'name' => 'view-saving-done-exam-button'
+                'name' => 'view-saving-done-exam-buttons'
             ],
             [
                 'module' => 'Examination',

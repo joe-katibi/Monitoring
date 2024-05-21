@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Create-General-Issue')
+@section('title', 'Create-General-Issue | Zuku Monitoring')
 
 @section('content_header')
 <h1 hidden></h1>
@@ -133,7 +133,7 @@
                           <form action="{{ route('general.edit', $row['id']) }}" method="POST">
                             {{ csrf_field() }}
                             <label for="name">Edit Category</label>
-                            <input type="text" name="category" class="form-control">
+                            <input type="text" name="category" class="form-control" value="{{$row['name']}}">
                             <input type="hidden" name="category_id" value="{{$row['id']}}">
                             <div class="col-ms-3">
                               <div class="card-body">

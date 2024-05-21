@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->dateTime('date')->nullable();
-            $table->string('agent_name')->nullable();
-            $table->string('supervisor_name')->nullable();
-            $table->string('qa_name')->nullable();
+            $table->integer('agent_name')->nullable();
+            $table->integer('supervisor_name')->nullable();
+            $table->integer('qa_name')->nullable();
             $table->string('description')->nullable();
             $table->string('fatal_error')->nullable();
             $table->string('supervisor_comment')->nullable();
@@ -29,11 +29,11 @@ return new class extends Migration
             $table->dateTime('date_by_supervisor')->nullable();
             $table->longText('agent_signature')->nullable();
             $table->dateTime('date_by_agent')->nullable();
-            $table->string('category_id')->nullable();
-            $table->string('results_id')->nullable();
-            $table->string('auto_status')->nullable();
-            $table->string('service_id')->nullable();
-            $table->string('created_by')->nullable();
+            $table->integer('category_id')->nullable();
+            $table->integer('results_id')->nullable();
+            $table->integer('auto_status')->nullable();
+            $table->integer('service_id')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
         });
     }

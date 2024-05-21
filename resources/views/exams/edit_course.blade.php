@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Edit Course')
+@section('title', 'Edit Course | Zuku Monitoring')
 
 @section('content_header')
     <h1 hidden >Edit course</h1>
@@ -13,7 +13,7 @@
     @csrf
       <div class="card card-success " >
           <div class="card-header">
-              <input readonly class="form-control" style="color: green" name="category" value="Edit Course">
+              <input readonly class="form-control" style="color: green" value="Edit Course">
           </div>
       <div class="card-body">
         <div class="form-group">

@@ -14,6 +14,7 @@ use App\Models\Positions;
 use Illuminate\Support\Facades\Hash;
 use Datatables;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\Courses;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -21,16 +22,6 @@ use RealRashid\SweetAlert\Facades\Alert;
 class CourseController extends Controller
 {
 
-      //
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    // public function __construct()
-    // {
-    //     $this->middleware(['role:super-admin|admin|moderator|developer|quality-analysts|trainer']);
-    // }
     /**
      * Display a listing of the resource.
      *
@@ -96,21 +87,10 @@ class CourseController extends Controller
 
             DB::rollBack();
             Log::info($e->getMessage() );
-            alert()->error('ErrorAlert', 'Failed to Created')->footer('<span>Error code:</span>' . $e->getMessage());
+            alert()->error('ErrorAlert', 'Failed to Create Course')->footer('<span>Error code:</span>' . $e->getMessage());
             throw $e;
         }
 
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -123,8 +103,8 @@ class CourseController extends Controller
     {
         //
         $course = Courses::find($id);
-        toast('Course edited successfully','success')->position('top-end');
         return view('exams/edit_course',compact('course'));
+
     }
 
     /**
@@ -136,7 +116,27 @@ class CourseController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $input = $request->all();
+        try {
+            DB::beginTransaction();
+            $course = Courses::findOrFail($id);
+            $course->course_name = isset($input['course_name']) ? $input['course_name']:"";
+            $course->created_by = Auth::user()->id;
+            $course->save();
+    
+            log::channel('course')->info('course Created : ------> ', ['200' , $course->toArray() ] );
+    
+            DB::commit();
+            toast('Course edited successfully','success')->position('top-end');
+
+            return view('exams/edit_course',compact('course'));
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::info($e->getMessage() );
+            alert()->error('ErrorAlert', 'Failed to Edit Course')->footer('<span>Error code:</span>' . $e->getMessage());
+            throw $e;
+        }
     }
 
     /**

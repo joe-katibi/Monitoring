@@ -61,9 +61,11 @@ use App\Http\Controllers\FiberQuestions\ServiceSupportQuestionController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
-//Route::post('/authenticate/user', [App\Http\Controllers\Auth\LoginController::class, 'authenticateUser']);
+Route::post('/authenticate/user', [App\Http\Controllers\Auth\LoginController::class, 'authenticateUser'])->name('user.authenticate');
+
+// Route::post('/authenticate/user', [AuthenticationController::class, 'login'])->name('user.authenticate');
 Auth::routes();
 
 Route::get('/auth/notActivated', [App\Http\Controllers\Auth\NotActivatedController::class, 'showNotActivated'])->name('notActivated');
@@ -91,6 +93,7 @@ Route::prefix('settings')->group(function () {
     Route::get('users/{id}', [App\Http\Controllers\Admin\UserController::class, 'show'])->name('settings.users.show');
     Route::put('users/{id}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('settings.users.update');
     Route::get('users/{id}/edit', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('settings.users.edit');
+    Route::get('users/{id}/newUser', [App\Http\Controllers\Admin\UserController::class, 'newUser'])->name('settings.users.newUser');
     Route::get('users/{id}/activate', [App\Http\Controllers\Admin\UserController::class, 'activate'])->name('settings.users.activate');
     Route::get('users/{id}/deactivate',[App\Http\Controllers\Admin\UserController::class,  'deactivate'])->name('settings.users.deactivate');
     Route::get('users/{id}/reset-password', [App\Http\Controllers\Admin\UserController::class, 'requestPasswordReset'])->name('settings.users.password.reset');
@@ -140,6 +143,7 @@ Route::get('quality_analyst/{billing}/billingteamcategory', [App\Http\Controller
 Route::post('quality_analyst/billingteamcategory', [App\Http\Controllers\QualityAnalyst\BillingCategoryController::class, 'store'])->name('billing.store');
 Route::get('results/billing/billing_results/{billing}', [App\Http\Controllers\Results\billing\BillingResultsController::class, 'index'])->name('billing_results');
 Route::get('results/billing/billing_edit/{billing}', [App\Http\Controllers\Results\billing\BillingResultsController::class, 'edit'])->name('billing_edit');
+Route::post('results/billing/billing_edit/{billing}', [App\Http\Controllers\Results\billing\BillingResultsController::class, 'update'])->name('billing_update');
 
 
 //Route::post('quality_analyst/livecallsteamcategory', [App\Http\Controllers\QualityAnalyst\BillingCategoryController::class, 'livecalls'])->name('livecalls');
@@ -162,17 +166,6 @@ Route::resource('livecalls', LiveCallCategoryController::class);
 Route::post('quality_analyst/livecallsteamcategory', [App\Http\Controllers\QualityAnalyst\LiveCallCategoryController::class, 'store'])->name('livecalls.store');
 Route::get('results/Fiber/fiber_livecalls_results/{livecalls}', [App\Http\Controllers\QualityAnalyst\LiveCallCategoryController::class, 'index'])->name('livecalls.index');
 //Route::get('results/Fiber/fiber_livecalls_results/{livecalls}', [App\Http\Controllers\Results\Fiber\FiberliveCallsResultsController::class, 'show'])->name('fiber_livecalls_results');
-
-
-// Route::get('categorylivesupervisor/{id}', function ($id) {
-//     $supervisorName = App\Models\user::where('category',$id)->where('position', '=', 'Supervisor')->get();
-//     return response()->json($supervisorName);
-// });
-
-// Route::get('categoryliveagent/{id}', function ($id) {
-//     $supervisorName = App\Models\user::where('category',$id)->where('position', '=', 'Agent')->get();
-//     return response()->json($supervisorName);
-// });
 
 Route::get('categorylivesupervisor/{id}', function ($id) {
     $supervisorName = App\Models\Role::join('model_has_roles','model_has_roles.role_id','=','roles.id')
@@ -243,7 +236,7 @@ Route::get('exams/create_course',[App\Http\Controllers\Exams\CourseController::c
 Route::post('/exams/create_course',[App\Http\Controllers\Exams\CourseController::class, 'store'])->name('store');
 Route::delete('exams/{create_course}/create_course',[App\Http\Controllers\Exams\CourseController::class, 'destory'])->name('course.destory');
 Route::get('exams/{create_course}/edit_course',[App\Http\Controllers\Exams\CourseController::class, 'edit'])->name('create_course.edit');
-Route::get('exams/{create_course}/edit_course',[App\Http\Controllers\Exams\CourseController::class, 'update'])->name('create_course.update');
+Route::post('exams/{create_course}/edit_course',[App\Http\Controllers\Exams\CourseController::class, 'update'])->name('create_course.update');
 
 
 
@@ -267,6 +260,8 @@ Route::get('call_summary/summary', [App\Http\Controllers\CallSummary\CallSummary
 Route::resource('summary', CallSummaryController::class);
 Route::post('/call_summary/create', [App\Http\Controllers\CallSummary\CallSummaryController::class, 'store'])->name('summary.store');
 Route::post('/call_summary/update', [App\Http\Controllers\CallSummary\CallSummaryController::class, 'update'])->name('summary.update');
+Route::post('/call_summary/{summary}/edit', [App\Http\Controllers\CallSummary\CallSummaryController::class, 'edit'])->name('summary.edit');
+Route::post('/call_summary/{summary}/strength', [App\Http\Controllers\CallSummary\CallSummaryController::class, 'voc'])->name('summary.voc');
 Route::post('/call_summary/create', [App\Http\Controllers\CallSummary\CallSummaryController::class, 'storeGap'])->name('summary.storeGap');
 
 Route::resource('general', App\Http\Controllers\General\GeneralIssueController::class);
@@ -300,11 +295,6 @@ Route::get('/quality_analyst/qa_agent_alert_form/{id}', [App\Http\Controllers\Al
 Route::post('/quality_analyst/qa_agent_alert_form/', [App\Http\Controllers\AlertForm\QaAlertFormController::class, 'store'])->name('autofail.store');
 Route::get('team_leader/tl_agent_alert_form/{id}', [App\Http\Controllers\AlertForm\QaAlertFormController::class, 'edit'])->name('autofail.edit');
 Route::post('team_leader/tl_agent_alert_form/{id}', [App\Http\Controllers\AlertForm\QaAlertFormController::class, 'updateAlert'])->name('autofail.updateAlert');
-
-// Route::get('category/{id}', function ($id) {
-//     $AgentName = App\Models\user::where('category',$id)->where('position', '=', 'Agent')->get();
-//     return response()->json($AgentName);
-// })->name('category_agent');
 
 
 Route::get('category/{id}', function ($id) {

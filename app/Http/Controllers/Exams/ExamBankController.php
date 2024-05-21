@@ -11,6 +11,7 @@ use App\Models\Services;
 use App\Models\ExamsQuestions;
 use Datatables;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ExamBankController extends Controller

@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('live_calls_results', function (Blueprint $table) {
             $table->id();
-            $table->string('live_call_id')->nullable();
-            $table->string('strength_id')->nullable();
-            $table->string('summary_id')->nullable();
-            $table->string('service_id')->nullable();
-            $table->string('category_id')->nullable();
-            $table->string('created_by')->nullable();
+            $table->integer('live_call_id')->nullable();
+            $table->integer('strength_id')->nullable();
+            $table->integer('summary_id')->nullable();
+            $table->integer('service_id')->nullable();
+            $table->integer('category_id')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
         });
     }

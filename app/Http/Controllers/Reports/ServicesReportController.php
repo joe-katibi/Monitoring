@@ -29,6 +29,7 @@ use App\Models\VoCSummaries;
 use Datatables;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Auth;
 
 class ServicesReportController extends Controller
 {
@@ -111,12 +112,13 @@ class ServicesReportController extends Controller
         $agents = User::select('users.id')->where('category', '=', $service)->where('position', '=', 'Agent')->get();
 
         $servicereport1 = Result::select('results.id','results.report_type_id','results.supervisor','results.agent_name','results.quality_analysts','results.date_recorded','results.customer_account',
-                                       'results.recording_id','results.final_results','results.category','users.category','users.name','users.services','users.country','services.service_name',
+                                       'results.recording_id','results.final_results','results.category',
+                                       'users.category','users.name','users.services','users.country','services.service_name',
                                        'services.id as s_id','categories.category_name','countries.country_name',
                                        )
-                                       ->join('user_categories','user_categories.category_id','=','results.category')
-                                       ->join('users','users.id','=','user_categories.user_id')
-                                       ->join('categories','categories.id','=','user_categories.category_id')
+                                      //->join('user_categories','user_categories.category_id','=','results.category')
+                                       ->join('users','users.id','=','results.agent_name')
+                                       ->join('categories','categories.id','=','results.category')
                                        ->join('services','services.id','=','users.services')
                                        ->join('countries','countries.id','=','users.country')
                                        ->where('results.report_type_id','=',$type)
@@ -151,13 +153,16 @@ class ServicesReportController extends Controller
 
             // print_pre([$servicereport1] , true);
 
-        $servicereport = exam_results::select('exam_results.marks_achieved','exam_results.conduct_id','exam_results.report_type_id','exam_results.created_by','exam_results.created_at','conduct_exams.id',
-                                         'conduct_exams.course','conduct_exams.exam_name','conduct_exams.service','conduct_exams.category','conduct_exams.trainer_qa','conduct_exams.completion_date','conduct_exams.created_by as Scheduleby','report_types.type_name','users.category','users.name','users.services','users.country','services.service_name','countries.country_name','categories.category_name','services.service_name','courses.course_name','services.id as s_id'
+        $servicereport = exam_results::select('exam_results.marks_achieved','exam_results.conduct_id','exam_results.report_type_id','exam_results.created_by',
+                                             'exam_results.created_at','conduct_exams.id','conduct_exams.course','conduct_exams.exam_name','conduct_exams.service',
+                                             'conduct_exams.category','conduct_exams.trainer_qa','conduct_exams.completion_date','conduct_exams.created_by as Scheduleby',
+                                             'report_types.type_name','users.category','users.name','users.services','users.country','services.service_name',
+                                             'countries.country_name','categories.category_name','services.service_name','courses.course_name','services.id as s_id'
                                            )
                                            ->join('conduct_exams','conduct_exams.id','=','exam_results.conduct_id')
                                            ->join('report_types','report_types.id','=','exam_results.report_type_id')
-                                           ->join('user_categories','user_categories.category_id','=','conduct_exams.category')
-                                           ->join('users','users.id','=','user_categories.user_id')
+                                          // ->join('user_categories','user_categories.category_id','=','conduct_exams.category')
+                                           ->join('users','users.id','=','exam_results.created_by')
                                            ->join('services','services.id','=','conduct_exams.service')
                                            ->join('countries','countries.id','=','users.country')
                                            ->join('courses','courses.id','=','conduct_exams.course')

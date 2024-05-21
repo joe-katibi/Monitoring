@@ -54,6 +54,8 @@ class ExaminationController extends Controller
                                          ->where('conduct_exams.id','=',$id)
                                           ->first();
 
+           
+
         $reporttype = ReportType::select('report_types.type_id','report_types.type_name')->where('id', '=', 2)->first();
 
         $courseID = ConductExam::select('id' , 'course', 'time')->where('id', '=' , $id )->first();
@@ -71,7 +73,6 @@ class ExaminationController extends Controller
 
             $examID = ExamStatus::select('schedule_id')->where('exam_id', '=' , $id )->first();
 
-
            $start_time = now();
            $end_time = now()->addMinutes($conduct->duration);
 
@@ -80,6 +81,8 @@ class ExaminationController extends Controller
            $minutes = $diff->i;
            $seconds = $diff->s;
            $timeRemaining = "$minutes minutes, $seconds seconds";
+
+           
 
            // Return a response with the exam details
           toast('Exam started successfully','success');
@@ -91,6 +94,8 @@ class ExaminationController extends Controller
                                             $data['end_time'] = $end_time->format('Y-m-d H:i:s');
                                             $data['timeRemaining'] = $timeRemaining;
                                             $data['reporttype'] = $reporttype;
+
+                                            //dd($data);
 
         return view('exams/examination', )->with($data);
     }

@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Agent Alert Form')
+@section('title', 'Agent Alert Form | Zuku Monitoring')
 
 @section('content_header')
 
@@ -185,8 +185,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <canvas id="signatureCanvas" class="signature-pad"  style="width: 100%; height: 300px; border: 1px solid black;" {{ $status->auto_status == 0 ? '' : 'disabled="disabled"' }}></canvas>
-            </div>
+    <canvas id="signatureCanvas" class="signature-pad" style="width: 100%; height: 300px; border: 1px solid black;"
+        {{ isset($status) && $status->auto_status == 0 ? '' : 'disabled="disabled"' }}>
+    </canvas>
+</div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-warning" onclick="clearSignaturePad(1)">Clear</button>
@@ -209,7 +212,7 @@
          </button>
      </div>
      <div class="modal-body">
-         <canvas id="signatureCanvas-1" class="signature-pad"  style="width: 100%; height: 300px; border: 1px solid black;" {{ $status->auto_status == 1 ? '' : 'disabled="disabled"' }}></canvas>
+         <canvas id="signatureCanvas-1" class="signature-pad"  style="width: 100%; height: 300px; border: 1px solid black;" {{ isset($status) && $status->auto_status == 1 ? '' : 'disabled="disabled"' }}></canvas>
      </div>
      <div class="modal-footer">
          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -232,7 +235,7 @@
          </button>
      </div>
      <div class="modal-body">
-         <canvas id="signatureCanvas-2" class="signature-pad"  style="width: 100%; height: 300px; border: 1px solid black;" {{ $status->auto_status == 2 ? '' : 'disabled="disabled"' }}></canvas>
+         <canvas id="signatureCanvas-2" class="signature-pad"  style="width: 100%; height: 300px; border: 1px solid black;" {{ isset($status) && $status->auto_status == 2 ? '' : 'disabled="disabled"' }}></canvas>
      </div>
      <div class="modal-footer">
          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

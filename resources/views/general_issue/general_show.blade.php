@@ -1,4 +1,6 @@
-@section('title', 'Tracker')
+@extends('adminlte::page')
+
+@section('title', 'Create General Issue | Zuku Monitoring')
 
 @section('content_header')
 <h1 hidden></h1>
@@ -6,14 +8,14 @@
 
 @section('content')
 @include('sweetalert::alert')
-<form>
-    <div class="card card-success">
-        <div class="card-header">
-            <input readonly class="form-control" style="color: green" name="category" value="{{ $showgeneral[0]['name'] }}">
-        </div>
+<div class="card card-success">
+    <div class="card-header">
+        <input readonly class="form-control" style="color: green" value="{{ $showgeneral[0]['name'] }}">
+    </div>
         <div class="card-body">
+          <div class="card-body">
             <table class="table table-bordered" id="questionsTable">
-                <thead>
+            <thead>
                     <tr>
                         <th style="width: 10px">No</th>
                         <th>Sub Call tracker</th>
@@ -21,8 +23,8 @@
                         <th style="width: 10%">Action</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach ($showgeneral as $item)
+                  <tbody>
+                  @foreach ($showgeneral as $item)
                     <tr>
                         <td>{{ $item['id'] }}</td>
                         <td>{{ $item['sub_name'] }}</td>
@@ -43,9 +45,8 @@
                             @endcan
                         </td>
                     </tr>
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="exampleModal{{$item['id']}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <!-- Modal -->
+                      <div class="modal fade" id="exampleModal{{$item['id']}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -79,22 +80,30 @@
                             </div>
                         </div>
                     </div>
+
                     @endforeach
-                </tbody>
+              </tbody>
             </table>
+
+           </div>
+        
         </div>
+      </div>
     </div>
-</form>
+
 @stop
 
 @section('css')
-<link rel="stylesheet" href="/css/admin_custom.css">
+    <link rel="stylesheet" href="/css/admin_custom.css">
 @stop
 
 @section('js')
 <script>
-    $('#questionsTable').dataTable({
-      "dom": 'lfrtip'
+
+    questionsTable = $('#questionsTable').dataTable({
+
+      "dom" : 'lfrtip'
     });
-</script>
+
+  </script>
 @stop

@@ -18,11 +18,11 @@ return new class extends Migration
             $table->boolean('number')->nullable();
             $table->string('question')->nullable();
             $table->string('summarized')->nullable();
-            $table->string('yes')->nullable();
+            $table->integer('yes')->nullable();
             $table->string('no')->nullable();
-            $table->string('service')->nullable();
-            $table->string('category')->nullable();
-            $table->string('created_by')->nullable();
+            $table->integer('service')->nullable();
+            $table->integer('category')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
         });
     }

@@ -16,13 +16,13 @@ return new class extends Migration
         Schema::create('exam_statuses', function (Blueprint $table) {
             $table->id();
             $table->string('schedule_id')->nullable();
-            $table->string('exam_id')->nullable();
-            $table->string('start_time')->nullable();
-            $table->string('end_time')->nullable();
-            $table->string('status')->nullable();
-            $table->string('service_id')->nullable();
-            $table->string('category_id')->nullable();
-            $table->string('created_by')->nullable();
+            $table->integer('exam_id')->nullable();
+            $table->dateTime('start_time')->nullable();
+            $table->dateTime('end_time')->nullable();
+            $table->integer('status')->nullable();
+            $table->integer('service_id')->nullable();
+            $table->integer('category_id')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
         });
     }
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('exam_status');
+        Schema::dropIfExists('exam_statuses');
     }
 };

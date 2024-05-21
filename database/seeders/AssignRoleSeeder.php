@@ -17,8 +17,8 @@ class AssignRoleSeeder extends Seeder
     public function run()
     {
 
-        $user = User::first();
-        $role = Role::where('name','super-admin')->first();
-        $user->roles()->attach($role);
+        // $user = User::first();
+        // $role = Role::where('name','super-admin')->first();
+        // $user->roles()->attach($role);
     }
 }

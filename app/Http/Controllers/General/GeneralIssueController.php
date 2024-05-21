@@ -4,6 +4,7 @@ namespace App\Http\Controllers\General;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Models\IssueGeneral;
@@ -22,11 +23,7 @@ class GeneralIssueController extends Controller
     {
 
         $crm = IssueGeneral::all()->toArray();
-
         $data['crm'] = $crm ;
-
-
-
         return view('general_issue/general_view')->with($data);
     }
 
@@ -124,13 +121,27 @@ class GeneralIssueController extends Controller
      */
     public function show($id)
     {
+
+        $issueGeneral = IssueGeneral::find($id);
+
+        if (!$issueGeneral) {
+            // Course not found, you can handle this case accordingly.
+            return redirect()->back()->with('error', 'Issue General not found.');
+        }
         $showgeneral =SubIssueGeneral::select('sub_issue_generals.id','sub_issue_generals.sub_name','sub_issue_generals.issue_general_id','sub_issue_generals.created_at')
                                        ->join('issue_generals','issue_generals.id','=','sub_issue_generals.issue_general_id')
                                        ->Where('sub_issue_generals.issue_general_id','=',$id)
                                        ->get();
 
-         $data['showgeneral'] = $showgeneral;
+            if ($showgeneral->isEmpty()) {
+                                        // No questions found, display the error/alert message
+                                        $message = "No Subcategory/s found. Please create subcategory for the issue general called {$issueGeneral->name}.";
+                                         toast( $message , 'warning')->position('center');
+                      
+                                        return redirect()->back()->with('message', $message);
+                                        }
 
+         $data['showgeneral'] = $showgeneral;
         return view('general_issue/general_show')->with($data);
     }
 
@@ -160,9 +171,6 @@ class GeneralIssueController extends Controller
     public function update(Request $request, $id)
     {
         $input = $request->all();
-
-       /// dd( $input );
-
         $editsubissuegeneral= SubIssueGeneral::findOrFail($id);
         $editsubissuegeneral->sub_name =isset($input['edit_sub_call_tracker']) ? $input['edit_sub_call_tracker']:"";
         $editsubissuegeneral->created_by = Auth::user()->id;

@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'DTH edit Results')
+@section('title', 'DTH edit Results | Zuku Monitoring')
 
 @section('content_header')
 @stop

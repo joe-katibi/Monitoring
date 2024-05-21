@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('call_ratings', function (Blueprint $table) {
             $table->id();
             $table->string('rating_name')->nullable();
-            $table->string('rating_id')->nullable();
-            $table->string('created_by')->nullable();
+            $table->integer('rating_id')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
         });
     }

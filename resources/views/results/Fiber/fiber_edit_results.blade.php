@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Fiber Results')
+@section('title', 'Fiber Results | Zuku Monitoring')
 
 @section('content_header')
 @stop

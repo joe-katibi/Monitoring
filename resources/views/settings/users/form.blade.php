@@ -55,18 +55,13 @@
                             {{ Form::select('country', $country->pluck('country_name', 'id') , old('country', $user->country), [ 'id' => 'status','class' => 'form-control','placeholder'=>'--Select Service--']) }}
                     </div>
                 </div>
-
-
-                <div class="form-group {{ $errors->has('name')? 'has-error':''}}">
-                    {{ Form::label('status', 'Status') }}
-
-                    <?php  if($user->user_status == 1):?>
-                    {{ Form::text('','Activated', ['class' => 'form-control' , 'readonly' => 'readonly']) }}
-                    <?php  else: ?>
-                    {{ Form::text('','In Active', ['class' => 'form-control' , 'readonly' => 'readonly']) }}
-                    <?php endif ?>
-
-                </div>
+                <div class="form-group">
+               {{ Form::label('status', 'Status') }}
+              <select class="form-control" required="required" id="status" name="status">
+                <option value="1" {{ $user->user_status == 1 ? 'selected' : '' }}>Activated</option>
+                <option value="0" {{ $user->user_status == 0 ? 'selected' : '' }}>In Active</option>
+            </select>
+            </div>
             </fieldset>
         </div>
 
@@ -108,9 +103,9 @@
        </div>
 
         <div class="card-tools-md-12 float-right">
-            <button id="reset-password" type="button" class="btn  btn-sm  btn-info">
+            <!-- <button id="reset-password" type="button" class="btn  btn-sm  btn-info">
                 <i class="fa fa-key"></i> Reset Password
-            </button>
+            </button> -->
             <button id="submit_form" type="submit" class="btn btn-sm btn-success">
                 <i class="fa fa-save"></i> Save
             </button>

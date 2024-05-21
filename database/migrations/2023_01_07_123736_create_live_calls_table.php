@@ -16,23 +16,23 @@ return new class extends Migration
         Schema::create('live_calls', function (Blueprint $table) {
             $table->id();
             $table->string('tittle')->nullable();
-            $table->string('account_number')->nullable();
-            $table->string('recording_id')->nullable();
-            $table->string('date')->nullable();
-            $table->string('quality_analysts')->nullable();
-            $table->string('category')->nullable();
-            $table->string('supervisor')->nullable();
-            $table->string('agent')->nullable();
+            $table->integer('account_number')->nullable();
+            $table->integer('recording_id')->nullable();
+            $table->dateTime('date')->nullable();
+            $table->integer('quality_analysts')->nullable();
+            $table->integer('category')->nullable();
+            $table->integer('supervisor')->nullable();
+            $table->integer('agent')->nullable();
             $table->string('issue_summary')->nullable();
             $table->string('issue_description')->nullable();
-            $table->string('strength_summary')->nullable();
+            $table->integer('strength_summary')->nullable();
             $table->string('strength_description')->nullable();
-            $table->string('gaps_summary')->nullable();
+            $table->integer('gaps_summary')->nullable();
             $table->string('gaps_description')->nullable();
-            $table->string('voc_summary')->nullable();
+            $table->integer('voc_summary')->nullable();
             $table->string('voc_description')->nullable();
-            $table->string('report_type_id')->nullable();
-            $table->string('created_by')->nullable();
+            $table->integer('report_type_id')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
         });
     }

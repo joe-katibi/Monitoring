@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Alert-Form-Results')
+@section('title', 'Alert-Form-Results | Zuku Monitoring')
 
 @section('content_header')
 <h1 hidden></h1>
@@ -101,23 +101,23 @@
                   @can('view-results-autofail-button-view')
                  <div class="btn-group btn-group-sm">
                     @switch($user_id)
-                      @case($user_id == $agentlogged->model_id)
+                      @case(isset($agentlogged) && $user_id == $agentlogged->model_id)
                       <a href="{{ route('coaching.edit',$row['id'] ) }}" class="btn btn-success" style="display: none;"><i class="fas fa-edit"></i></a>
                       <a href="{{ route('coaching.agentEdit',$row['id'] ) }}" class="btn btn-success" @if ($row['coaching_status'] == 3 || $row['coaching_status'] == 1 || $row['coaching_status'] == 0) style="display: none;" @endif><i class="fas fa-edit"></i></a>
 
                           @break
-                          @case($user_id == $supervisorlogged->model_id)
+                          @case(isset($supervisorlogged) && $user_id == $supervisorlogged->model_id)
                           <a href="{{ route('coaching.edit',$row['id'] ) }}" class="btn btn-success"  @if ($row['coaching_status'] == 3 || $row['coaching_status'] == 2 || $row['coaching_status'] == 0) style="display: none;" @endif><i class="fas fa-edit"></i></a>
                           <a href="{{ route('coaching.agentEdit',$row['id'] ) }}" class="btn btn-success" style="display: none;"><i class="fas fa-edit"></i></a>
 
 
                           @break
-                          @case($user_id == $qualitylogged->model_id)
+                          @case(isset($qualitylogged) && $user_id == $qualitylogged->model_id)
                           <a href="{{ route('coaching.edit',$row['id'] ) }}" class="btn btn-success" style="display: none;"><i class="fas fa-edit"></i></a>
                           <a href="{{ route('coaching.agentEdit',$row['id'] ) }}" class="btn btn-success" style="display: none;" ><i class="fas fa-edit"></i></a>
 
                           @break
-                          @case($user_id == $trainierlogged->model_id)
+                          @case(isset($trainierlogged) && $user_id == $trainierlogged->model_id)
                           <a href="{{ route('coaching.edit',$row['id'] ) }}" class="btn btn-success" style="display: none;"><i class="fas fa-edit"></i></a>
                           <a href="{{ route('coaching.agentEdit',$row['id'] ) }}" class="btn btn-success" style="display: none;" ><i class="fas fa-edit"></i></a>
 

@@ -37,14 +37,16 @@ class UserController extends Controller
     public function index()
     {
         $user = User::select('users.id','users.name','users.email','users.country','users.services','users.category','users.user_status','users.created_at',
-                             'users.position','services.service_name','countries.country_name','departments.department_name',
-                              'roles.description', 'model_has_roles.role_id'
+                             'users.position',
+                             //'services.service_name','countries.country_name','departments.department_name',
+                              //'roles.description',
+                              // 'model_has_roles.role_id'
                              )
-                            ->join('countries','countries.id','=','users.country')
-                            ->join('services','services.id','=','users.services')
-                            ->join('departments','departments.id','=','users.department_id')
-                            ->join('model_has_roles','model_has_roles.model_id','=','users.id')
-                            ->join('roles','roles.id','=','model_has_roles.role_id')
+                          //  ->join('countries','countries.id','=','users.country')
+                           // ->join('services','services.id','=','users.services')
+                          //  ->join('departments','departments.id','=','users.department_id')
+                           // ->join('model_has_roles','model_has_roles.model_id','=','users.id')
+                            //->join('roles','roles.id','=','model_has_roles.role_id')
                             ->get();
 
         $data['users'] = $user;
@@ -147,19 +149,18 @@ class UserController extends Controller
     public function edit($id)
     {
         /** @var User $user */
-       $user = User::findOrFail($id);
+      // $user = User::findOrFail($id);
 
         $user = User::select('users.id','users.name','users.username','users.email','users.country','users.services','users.department_id','users.user_status','users.created_at',
                            'users.position','user_categories.category_id','categories.category_name',
                          'model_has_roles.model_id'
                            )
-                        ->join('user_categories','user_categories.user_id','=', 'users.id')
+                         ->join('user_categories','user_categories.user_id','=', 'users.id')
                         ->join('categories','categories.id','=','user_categories.category_id')
-                     ->join('model_has_roles','model_has_roles.model_id','=','users.id')
+                       ->join('model_has_roles','model_has_roles.model_id','=','users.id')
                         ->where('users.id','=',$id)
                         ->first();
 
-       //print_pre($user, true);
 
         if ($user->roles()) {
             $user->roles = $user->roles()->get()->pluck('name');
@@ -190,6 +191,51 @@ class UserController extends Controller
         ]);
     }
 
+    public function newUser($id)
+    {
+
+        $user = User::select('users.id','users.name','users.username','users.email','users.country','users.services','users.department_id','users.user_status','users.created_at',
+                           'users.position',
+                           )
+                        ->where('users.id','=',$id)
+                        ->first();
+                        
+                        if ($user) {
+                            if ($user->roles()) {
+                                $user->roles = $user->roles()->get()->pluck('name');
+                            } else {
+                                $user->roles = new Collection();
+                            }
+                        } else {
+                            // Handle the case where $user is null
+                        }                        
+
+        $permissions = Permission::all();
+        $department = Departments::all();
+        $service = Services::all();
+        $category = Categories::all();
+        $userCategory = UserCategory::select('user_categories.user_id','user_categories.category_id','categories.category_name',)
+                                       ->join('categories','categories.id','=','user_categories.category_id')->get();
+        $country = Countries::all();
+
+        $userPermissions = [];
+        if ($user) {
+        $userPermissions = $user->permissions()->get();
+        }
+        return view('settings.users.newUser', [
+            'user' => $user,
+            'department' => $department,
+            'service' => $service,
+            'country' => $country,
+            'category' => $category,
+            'userCategory' => $userCategory,
+            'roles' => Role::all(),
+            'permission_modules' => Permission::modules(),
+            'permissions' => $permissions,
+            'user_permissions' => $userPermissions
+        ]);
+    }
+
     /**
      * Update the specified resource in storage.
      * @param Request $request
@@ -206,16 +252,10 @@ class UserController extends Controller
         /** @var User $user */
         $user = User::findOrFail($id);
 
-
-        // if ($validator->fails()) {
-        //     $data = $request->all();
-        //     toast($validator->errors() , 'error')->position('top-end');
-        //     return redirect()->back()->withInput(array_merge($user->toArray(), $data));
-        // }
-
         $user->name = $request->input('name');
         $user->username = $request->input('username');
         $user->email = $request->input('email');
+        $user->user_status = $request->input('status');
         $user->department_id = $request->input('department');
         $user->country = $request->input('country');
         $user->services = $request->input('service');

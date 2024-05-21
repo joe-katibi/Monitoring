@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AlertForm;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AlertFormController extends Controller
 {

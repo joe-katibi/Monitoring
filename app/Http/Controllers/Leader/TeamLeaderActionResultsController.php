@@ -28,6 +28,7 @@ use Datatables;
 use Carbon\Carbon;
 use App\Models\Coaching;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Auth;
 use App\Jobs\AuditJob;
 
 class TeamLeaderActionResultsController extends Controller
@@ -41,6 +42,7 @@ class TeamLeaderActionResultsController extends Controller
     {
         //
         $WelcomeCategory = FiberWelcomeQuestion::all()->toArray();
+    
         return view('team_leader/Teamleader_action_results',compact('WelcomeCategory'));
     }
 
@@ -117,7 +119,7 @@ class TeamLeaderActionResultsController extends Controller
                             $data['trainierlogged']  = $trainierlogged;
                             $data['userlogged']  = $userlogged;
 
-
+                        
                             return view('coaching_forms/view')->with($data);
     }
 
@@ -144,13 +146,19 @@ class TeamLeaderActionResultsController extends Controller
               $start_date = $start_end_date[0];
               $end_date = $start_end_date[1];;
 
-             $qa_results = Result::select('results.id','results.agent_name','results.supervisor','results.quality_analysts','results.date_recorded','results.customer_account','results.recording_id',
-                                         'results.supervisor_comment','results.final_results','results.status','results.category','users.country','users.services','categories.category_name','services.service_name','countries.country_name','results.created_at',)
-                                          ->join('user_categories','user_categories.category_id','=','results.category')
-                                          ->join('users','users.id','=','user_categories.user_id')
-                                          ->join('categories','categories.id','=','results.category')
-                                          ->join('services','services.id','=','users.services')
-                                          ->join('countries','countries.id','=','users.country')
+             $qa_results = Result::select('results.id','results.agent_name','results.supervisor','results.quality_analysts','results.date_recorded','results.customer_account',
+                                          'results.recording_id','results.supervisor_comment','results.final_results','results.status','results.category','results.created_at',
+                                           'users.country',
+                                           'users.services',
+                                          'categories.category_name',
+                                         'services.service_name',
+                                          'countries.country_name',
+                                          )
+                                         // ->join('user_categories','user_categories.category_id','=','results.category')
+                                         ->join('users','users.id','=','results.agent_name')
+                                         ->join('categories','categories.id','=','results.category')
+                                         ->join('services','services.id','=','users.services')
+                                         ->join('countries','countries.id','=','users.country')
                                           ->where('results.quality_analysts','=',$quality)
                                           ->where('results.status','=',$status)
                                           ->where('results.date_recorded','>=',$start_date)

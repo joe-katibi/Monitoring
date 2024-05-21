@@ -21,6 +21,7 @@ use App\Models\GapSummaries;
 use Datatables;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Auth;
 
 class LiveCallReportController extends Controller
 {

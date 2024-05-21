@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Calls-Saved')
+@section('title', 'Calls-Saved | Zuku Monitoring')
 
 @section('content_header')
     <h1 hidden>Uploaad</h1>

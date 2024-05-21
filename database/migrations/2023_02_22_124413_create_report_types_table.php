@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('report_types', function (Blueprint $table) {
             $table->id();
             $table->string('type_name')->nullable();
-            $table->string('type_id')->nullable();
-            $table->string('created_by')->nullable();
+            $table->integer('type_id')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
         });
     }

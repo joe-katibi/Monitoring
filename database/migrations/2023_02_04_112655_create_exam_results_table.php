@@ -15,13 +15,13 @@ return new class extends Migration
     {
         Schema::create('exam_results', function (Blueprint $table) {
             $table->id();
-            $table->string('question_id')->nullable();
-            $table->string('answers_selected')->nullable();
-            $table->string('marks_achieved')->nullable();
-            $table->string('conduct_id')->nullable();
-            $table->string('report_type_id')->nullable();
+            $table->integer('question_id')->nullable();
+            $table->integer('answers_selected')->nullable();
+            $table->integer('marks_achieved')->nullable();
+            $table->integer('conduct_id')->nullable();
+            $table->integer('report_type_id')->nullable();
             $table->string('schedule_id')->nullable();
-            $table->string('created_by')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
         });
     }

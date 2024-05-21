@@ -1,5 +1,5 @@
 @extends('adminlte::page')
-@section('title', 'Wananchi Legal | Profile')
+@section('title', 'Zuku Monitoring | Profile')
 @section('content_header')
 <h1 class="pull-left">My Profile</h1>
 <div style="clear:both"></div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\AlertForm;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\FiberWelcomeQuestion;
 use App\Models\Categories;
@@ -165,7 +166,7 @@ class QaAlertFormController extends Controller
                                 'alert_forms.supervisor_name','alert_forms.qa_name','alert_forms.description','alert_forms.fatal_error',
                                 'alert_forms.supervisor_comment','alert_forms.qa_signature','alert_forms.date_by_qa','alert_forms.supervisor_signature',
                                 'alert_forms.date_by_supervisor','alert_forms.agent_signature','alert_forms.date_by_agent','alert_forms.auto_status')
-                         ->where( 'alert_forms.id','=',$id)
+                          ->where( 'alert_forms.id','=',1)
                          ->get();
 
          foreach ($showalert as $key => $value) {
@@ -182,7 +183,11 @@ class QaAlertFormController extends Controller
 
          $supervisorSignatureUrl = null;
 
-         return view('team_leader/tl_agent_alert_form',compact('showalert','supervisorSignatureUrl'));
+         $agentSignatureUrl = null;
+
+         //dd($showalert);
+
+         return view('team_leader/tl_agent_alert_form',compact('showalert','supervisorSignatureUrl','agentSignatureUrl'));
     }
      /**
      * Update the specified resource in storage.

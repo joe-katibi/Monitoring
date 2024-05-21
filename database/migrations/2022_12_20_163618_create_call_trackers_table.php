@@ -16,8 +16,9 @@ return new class extends Migration
         Schema::create('call_trackers', function (Blueprint $table) {
             $table->id();
             $table->string('call_tracker')->nullable();
-            $table->string('service_id')->nullable();
-            $table->string('created_by')->nullable();
+            $table->integer('service_id')->nullable();
+            $table->integer('category_id')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
         });
     }

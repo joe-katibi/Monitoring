@@ -123,11 +123,30 @@ class HomeController extends Controller
                                $averages[$countryName]['months'][$monthYear][] = $result->final_results;
                            }
                                                       // Prepare the weeks and months arrays for the table headers
-                                                      $weekHeaders  = array_map(function ($week) {
-                                                        return 'Week ' . $week;
-                                                    }, array_keys($averages[array_key_first($averages)]['weeks']));
+                                // $weekHeaders  = array_map(function ($week) {
+                                //                      return 'Week' . $week;
+                                //                     }, array_keys($averages[array_key_first($averages)]['weeks']));
+                                                    
+                                                    $weekHeaders = [];
 
-                                                    $monthHeaders  = array_keys($averages[array_key_first($averages)]['months']);
+                                               if (!empty($averages)) {
+                                                    $firstKey = array_key_first($averages);
+                                               if ($firstKey !== null && isset($averages[$firstKey]['weeks'])) {
+                                                $weekHeaders = array_map(function ($week) {
+                                                return 'Week' . $week;
+                                           }, array_keys($averages[$firstKey]['weeks']));
+                                             }
+                                        }
+                                        $monthHeaders = [];
+
+                                        if (!empty($averages)) {
+                                            $firstKey = array_key_first($averages);
+                                            if ($firstKey !== null && isset($averages[$firstKey]['months'])) {
+                                                $monthHeaders = array_keys($averages[$firstKey]['months']);
+                                            }
+                                        }
+                                        
+                                                 //   $monthHeaders  = array_keys($averages[array_key_first($averages)]['months']);
 
                            foreach ($averages as $country => $data) {
                             foreach ($weekHeaders as $week) {

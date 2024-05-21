@@ -26,6 +26,7 @@ use App\Models\User;
 use Datatables;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Auth;
 use App\Jobs\AuditJob;
 
 class agentActionResultsController extends Controller
@@ -74,6 +75,8 @@ class agentActionResultsController extends Controller
          $data['agentlogged']=$agentlogged;
          $data['userlogged']=$userlogged;
 
+         
+
         return view('team_leader/agents_actions_results')->with($data);
     }
     /**
@@ -91,8 +94,6 @@ class agentActionResultsController extends Controller
         $userlogged = User::select('users.name','users.id',)->where('users.id','=',$userId)->first();
 
         $input= $request->all();
-
-
 
          $supervisor = $request->input('supervisor');
          $status = $request->input('status');
@@ -257,6 +258,7 @@ class agentActionResultsController extends Controller
         $data['qa_results']=$qa_results;
         $data['userlogged']=$userlogged;
 
+
         return view('team_leader/agents_actions_results')->with($data);
 
     }
@@ -283,6 +285,12 @@ class agentActionResultsController extends Controller
 
      $autofail=AlertForm::select('alert_forms.results_id')->get();
 
+     $agentName = User::select('users.name','users.id',)->where('users.id','=',$tlactions[0]['agent_name'])->first();
+
+     $supevisorName = User::select('users.name','users.id',)->where('users.id','=',$tlactions[0]['supervisor'])->first();
+
+     $qualityName = User::select('users.name','users.id',)->where('users.id','=',$tlactions[0]['quality_analysts'])->first();
+
      $userId = auth()->id();
 
      $supervisorlogged = Role::select('roles.id')
@@ -306,14 +314,14 @@ class agentActionResultsController extends Controller
            $data['$userId']=$userId;
            $data['supervisorlogged']=$supervisorlogged;
            $data['agentlogged']=$agentlogged;
+           $data['agentName']=$agentName;
+           $data['supevisorName']=$supevisorName;
+           $data['qualityName']=$qualityName;
 
            // Display a success message using the toast function
            toast('Audit Updated successfully','success');
 
-                 //print_pre($data, true);
-
-
-       // dd($id);
+                
 
         return view('team_leader/Teamleader_action_results')->with($data);
     }

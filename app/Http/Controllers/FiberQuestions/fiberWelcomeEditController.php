@@ -5,6 +5,7 @@ namespace App\Http\Controllers\FiberQuestions;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\FiberWelcomeQuestion;
 use App\Models\Categories;
@@ -28,6 +29,7 @@ class fiberWelcomeEditController extends Controller
     {
        $data['list'] = Categories::select('categories.id','categories.category_name','categories.service_id')->get();
 
+       
         return view('admin/edit_parametors/Fiber/welcomequestionedit',$data);
     }
 
@@ -115,6 +117,7 @@ class fiberWelcomeEditController extends Controller
          $data['total'] = FiberWelcomeQuestion::where('category', '=', $id)->sum('yes');
 
       // print_pre($total,true);
+      
         return view('/admin/edit_parametors/Fiber/viewparameter',)->with($data);
     }
 

@@ -133,7 +133,7 @@ class ExamsResultsController extends Controller
     {
         // Get the currently authenticated user's ID
         $userId = Auth::user()->id;
-
+    
         $exam_results = exam_results::select(
             'exam_results.id',
             'exam_results.question_id',
@@ -143,58 +143,75 @@ class ExamsResultsController extends Controller
             'exam_results.created_at',
             'exam_results.conduct_id',
             'exams_questions.question',
+            'answer_keys.id as answer_id',
             'answer_keys.choices',
+            'answer_keys.is_correct',
+            'answer_keys.question_weight',
             'exam_results.schedule_id'
         )
-            ->join('conduct_exams', 'conduct_exams.id', '=', 'exam_results.conduct_id')
-            ->join('exams_questions', 'exams_questions.id', '=', 'exam_results.question_id')
-            ->join('answer_keys', 'answer_keys.question_id', '=', 'exams_questions.id')
-            ->where('exam_results.conduct_id', '=', $id)
-            ->where('exam_results.schedule_id', '=', $schedule_id)
-            ->where('exam_results.created_by', '=', $userId)
-            ->get();
-
+        ->join('conduct_exams', 'conduct_exams.id', '=', 'exam_results.conduct_id')
+        ->join('exams_questions', 'exams_questions.id', '=', 'exam_results.question_id')
+        ->join('answer_keys', 'answer_keys.question_id', '=', 'exams_questions.id')
+        ->where('exam_results.conduct_id', '=', $id)
+        ->where('exam_results.schedule_id', '=', $schedule_id)
+        ->where('exam_results.created_by', '=', $userId)
+        ->get();
+    
         // Group the exam results by question_id
         $grouped_results = $exam_results->groupBy('question_id');
-
+    
         // Transform the grouped results to an array
         $grouped_results_array = [];
         foreach ($grouped_results as $question_id => $results) {
             $questionDone = $results[0]->question; // Pick the question from the first result with the same question_id
+            $marksAchieved = $results->pluck('marks_achieved')->toArray();
             $answerDone = $results->pluck('choices')->toArray();
-            $question_weight = $results[0]->marks_achieved; // Pick the marks_achieved from the first result with the same question_id
+            $is_correct = $results->pluck('is_correct')->toArray();
+            $answers_selected = $results[0]->answers_selected; // ID of the selected answer
+            $answer_ids = $results->pluck('answer_id')->toArray(); // Get the IDs of the answers
+    
+            // Find the index of the selected answer
+            $selected_index = array_search($answers_selected, $answer_ids);
+    
             $grouped_results_array[] = [
                 'question_id' => $question_id,
                 'questionDone' => $questionDone,
                 'answerDone' => $answerDone,
-                'question_weight' => $question_weight,
+                'is_correct' => $is_correct,
+                'answers_selected' => $selected_index,
+                'marks_achieved' => $marksAchieved, // Pick the marks_achieved from the first result with the same question_id
             ];
         }
-
+    
         $data['exam_results'] = $grouped_results_array;
 
-        // print_r($data);
-        // exit;
-
-
+    
         return view('exams.view_exam_results', $data);
     }
+    
+
+    
 
     public function viewResults($conduct_id, $created_by, $schedule_id)
     {
         // Fetch exam results
         $exam_results = exam_results::select('exam_results.question_id','exam_results.answers_selected','exam_results.marks_achieved','exam_results.conduct_id','exam_results.created_by',
                                              'exam_results.schedule_id','exam_results.created_at',
-                                             'answer_keys.question_id','answer_keys.choices','answer_keys.question_weight','answer_keys.created_by','answer_keys.is_correct','exams_questions.question','conduct_exams.exam_name','conduct_exams.course','users.name'
+                                             'answer_keys.question_id','answer_keys.choices','answer_keys.question_weight','answer_keys.created_by','answer_keys.is_correct',
+                                            'exams_questions.question',
+                                            'conduct_exams.exam_name','conduct_exams.course',
+                                            'users.name'
                                              )
                                       ->where('exam_results.conduct_id','=',$conduct_id)
                                       ->where('exam_results.created_by','=',$created_by)
                                       ->where('exam_results.schedule_id','=',$schedule_id)
-                                      ->join('answer_keys','answer_keys.question_id','=','exam_results.question_id')
-                                      ->join('exams_questions','exams_questions.id','=','exam_results.question_id')
-                                      ->join('conduct_exams','conduct_exams.schedule_name','=','exam_results.schedule_id')
+                                     ->join('answer_keys','answer_keys.question_id','=','exam_results.question_id')
+                                     ->join('exams_questions','exams_questions.id','=','exam_results.question_id')
+                                     ->join('conduct_exams','conduct_exams.schedule_name','=','exam_results.schedule_id')
                                       ->join('users','users.id','=','exam_results.created_by')
                                       ->get();
+
+                                     
 
         // Count correct answers
         $correctAnswers = exam_results::where('exam_results.conduct_id', '=', $conduct_id)

@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Percentile-Reports')
+@section('title', 'Percentile-Reports | Zuku Monitoring')
 
 @section('content_header')
     <h1 hidden >Percentile Report</h1>

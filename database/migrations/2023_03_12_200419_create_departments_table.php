@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('department_name');
             $table->string('description');
-            $table->string('created_by');
+            $table->integer('created_by');
             $table->timestamps();
         });
     }

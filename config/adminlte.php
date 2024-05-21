@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'ZUku Monitoring',
+    'title' => 'Zuku Monitoring',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -66,7 +66,7 @@ return [
     'logo' => '',
     'logo_img' => '',
     'logo_img_class' => 'brand-image img-circle elevation-3',
-    'logo_img_xl' => null,
+    'logo_img_xl' => asset('assets/img/Zuku_customer_support_monitoring_system.png'),
     'logo_img_xl_class' => 'brand-image-xs',
     'logo_img_alt' => '',
 
@@ -84,11 +84,11 @@ return [
     */
 
     'auth_logo' => [
-        'enabled' => false,
+        'enabled' => true,
         'img' => [
-            'path' => 'public/assets/img/zuku-logo.png',
+            'path' => asset('assets/img/logo_wananchi.png'),
             'class' => '',
-            'width' => 50,
+            'width' => 200,
             'height' => 50,
         ],
     ],
@@ -108,11 +108,11 @@ return [
     'preloader' => [
         'enabled' => false,
         'img' => [
-            'path' => 'public/assets/img/zuku-logo.png',
+            'path' => asset('assets/img/logo_wananchi.png'),
             'alt' => 'AdminLTE Preloader Image',
             'effect' => 'animation__shake',
-            'width' => 60,
-            'height' => 60,
+            'width' => 200,
+            'height' => 80,
         ],
     ],
 

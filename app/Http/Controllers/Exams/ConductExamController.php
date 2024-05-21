@@ -37,14 +37,17 @@ class ConductExamController extends Controller
     {
 
         $data['conduct'] = ConductExam::select('conduct_exams.id','conduct_exams.schedule_name','conduct_exams.time','conduct_exams.course',
-                                      'conduct_exams.exam_name','conduct_exams.service','conduct_exams.category','conduct_exams.trainer_qa','conduct_exams.start_date','conduct_exams.completion_date','conduct_exams.created_at','exam_statuses.schedule_id','courses.course_name','users.name','categories.category_name','exam_statuses.status','exams_questions.question',
-                                      'exam_statuses.id as status_id')
+                                      'conduct_exams.exam_name','conduct_exams.service','conduct_exams.category','conduct_exams.trainer_qa',
+                                      'conduct_exams.start_date','conduct_exams.completion_date','conduct_exams.created_at','exam_statuses.schedule_id',
+                                      'courses.course_name','users.name','categories.category_name','exam_statuses.status',//'exams_questions.question',
+                                      'exam_statuses.id as status_id'
+                                      )
                                       ->join('users','users.id','=','conduct_exams.trainer_qa')
                                       ->join('categories','categories.id','=','conduct_exams.category')
                                       ->join('services','services.id','=','conduct_exams.service')
                                       ->join('exam_statuses','exam_statuses.exam_id','=','conduct_exams.id')
                                       ->join('courses','courses.id','=','conduct_exams.course')
-                                      ->join('exams_questions','exams_questions.course','=','conduct_exams.course')
+                                    //  ->join('exams_questions','exams_questions.course','=','conduct_exams.course')
                                       ->orderby('conduct_exams.id','desc')
                                       ->get();
 
@@ -123,7 +126,7 @@ class ConductExamController extends Controller
         $schedule->created_by = isset($input['created_by']) ? $input['created_by'] : "";
 
 
-
+        
         $schedule->save();
 
         log::channel('schedule')->info('schedule exam Created : ------> ', ['200', $schedule->toArray()]);
@@ -152,6 +155,11 @@ class ConductExamController extends Controller
                    }
 
          $schedule_id =  $uniqueID;
+
+         
+
+         $schedule->schedule_name = $schedule_id;
+         $schedule->save();
 
         // Create a new ExamStatus object
         $examstatus = new ExamStatus();
@@ -372,36 +380,51 @@ class ConductExamController extends Controller
     {
         $input = $request->all();
 
+        // Get the duration and unit from the request
+        $duration = $request->input('time');
+        $duration_unit = $request->input('duration_unit');
+
+        // Convert the duration to minutes
+        if ($duration_unit === 'hours') {
+            $duration_in_minutes = $duration * 60; // 1 hour = 60 minutes
+        } else {
+            $duration_in_minutes = $duration;
+        }
+
         try {
             DB::beginTransaction();
 
-            $updating = ConductExam::where('id','=',$id)->first();
+            $updating = ConductExam::findOrFail($id);
             $updating->time = $duration_in_minutes;
-            $updating->course = isset($input['course']) ? $input['course'] : "";
-            $updating->exam_name = isset($input['exam_name']) ? $input['exam_name'] : "";
-            $updating->service = isset($input['service']) ? $input['service'] : "";
-            $updating->category = isset($input['category']) ? $input['category'] : "";
-            $updating->trainer_qa = isset($input['trainer_qa']) ? $input['trainer_qa'] : "";
-            $updating->start_date = isset($input['start_date']) ? $input['start_date'] : "";
-            $updating->completion_date = isset($input['completion_date']) ? $input['completion_date'] : "";
-            $updating->created_by = isset($input['created_by']) ? $input['created_by'] : "";
+            $updating->course = isset($input['course']) ? intval($input['course']) : null;
+            $updating->exam_name = $input['exam_name'] ?? null;
+            $updating->service = isset($input['service']) ? intval($input['service']) : null;
+            $updating->category = isset($input['category']) ? intval($input['category']) : null;
+            $updating->trainer_qa = isset($input['trainer_qa']) ? intval($input['trainer_qa']) : null;
+            $updating->start_date = $input['start_date'] ?? null;
+            $updating->completion_date = $input['completion_date'] ?? null;
+            $updating->created_by = isset($input['created_by']) ? intval($input['created_by']) : null;
+    
+            // Debugging to ensure the correct data is being updated
+            Log::info('Updating ConductExam', $updating->toArray());
 
             $updating->save();
 
-            log::channel('update conduct')->info('update Conduct Created : ------> ', ['200' , $updating->toArray() ] );
+            Log::channel('update conduct')->info('ConductExam updated successfully', ['200', $updating->toArray()]);
 
             DB::commit();
-            toast('Parameter edited successfully','success')->position('top-end');
+            toast('Parameter edited successfully', 'success')->position('top-end');
 
-            return redirect('exams/view_conduct');
+            return redirect()->route('conductexam.show', ['conductexam' => $id]);
 
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             DB::rollBack();
-            Log::info($e->getMessage() );
+            Log::error('Error updating ConductExam: ' . $e->getMessage());
+            toast('Something Went Wrong', 'warning')->position('top-end');
             throw $e;
-            toast('Something Went Wrong','warning')->position('top-end');
-        }
+                    }
     }
+
 
     /**
      * Remove the specified resource from storage.

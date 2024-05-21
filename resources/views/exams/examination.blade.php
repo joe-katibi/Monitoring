@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Examination')
+@section('title', 'Examination | Zuku Monitoring')
 
 @section('content_header')
     <h1 hidden>Eximantion</h1>
@@ -192,7 +192,8 @@
             endTime = parseInt(endTime); // Parse the stored end time as an integer
         } else {
             // Set a new end time (e.g., 30 minutes from now)
-            endTime = Date.now() + (30 * 60 * 1000); // 30 minutes in milliseconds
+           // endTime = Date.now() + (30 * 60 * 1000); // 30 minutes in milliseconds $timeRemaining
+            endTime = Date.now() + ($timeRemaining); // 30 minutes in milliseconds 
             localStorage.setItem('examEnd', endTime); // Store the end time in local storage
         }
 
@@ -205,6 +206,8 @@
             if (distance <= 0) {
                 clearInterval(countdownInterval); // Stop the countdown
                 document.getElementById('timer').value = 'Time is up!'; // Display a message when the time is up
+
+                
 
                 // Clear the stored end time from local storage
                 localStorage.removeItem('examEnd');

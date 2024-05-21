@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'View exams Results')
+@section('title', 'View exams Results | Zuku Monitoring')
 
 @section('content_header')
     <h1 hidden>View exams Results</h1>
@@ -13,34 +13,52 @@
             <input readonly class="form-control" style="color: green" name="category" value="View exams Results">
         </div>
         <div class="card-body">
+    <?php $num = 1; ?>
+    @foreach ($exam_results as $result)
+        <div class="card card-warning">
+            <div class="card-header">
+                {!! "Question " . $num++ . ". " . strip_tags($result['questionDone'], '<p>') !!}
+            </div>
+            <div class="card-body">
+                <div class="form-check">
+                    <ol type="A">
+                        @foreach ($result['answerDone'] as $index => $answer)
+                            <li>
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="question_weight_a">Answer</label>
+                                        <?php
+                                            $answerClass = '';
 
-            <?php $num = 1; ?>
-            @foreach ($exam_results as $result)
-                <div class="card card-warning">
-                    <div class="card-header">
-                        {!! "Question " . $num++ . ". " . strip_tags($result['questionDone'], '<p>') !!}
-                    </div>
-                    <div class="card-body">
-                        <div class="form-check">
-                            <ol type="A">
-                                @foreach ($result['answerDone'] as $index => $answer)
-                                    <li>
-                                        <div class="row">
-                                            <div class="col">
-                                                <label for="question_weight_a">Answer</label>
-                                                <input readonly name="correct_answer" class="form-control float-center {{ $index == $result['question_weight'] ? 'bg-green' : 'bg-red' }}" value="{!! strip_tags($answer) !!}">
-                                            </div>
-                                        </div>
-                                    </li>
-                                @endforeach
-                            </ol>
-                        </div>
-                    </div>
+                                            // Highlight the correct answer
+                                            if ($result['is_correct'][$index] == 1) {
+                                                $answerClass = 'bg-green';
+                                            }
+
+                                            // Highlight the user's selected answer
+                                            if ($index === $result['answers_selected']) {
+                                                if ($result['is_correct'][$index] == 1) {
+                                                    $answerClass = 'bg-green'; // Correct answer selected by user
+                                                } else {
+                                                    $answerClass = 'bg-red'; // Incorrect answer selected by user
+                                                }
+                                            }
+                                        ?>
+                                        <input readonly name="correct_answer" class="form-control float-center {{ $answerClass }}" value="{!! strip_tags($answer) !!}">
+                                    </div>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ol>
                 </div>
-            @endforeach
-
+            </div>
         </div>
-    </div>
+    @endforeach
+</div>
+
+
+
+
 </form>
 @stop
 

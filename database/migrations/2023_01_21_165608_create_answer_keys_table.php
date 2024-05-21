@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('answer_keys', function (Blueprint $table) {
             $table->id();
-            $table->string('question_id')->nullable();
+            $table->integer('question_id')->nullable();
             $table->string('choices')->nullable();
-            $table->string('question_weight')->nullable();
-            $table->string('created_by')->nullable();
-            $table->string('key_choice')->nullable();
-            $table->string('is_correct')->nullable();
+            $table->integer('question_weight')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->integer('key_choice')->nullable();
+            $table->integer('is_correct')->nullable();
             $table->timestamps();
         });
     }

@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Zuku Monitoring | Agents Results')
 
 @section('content_header')
 <h1 hidden></h1>
@@ -17,15 +17,15 @@
       <div class="row">
         <div class="col-2">
             <label>Supervisor</label>
-          <input readonly type="text" class="form-control"  value="{{$tlactions[0]['supervisor']}}">
+          <input readonly type="text" class="form-control"  value="{{$supevisorName->name}}">
         </div>
         <div class="col-2">
             <label>Agent name</label>
-          <input readonly type="text" class="form-control"  value="{{$tlactions[0]['agent_name']}}">
+          <input readonly type="text" class="form-control"  value="{{$agentName->name}}">
         </div>
         <div class="col-2">
             <label>QA name</label>
-          <input readonly type="text" class="form-control"  value="{{$tlactions[0]['quality_analysts']}}">
+          <input readonly type="text" class="form-control"  value="{{$qualityName->name}}">
         </div>
         <div class="col-2">
             <label>Date</label>
@@ -109,10 +109,10 @@
                   <!--  <button type="submit" class="btn btn-success float-right">Save & Finish</button> -->
                   @if ($tlactions[0]['id'] == $autofail[0]['results_id'])
 
-                  <a href="{{ route('autofail.edit',$tlactions[0]['id']) }}" class="btn btn-danger float-left"  > update Alert Form</a>
+                  <a href="{{ route('autofail.edit',$tlactions[0]['id']) }}" class="btn btn-danger float-left"  > Update Alert Form</a>
 
                   @else
-                  <a style="display:none;" href="{{ route('autofail.edit',$tlactions[0]['id']) }}" class="btn btn-danger float-left"   > update Alert Form</a>
+                  <a style="display:none;" href="{{ route('autofail.edit',$tlactions[0]['id']) }}" class="btn btn-danger float-left"   > Update Alert Form</a>
 
                   @endif
 

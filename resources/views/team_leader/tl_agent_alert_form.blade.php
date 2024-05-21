@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'TEam Leader Alert Form | Zuku Monitoring')
 
 @section('content_header')
 <h1 hidden></h1>
@@ -71,7 +71,7 @@
                         <div class="col-sm">
                           <div class="form-group">
                             <label>Comments by the supervisor:</label>
-                            <input class="form-control" rows="2" name="supervisor_comments" placeholder="Enter Error committed ..." >
+                            <input class="form-control" rows="2" required name="supervisor_comments" placeholder="Enter Error committed ..." >
                           </div>
                         </div>
                       </div>

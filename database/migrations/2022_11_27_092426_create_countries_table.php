@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('countries', function (Blueprint $table) {
             $table->id();
             $table->string('country_name')->nullable();
-            $table->string('country_id')->nullable();
-            $table->string('created_by')->nullable();
+            $table->integer('country_id')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
         });
     }

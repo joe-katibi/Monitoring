@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('brief_topic')->nullable();
             $table->string('brief_description')->nullable();
-            $table->string('created_by')->nullable();
-            $table->string('status')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->integer('status')->nullable();
             $table->timestamps();
         });
     }

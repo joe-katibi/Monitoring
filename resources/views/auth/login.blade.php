@@ -8,6 +8,7 @@
 @php( $register_url = View::getSection('register_url') ?? config('adminlte.register_url', 'register') )
 @php( $password_reset_url = View::getSection('password_reset_url') ?? config('adminlte.password_reset_url', 'password/reset') )
 
+
 @if (config('adminlte.use_route_url', false))
     @php( $login_url = $login_url ? route($login_url) : '' )
     @php( $register_url = $register_url ? route($register_url) : '' )
@@ -16,18 +17,21 @@
     @php( $login_url = $login_url ? url($login_url) : '' )
     @php( $register_url = $register_url ? url($register_url) : '' )
     @php( $password_reset_url = $password_reset_url ? url($password_reset_url) : '' )
+    
+
 @endif
 
-@section('auth_header', __('Welcome to Zuku Monitoring'))
+@section('auth_header', __('Sign in to start your session'))
 @include('sweetalert::alert')
 @section('auth_body')
-    <form action="{{ $login_url }}" method="post">
+
+<form method="POST" action="{{ route('user.authenticate') }}">
         @csrf
 
         {{-- Email field --}}
         <div class="input-group mb-3">
-            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-                   value="{{ old('email') }}" placeholder="{{ __('adminlte::adminlte.email') }}" autofocus>
+            <input type="text" name="username" class="form-control @error('username') is-invalid @enderror"
+                   value="{{ old('username') }}" placeholder="{{ __('username') }}" autofocus>
 
             <div class="input-group-append">
                 <div class="input-group-text">
@@ -35,7 +39,7 @@
                 </div>
             </div>
 
-            @error('email')
+            @error('username')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>
@@ -59,6 +63,21 @@
                 </span>
             @enderror
         </div>
+
+                {{-- Domain field --}}
+                <div class="group mb-3">
+                   <select class="form-control" required="required" id="domain" name="domain">
+                             <option  value>Select Domain</option>
+                             <option value="1">Internal</option>
+                             <option value="2">Vendor</option>
+                    </select>
+
+                    @error('password')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
 
         {{-- Login field --}}
         <div class="row">
