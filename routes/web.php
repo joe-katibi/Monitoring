@@ -94,6 +94,7 @@ Route::prefix('settings')->group(function () {
     Route::put('users/{id}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('settings.users.update');
     Route::get('users/{id}/edit', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('settings.users.edit');
     Route::get('users/{id}/newUser', [App\Http\Controllers\Admin\UserController::class, 'newUser'])->name('settings.users.newUser');
+    Route::get('users/{id}/profile', [App\Http\Controllers\Admin\UserController::class, 'profile'])->name('settings.users.profile');
     Route::get('users/{id}/activate', [App\Http\Controllers\Admin\UserController::class, 'activate'])->name('settings.users.activate');
     Route::get('users/{id}/deactivate',[App\Http\Controllers\Admin\UserController::class,  'deactivate'])->name('settings.users.deactivate');
     Route::get('users/{id}/reset-password', [App\Http\Controllers\Admin\UserController::class, 'requestPasswordReset'])->name('settings.users.password.reset');

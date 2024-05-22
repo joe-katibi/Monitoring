@@ -1,5 +1,5 @@
 @extends('adminlte::page')
-@section('title', 'Users - All Users')
+@section('title', 'All Users | Zuku Monitoring')
 @section('content_header')
 <div class="container-fluid">
     <div class="row mb-2">

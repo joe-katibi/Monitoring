@@ -11,14 +11,14 @@
 <form action="{{ route('exambank.store') }}" method="POST">
   @csrf
     <div class="card card-success " >
-        <div class="card-header"> <input readonly class="form-control" style="color: green" name="category" value="Create"></div>
+        <div class="card-header"> <input readonly class="form-control" style="color: green" name="category" value="Create Exam"></div>
         <input type="hidden" class="form-control" name="created_by" value="{{ Auth::user()->id }}">
 
         <div class="card-body ">
             <div class="row">
                  <div class="col-md-3">
                      <label>Service</label>
-                     <select class="custom-select"id="service" required name="service" data-placeholder="select" value="{{ old('service') }}">
+                     <select class="custom-select" id="service" required name="service" data-placeholder="select" value="{{ old('service') }}">
                       <option value="" disabled selected>Select a service</option>
                       @foreach ($service as $row)
                       <option value="{{$row['id']}}">{{$row['service_name']}}</option>
@@ -27,11 +27,8 @@
                      </div>
                 <div class="col-md-3">
                     <label>Course</label>
-                    <select class="custom-select"id="course" required name="course" data-placeholder="select" value="{{ old('course') }}">
-                    <option value="" disabled selected>Choose course</option>
-                    @foreach ($Course as $row)
-                    <option value="{{$row['id']}}">{{$row['course_name']}}</option>
-                    @endforeach
+                    <select class="custom-select" id="course" required name="course" data-placeholder="select" value="{{ old('course') }}">
+                        <option selected="selected" value="">--Select Course--</option>
                     </select>
                 </div>
             </div>
@@ -208,4 +205,73 @@
           height: 100
         });
       </script>
+
+<script>
+    $(document).ready(function () {
+
+        /*------------------------------------------
+        --------------------------------------------
+        Service Dropdown Change Event
+        --------------------------------------------
+        --------------------------------------------*/
+        $('#service').on('change', function () {
+            var qaa_call_category = this.value;
+            //console.log(qaa_call_category);
+            $("#course").html('');
+            $.ajax({
+                url: '/course-report/'+qaa_call_category,
+                type: "GET",
+                data: {
+                    service: qaa_call_category,
+                    _token: '{{csrf_token()}}'
+                },
+                dataType: 'json',
+                success: function (result) {
+                    $('#course').html('<option value="">-- Select --</option>');
+                    console.log(result);
+                    $.each(result, function (key, value) {
+                        $("#course").append('<option value="' + value
+                            .id + '">' + value.course_name + '</option>');
+                    });
+
+                }
+            });
+        });
+
+    });
+</script>
+<script>
+    $(document).ready(function () {
+
+        /*------------------------------------------
+        --------------------------------------------
+        Service Dropdown Change Event
+        --------------------------------------------
+        --------------------------------------------*/
+        $('#course').on('change', function () {
+            var qaa_call_category = this.value;
+            //console.log(qaa_call_category);
+            $("#exam").html('');
+            $.ajax({
+                url: '/course-exam/'+qaa_call_category,
+                type: "GET",
+                data: {
+                    service: qaa_call_category,
+                    _token: '{{csrf_token()}}'
+                },
+                dataType: 'json',
+                success: function (result) {
+                    $('#exam').html('<option value="">-- Select --</option>');
+                    console.log(result);
+                    $.each(result, function (key, value) {
+                        $("#exam").append('<option value="' + value
+                            .id + '">' + value.exam_name + '</option>');
+                    });
+
+                }
+            });
+        });
+
+    });
+</script>
 @stop

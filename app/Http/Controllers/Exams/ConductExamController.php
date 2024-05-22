@@ -126,7 +126,7 @@ class ConductExamController extends Controller
         $schedule->created_by = isset($input['created_by']) ? $input['created_by'] : "";
 
 
-        
+
         $schedule->save();
 
         log::channel('schedule')->info('schedule exam Created : ------> ', ['200', $schedule->toArray()]);
@@ -156,7 +156,7 @@ class ConductExamController extends Controller
 
          $schedule_id =  $uniqueID;
 
-         
+
 
          $schedule->schedule_name = $schedule_id;
          $schedule->save();
@@ -240,11 +240,14 @@ class ConductExamController extends Controller
 
         $trainerRole_id = Role::select('roles.id',)->where('name', '=', 'trainer')->orWhere('name', '=','quality-analyst')->first();
 
+
+
         $trainer= User::select('users.name','users.id','model_has_roles.role_id')
                           ->join('model_has_roles','model_id','=','users.id')
                            ->join('roles','roles.id','=','model_has_roles.role_id')
                           ->where('model_has_roles.role_id','=',$trainerRole_id)
                           ->get();
+                
 
         $service = Services::all()->toArray();
         $category = Categories::all()->toArray();
@@ -404,7 +407,7 @@ class ConductExamController extends Controller
             $updating->start_date = $input['start_date'] ?? null;
             $updating->completion_date = $input['completion_date'] ?? null;
             $updating->created_by = isset($input['created_by']) ? intval($input['created_by']) : null;
-    
+
             // Debugging to ensure the correct data is being updated
             Log::info('Updating ConductExam', $updating->toArray());
 

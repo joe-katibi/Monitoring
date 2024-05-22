@@ -78,10 +78,8 @@
                             <select class="custom-select" placeholder="" id="category" name="category">
                               <span style="color:red">@error('category'){{ $message }}@enderror</span>
                               <option value="{{ $info->category }}">{{ $info->category_name }}</option>
-                              <option disabled>Select a Category</option>
-                              @foreach ($Category as $row)
-                              <option value="{{ $row['id'] }}">{{ $row['category_name'] }}</option>
-                              @endforeach
+                              <option  value="">--Select Category--</option>
+                            
                             </select>
                           </div>
                         </div>
@@ -117,4 +115,74 @@
 
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            /*------------------------------------------
+            --------------------------------------------
+            Service Dropdown Change Event
+            --------------------------------------------
+            --------------------------------------------*/
+            $('#service').on('change', function () {
+                var qaa_call_category = this.value;
+                //console.log(qaa_call_category);
+                $("#category").html('');
+                $.ajax({
+                    url: '/auto-fail/'+qaa_call_category,
+                    type: "GET",
+                    data: {
+                        service: qaa_call_category,
+                        _token: '{{csrf_token()}}'
+                    },
+                    dataType: 'json',
+                    success: function (result) {
+                        $('#category').html('<option value="">-- Select --</option>');
+                        console.log(result);
+                        $.each(result, function (key, value) {
+                            $("#category").append('<option value="' + value
+                                .id + '">' + value.category_name + '</option>');
+                        });
+
+                    }
+                });
+            });
+
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            /*------------------------------------------
+            --------------------------------------------
+            Supervisor Dropdown Change Event
+            --------------------------------------------
+            --------------------------------------------*/
+            $('#category').on('change', function () {
+                var qaa_call_category = this.value;
+                //console.log(qaa_call_category);
+                $("#supervisor").html('');
+                $.ajax({
+                    url: '/categorylivesupervisor/'+qaa_call_category,
+                    type: "GET",
+                    data: {
+                        category: qaa_call_category,
+                        _token: '{{csrf_token()}}'
+                    },
+                    dataType: 'json',
+                    success: function (result) {
+                        $('#supervisor').html('<option value="">-- Select --</option>');
+                        console.log(result);
+                        $.each(result, function (key, value) {
+                            $("#supervisor").append('<option value="' + value
+                                .id + '">' + value.name + '</option>');
+                        });
+
+                    }
+                });
+            });
+
+        });
+    </script>
 @stop

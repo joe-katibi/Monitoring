@@ -138,7 +138,49 @@ class UserController extends Controller
      */
     public function show()
     {
-        return view('settings.users.show');
+
+             /** @var User $user */
+      // $user = User::findOrFail($id);
+
+        $user = User::select('users.id','users.name','users.username','users.email','users.country','users.services','users.department_id','users.user_status','users.created_at',
+                           'users.position','user_categories.category_id','categories.category_name',
+                         'model_has_roles.model_id'
+                           )
+                         ->join('user_categories','user_categories.user_id','=', 'users.id')
+                        ->join('categories','categories.id','=','user_categories.category_id')
+                       ->join('model_has_roles','model_has_roles.model_id','=','users.id')
+                        ->where('users.id','=',Auth::user()->id)
+                        ->first();
+
+
+        if ($user->roles()) {
+            $user->roles = $user->roles()->get()->pluck('name');
+        } else {
+            $user->roles = new Collection();
+        }
+
+        $permissions = Permission::all();
+        $department = Departments::all();
+        $service = Services::all();
+        $category = Categories::all();
+        $userCategory = UserCategory::select('user_categories.user_id','user_categories.category_id','categories.category_name',)
+                                       ->join('categories','categories.id','=','user_categories.category_id')->get();
+        $country = Countries::all();
+
+
+        return view('settings.users.profile', [
+            'user' => $user,
+            'department' => $department,
+            'service' => $service,
+            'country' => $country,
+            'category' => $category,
+            'userCategory' => $userCategory,
+            'roles' => Role::all(),
+            'permission_modules' => Permission::modules(),
+            'permissions' => $permissions,
+            'user_permissions' => $user->permissions()->get()
+        ]);
+
     }
 
     /**
@@ -199,7 +241,7 @@ class UserController extends Controller
                            )
                         ->where('users.id','=',$id)
                         ->first();
-                        
+
                         if ($user) {
                             if ($user->roles()) {
                                 $user->roles = $user->roles()->get()->pluck('name');
@@ -208,7 +250,7 @@ class UserController extends Controller
                             }
                         } else {
                             // Handle the case where $user is null
-                        }                        
+                        }
 
         $permissions = Permission::all();
         $department = Departments::all();
@@ -409,5 +451,6 @@ class UserController extends Controller
 
 
     }
+
 
 }

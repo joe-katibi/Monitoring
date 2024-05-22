@@ -73,6 +73,13 @@ class DepartmentSeeder extends Seeder
             'created_by'=>'1'
 
             ]
+            [
+
+            'department_name'=>'Trainer',
+            'description'=>'Trainer',
+            'created_by'=>'1'
+
+            ]
     ]);
     }
 }

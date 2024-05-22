@@ -77,11 +77,11 @@ class RolesSeeder extends Seeder
 
          // team-leader
          try {
-            $roleTeamleader = Role::create(['name' => 'team-leader', 'description' => 'team-leader']);
+            $roleTeamleader = Role::create(['name' => 'Team-leader', 'description' => 'Team-leader']);
         } catch (\Spatie\Permission\Exceptions\RoleAlreadyExists $e) {
             // Ignore
         }
-        $roleTeamleader = Role::findByName('team-leader');
+        $roleTeamleader = Role::findByName('Team-leader');
          // Find or create specific permissions
          $permissions = ['view-dasboard-team-leader','view-reports-menu','view-results-menu','view-global-reports','view-service-reports','view-productivity-reports','view-percentile-reports','	view-autofail-reports','view-category-reports','view-course-report','view-livecall-report','view-global-button-reports','view-service-button-reports','view-productivity-button-reports','view-percentile-button-reports','view-autofail-button-reports','view-category-button-reports','view-course-button-report','view-livecall-button-report','view-results-audit-menu','view-results-exam-menu','view-results-autofail-menu','view-results-audit-button-menu','view-results-exam-button-menu','view-results-autofail-button-menu','view-results-audit-button','view-results-audit-edit','view-results-audit-delete','view-results-autofail-button','view-results-autofail-button-view','view-export-PDF-coaching-button','view-export-PDF-alert-button','supervisor-report-autofail-request','	supervisor-report-request','admin-supervisor-quality-exam-results'];
          foreach ($permissions as $permissionName) {
@@ -94,11 +94,11 @@ class RolesSeeder extends Seeder
 
          // trainer
          try {
-            $roleTrainer = Role::create(['name' => 'trainer', 'description' => 'trainer']);
+            $roleTrainer = Role::create(['name' => 'Trainer', 'description' => 'Trainer']);
         } catch (\Spatie\Permission\Exceptions\RoleAlreadyExists $e) {
             // Ignore
         }
-        $roleTrainer = Role::findByName('trainer');
+        $roleTrainer = Role::findByName('Trainer');
           // Find or create specific permissions
           $permissions = ['view-dasboard-trainer','view-reports-menu','view-results-menu','view-question-bank-menu','view-conduct-menu','view-course-menu','view-global-reports','view-service-reports','view-productivity-reports','view-percentile-reports','view-autofail-reports','view-category-reports','view-course-report','view-livecall-report','view-global-button-reports','	view-service-button-reports','view-productivity-button-reports','view-percentile-button-reports','view-autofail-button-reports','view-category-button-reports','view-course-button-report','	view-livecall-button-report','view-results-audit-menu','view-results-exam-menu','view-results-autofail-menu','view-results-audit-button-menu','view-results-exam-button-menu','view-results-autofail-button-menu','view-results-audit-button','view-results-audit-edit','view-results-audit-delete','view-results-autofail-button','view-results-autofail-button-view','view-create-course-button','view-edit-delete-course-button','view-new-conduct-page-button','view-edit-view-delete-conduct--button','view-submit-course-button','view-scheduling-exam-button','view-edit-course-button','view-edit-conduct-menu','view-create-question-page','view-edit-view-delete-button-question','view-edit-question-button','view-create-question-button','view-exam-results-question-with-answers','view-export-PDF-coaching-button','view-export-PDF-alert-button'];
           foreach ($permissions as $permissionName) {

@@ -19,7 +19,7 @@
 </div><!-- /.container-fluid -->
 @stop
 @section('content')
-<div class="card card-outline edomx-card-warning">
+<div class="card card-success">
     <div class="card-header with-border">
         <h3 class="card-title">All Departments</h3>
         @can('view-add-departments')

@@ -7,53 +7,12 @@
 
 
 @section('content')
-<div class="card">
+<div class="card card-success"">
     <div class="card-header with-border">
         <h3 class="card-title">New User</h3>
     </div>
     @include('settings.users.form')
 </div>
-{{-- <div class="card">
-    <div class="card-header with-border">
-        <h3 class="card-title">Other Permissions</h3>
-    </div>
-    <div class="card-body">
-        @if (Session::has('message') && Session::has('module'))
-        <div class="alert alert-{{ Session::has('message_type')? Session::get('message_type'): 'success' }}">
-            {{ Session::get('message') }}
-        </div>
-        @endif
-        {!! Form::open(['url'=> 'settings/users/'. $user->id .'/permissions','name'=>'user_permissions_form', 'id' =>
-        'role_permissions_form',
-        'method' => 'POST']) !!}
-        <div class="row">
-            <div class="form-group col-md-6">
-                {{ Form::label('module', 'Module') }}
-                {{ Form::select('module', [],'',['class'=> 'form-control select2','id' => 'module_permissions',
-                'placeholder' => '---Select Module---']) }}
-            </div>
-            <div class="form-group col-md-6">
-                {{ Form::label('sub_module', 'Sub-Module') }}
-                {{ Form::select('sub_module', [],'',['class'=> 'form-control select2', 'id' => 'sub_module_permissions',
-                'placeholder' => '---Select Sub-Module---']) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="row col-md-12" id="user_permissions"></div>
-        </div>
-    </div>
-    <div class="card-footer">
-        <div class="float-right">
-            <button id="submit_form" type="submit" class="btn btn-sm edomx-brown text-white">
-                <i class="fa fa-save"></i> Save
-            </button>
-        </div>
-        <div class="pull-right" id="changes_unsaved_message" style="padding-right: 8px;">
-            <span class="help-block center-block">Unsaved changes</span>
-        </div>
-    </div>
-    {!! Form::close() !!}
-</div> --}}
 
 @stop
 
@@ -65,9 +24,29 @@
     }
 
 </style>
+<!-- Custom CSS for Select2 -->
+<style>
+    .select2-container--default .select2-selection--multiple {
+        background-color: #e9ecef; /* Grey background */
+        border: 1px solid #ced4da; /* Default border */
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: #007bff; /* Blue background for selected items */
+        color: white; /* White text */
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        color: white; /* White color for remove icon */
+    }
+</style>
 @stop
 
 @section('js')
+<!-- Initialize Select2 -->
+<script>
+    $(document).ready(function() {
+        $('.select2').select2();
+    });
+</script>
 <script src="{{asset('js/axios.min.js')}}"></script>
 <script type="text/javascript">
     let userPermissions = JSON.stringify(' {{ json_encode($user_permissions) }} ');

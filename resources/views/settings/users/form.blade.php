@@ -134,6 +134,7 @@
         border-radius: unset !important;
     }
 </style>
+
 @endpush
 
 @push('stack_js')

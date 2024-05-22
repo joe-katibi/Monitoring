@@ -35,8 +35,6 @@ class ExaminationController extends Controller
      */
     public function index($id)
     {
-
-
         $conduct = ConductExam::select('conduct_exams.id','conduct_exams.schedule_name','conduct_exams.time as duration','conduct_exams.course',
                                          'conduct_exams.exam_name','conduct_exams.service','conduct_exams.category','conduct_exams.trainer_qa',
                                          'conduct_exams.start_date','conduct_exams.completion_date','conduct_exams.created_at','users.name',
@@ -54,7 +52,8 @@ class ExaminationController extends Controller
                                          ->where('conduct_exams.id','=',$id)
                                           ->first();
 
-           
+         $total_questions = ExamsQuestions::where('exams_questions.course', '=', $conduct->course)->count('exams_questions.question');
+
 
         $reporttype = ReportType::select('report_types.type_id','report_types.type_name')->where('id', '=', 2)->first();
 
@@ -82,7 +81,7 @@ class ExaminationController extends Controller
            $seconds = $diff->s;
            $timeRemaining = "$minutes minutes, $seconds seconds";
 
-           
+
 
            // Return a response with the exam details
           toast('Exam started successfully','success');
@@ -94,6 +93,7 @@ class ExaminationController extends Controller
                                             $data['end_time'] = $end_time->format('Y-m-d H:i:s');
                                             $data['timeRemaining'] = $timeRemaining;
                                             $data['reporttype'] = $reporttype;
+                                            $data['total_questions'] = $total_questions;
 
                                             //dd($data);
 

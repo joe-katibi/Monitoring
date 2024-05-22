@@ -13,7 +13,7 @@
         <input  type="hidden" name="conduct_id"  id="conductId" data-conduct-id="{{ $conduct->id}}" value="{{ $conduct->id}}">
         <input  type="hidden" name="created_by" id="createdBy" data-created-by="{{ Auth::user()->id  }}" value="{{ Auth::user()->id }}">
         <input type="hidden" name="reporttype" value="{{ $reporttype['type_id']}}">
-        <input type="hidden" name="examId" value="{{ $examID['schedule_id']}}">
+        <input type="hidden" name="examId" id="scheduleId" value="{{ $examID['schedule_id']}}">
 
         @if (session('status'))
             <div class="alert alert-success">
@@ -53,17 +53,13 @@
                     <div class="col-2">
                         <label>No of Questions</label>
                         <input readonly type="text" class="form-control" placeholder="number of Questions"
-                            value="">
+                            value="{{ $total_questions }}">
                     </div>
                     <div class="col-2">
                         <label>Duration (minutes) </label>
-                        {{-- <input readonly id="timer" type="text" class="form-control"
-                            value="{{  $timeRemaining }}"> --}}
 
                             <input readonly id="timer" type="text" class="form-control" value="{{ $timeRemaining }}">
                     </div>
-{{--
-                    <p id="countdown">Loading countdown...</p> --}}
                 </div>
             </div>
             <div class="card-body">
@@ -183,6 +179,7 @@
         showQuestion(currentQuestion);
     });
 </script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var endTime = localStorage.getItem('examEnd'); // Get the end time from local storage
@@ -192,8 +189,7 @@
             endTime = parseInt(endTime); // Parse the stored end time as an integer
         } else {
             // Set a new end time (e.g., 30 minutes from now)
-           // endTime = Date.now() + (30 * 60 * 1000); // 30 minutes in milliseconds $timeRemaining
-            endTime = Date.now() + ($timeRemaining); // 30 minutes in milliseconds 
+            endTime = Date.now() + (parseInt({{ $conduct->duration }}) * 60 * 1000); // Convert minutes to milliseconds
             localStorage.setItem('examEnd', endTime); // Store the end time in local storage
         }
 
@@ -207,34 +203,11 @@
                 clearInterval(countdownInterval); // Stop the countdown
                 document.getElementById('timer').value = 'Time is up!'; // Display a message when the time is up
 
-                
-
                 // Clear the stored end time from local storage
                 localStorage.removeItem('examEnd');
 
                 // Make an AJAX request to store the selected answers
                 saveAnswersAndRedirect();
-                // Add your answer data to the formData object (e.g., formData.append('question1', 'answer1');)
-                // ...
-
-                // var xhr = new XMLHttpRequest();
-                // xhr.open('POST', '{{ route('examination.store', $conduct->id) }}', true);
-                // xhr.onload = function() {
-                //     if (xhr.status === 200) {
-                //         // The request was successful
-                //         // Redirect to the results view
-                //         var conductId = document.getElementById('conductId').getAttribute('data-conduct-id');
-                //         var createdBy = document.getElementById('createdBy').getAttribute('data-created-by');
-                //         window.location.href = "/exams/view_results/" + conductId + "/" + createdBy;
-                //     } else {
-                //         // There was an error in the request
-                //         console.error('Error storing answers:', xhr.statusText);
-                //     }
-                // };
-                // xhr.onerror = function() {
-                //     console.error('Error storing answers: Network error');
-                // };
-                // xhr.send(formData);
             } else {
                 // Calculate the minutes and seconds
                 var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -246,40 +219,42 @@
         }, 1000); // Update the countdown every second (1000 milliseconds)
 
         function saveAnswersAndRedirect() {
-        clearInterval(countdownInterval);
-        timerElement.textContent = "Exam submission in progress...";
+            clearInterval(countdownInterval);
 
-        // Collect data from the form
-        const formData = new FormData(document.forms.namedItem("listForm"));
+            // Collect data from the form
+            const formData = new FormData(document.forms.namedItem("listForm"));
 
-        // Perform an AJAX request to save answers
-        fetch("{{ route('examination.store', $conduct->id) }}", {
-            method: "POST",
-            body: formData,
-            headers: {
-                "X-CSRF-TOKEN": "{{ csrf_token() }}",
-            },
-        })
-        .then((response) => {
-            if (response.ok) {
-                // Redirect to the results page after saving answers
-                setTimeout(function () {
-                    window.location.href = "exams/view_results/"; // Replace with your actual results page URL
-                }, 2000); // Redirect after 2 seconds
-            } else {
-                // Handle the case when saving answers fails
-                timerElement.textContent = "Error while saving answers.";
-            }
-        })
-        .catch((error) => {
-            // Handle network errors here
-            timerElement.textContent = "Network error occurred.";
-        });
-    }
+            // Perform an AJAX request to save answers
+            fetch("{{ route('examination.store', $conduct->id) }}", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                },
+            })
+            .then((response) => {
+                if (response.ok) {
+                    // Redirect to the results page after saving answers
+                    setTimeout(function () {
+                        var conductId = document.getElementById('conductId').value;
+                        var createdBy = document.getElementById('createdBy').value;
+                        var scheduleId = document.getElementById('scheduleId').value;
+                        window.location.href = "/exams/view_results/" + conductId + "/" + createdBy + "/" + scheduleId;
+                    }, 2000); // Redirect after 2 seconds
+                } else {
+                    // Handle the case when saving answers fails
+                    document.getElementById('alert-message').textContent = "Error while saving answers.";
+                    document.getElementById('alert-message').style.display = 'block';
+                }
+            })
+            .catch((error) => {
+                // Handle network errors here
+                document.getElementById('alert-message').textContent = "Network error occurred.";
+                document.getElementById('alert-message').style.display = 'block';
+            });
+        }
     });
-
 </script>
-
 
 
 @stop
