@@ -231,6 +231,8 @@ class UserController extends Controller
             'permissions' => $permissions,
             'user_permissions' => $user->permissions()->get()
         ]);
+
+
     }
 
     public function newUser($id)
@@ -327,7 +329,7 @@ class UserController extends Controller
         }
 
         toast('User updated', 'success')->position('top-end');
-        return redirect()->back();
+        return redirect('/settings/users');
     }
 
     /**

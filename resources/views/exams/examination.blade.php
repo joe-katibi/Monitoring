@@ -189,7 +189,8 @@
             endTime = parseInt(endTime); // Parse the stored end time as an integer
         } else {
             // Set a new end time (e.g., 30 minutes from now)
-            endTime = Date.now() + (parseInt({{ $conduct->duration }}) * 60 * 1000); // Convert minutes to milliseconds
+            // endTime = Date.now() + (30 * 60 * 1000); // 30 minutes in milliseconds $timeRemaining
+            endTime = Date.now() + ($timeRemaining); // 30 minutes in milliseconds
             localStorage.setItem('examEnd', endTime); // Store the end time in local storage
         }
 
@@ -223,6 +224,8 @@
 
             // Collect data from the form
             const formData = new FormData(document.forms.namedItem("listForm"));
+
+            console.log(formData);
 
             // Perform an AJAX request to save answers
             fetch("{{ route('examination.store', $conduct->id) }}", {
