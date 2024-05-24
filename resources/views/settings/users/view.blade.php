@@ -1,7 +1,7 @@
 @extends('adminlte::page')
-@section('title', 'My Profile | Zuku Monitoring')
+@section('title', 'View Profile | Zuku Monitoring')
 @section('content_header')
-<h1 class="pull-left">My Profile</h1>
+<h1 class="pull-left">View Profile</h1>
 <div style="clear:both"></div>
 @stop
 
@@ -9,7 +9,7 @@
 @section('content')
 <div class="card card-success">
     <div class="card-header with-border">
-        <h3 class="card-title">My Profile</h3>
+        <h3 class="card-title">View Profile</h3>
     </div>
 
 <div class="card-body">
@@ -27,7 +27,7 @@
     <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <fieldset>
-                <legend>My Details</legend>
+                <legend>View Details</legend>
                 <input type="hidden" name="id" value="{{ isset($id)? $id: -1  }}">
 
                 <div class="form-group">
@@ -104,9 +104,7 @@
 </div>
     <div class="card-footer">
         <div class="card-tools-md-12 float-left">
-        <a href="{{ url('/home') }}" class="btn btn-sm  btn-warning">
-            <i class="fa fa-arrow-left"></i> Back
-        </a>
+      
        </div>
 
 

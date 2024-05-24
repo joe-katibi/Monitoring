@@ -33,15 +33,13 @@ class RolesSeeder extends Seeder
         }
         $roleAdmin= Role::findByName('Admin');
           // Find or create specific permissions
-          $permissions = ['view-add-departments','view-create-user-button','view-create-roles','view-edit-user-status','view-edit-delete-departments','view-edit-roles-permission','view-departments-menu','	view-permissions-menu','view-roles-menu','view-users-menu','view-edit-summary-button'];
+          $permissions = ['view-add-departments','view-create-user-button','view-create-roles','view-edit-user-status','view-edit-delete-departments','view-edit-roles-permission','view-departments-menu','view-permissions-menu','view-roles-menu','view-users-menu','view-edit-summary-button'];
           foreach ($permissions as $permissionName) {
           $permission = Permission::where('name', $permissionName)->first();
 
           // Assign the permission to the role
           $roleAdmin->givePermissionTo($permission);
            }
-
-
 
          // quality-analyst
          try {
@@ -51,7 +49,7 @@ class RolesSeeder extends Seeder
         }
         $roleQualityAnalyst = Role::findByName('quality-analyst');
          // Find or create specific permissions
-         $permissions = ['view-dashboard-quality-Analyst', 'view-reports-menu','view-results-menu','view-audit-menu','view-upload-calls-menu','view-audit-fiber-categories','view-audit-dth-categories','view-global-reports','view-service-reports','view-productivity-reports','view-percentile-reports','view-autofail-reports','view-category-reports','view-course-report','view-livecall-report','	view-global-button-reports','view-service-button-reports','view-productivity-button-reports','view-percentile-button-reports','view-autofail-button-reports','view-category-button-reports','view-course-button-report','view-livecall-button-report','view-results-audit-menu','view-results-exam-menu','view-results-autofail-menu','view-results-audit-button-menu','view-results-exam-button-menu','view-results-autofail-button-menu','view-results-audit-button','view-results-audit-edit','view-results-audit-delete','view-results-autofail-button','view-results-autofail-button-view','view-upload-call-button','view-exam-results-question-with-answers','view-export-PDF-coaching-button','view-export-PDF-alert-button','quality-analysts-report-request','admin-supervisor-quality-exam-results'];
+         $permissions = ['view-dashboard-quality-Analyst','view-reports-menu','view-results-menu','view-audit-menu','view-upload-calls-menu','view-audit-fiber-categories','view-audit-dth-categories','view-global-reports','view-service-reports','view-productivity-reports','view-percentile-reports','view-autofail-reports','view-category-reports','view-course-report','view-livecall-report','	view-global-button-reports','view-service-button-reports','view-productivity-button-reports','view-percentile-button-reports','view-autofail-button-reports','view-category-button-reports','view-course-button-report','view-livecall-button-report','view-results-audit-menu','view-results-exam-menu','view-results-autofail-menu','view-results-audit-button-menu','view-results-exam-button-menu','view-results-autofail-button-menu','view-results-audit-button','view-results-audit-edit','view-results-audit-delete','view-results-autofail-button','view-results-autofail-button-view','view-upload-call-button','view-exam-results-question-with-answers','view-export-PDF-coaching-button','view-export-PDF-alert-button','quality-analysts-report-request','admin-supervisor-quality-exam-results'];
          foreach ($permissions as $permissionName) {
           $permission = Permission::where('name', $permissionName)->first();
 
@@ -67,13 +65,12 @@ class RolesSeeder extends Seeder
         }
         $roleAgent = Role::findByName('Agent');
         // Find or create specific permissions
-          $permissions = ['view-dasboard-agent', 'view-results-menu','view-agent-exam-menu','view-results-audit-menu','view-results-exam-menu','view-results-autofail-menu','view-results-audit-button-menu','view-results-exam-button-menu','view-results-autofail-button-menu','view-results-audit-button','view-results-audit-edit','view-results-audit-delete','view-results-autofail-button','view-results-autofail-button-view','view-start-results-exam-buttons','view-saving-done-exam-button','agent-report-autofail-request','agent-report-request','admin-agent-exam-results'];
+          $permissions = ['view-dasboard-agent','view-results-menu','view-agent-exam-menu','view-results-audit-menu','view-results-exam-menu','view-results-autofail-menu','view-results-audit-button-menu','view-results-exam-button-menu','view-results-autofail-button-menu','view-results-audit-button','view-results-audit-edit','view-results-audit-delete','view-results-autofail-button','view-results-autofail-button-view','view-start-results-exam-buttons','view-saving-done-exam-button','agent-report-autofail-request','agent-report-request','admin-agent-exam-results'];
           foreach ($permissions as $permissionName) {
           $permission = Permission::where('name', $permissionName)->first();
          // Assign the permission to the role
          $roleAgent->givePermissionTo($permission);
          }
-
 
          // team-leader
          try {
@@ -83,7 +80,7 @@ class RolesSeeder extends Seeder
         }
         $roleTeamleader = Role::findByName('Team-leader');
          // Find or create specific permissions
-         $permissions = ['view-dasboard-team-leader','view-reports-menu','view-results-menu','view-global-reports','view-service-reports','view-productivity-reports','view-percentile-reports','	view-autofail-reports','view-category-reports','view-course-report','view-livecall-report','view-global-button-reports','view-service-button-reports','view-productivity-button-reports','view-percentile-button-reports','view-autofail-button-reports','view-category-button-reports','view-course-button-report','view-livecall-button-report','view-results-audit-menu','view-results-exam-menu','view-results-autofail-menu','view-results-audit-button-menu','view-results-exam-button-menu','view-results-autofail-button-menu','view-results-audit-button','view-results-audit-edit','view-results-audit-delete','view-results-autofail-button','view-results-autofail-button-view','view-export-PDF-coaching-button','view-export-PDF-alert-button','supervisor-report-autofail-request','	supervisor-report-request','admin-supervisor-quality-exam-results'];
+         $permissions = ['view-dasboard-team-leader','view-reports-menu','view-results-menu','view-global-reports','view-service-reports','view-productivity-reports','view-percentile-reports','view-autofail-reports','view-category-reports','view-course-report','view-livecall-report','view-global-button-reports','view-service-button-reports','view-productivity-button-reports','view-percentile-button-reports','view-autofail-button-reports','view-category-button-reports','view-course-button-report','view-livecall-button-report','view-results-audit-menu','view-results-exam-menu','view-results-autofail-menu','view-results-audit-button-menu','view-results-exam-button-menu','view-results-autofail-button-menu','view-results-audit-button','view-results-audit-edit','view-results-audit-delete','view-results-autofail-button','view-results-autofail-button-view','view-export-PDF-coaching-button','view-export-PDF-alert-button','supervisor-report-autofail-request','supervisor-report-request','admin-supervisor-quality-exam-results','supervisor-report-request'];
          foreach ($permissions as $permissionName) {
          $permission = Permission::where('name', $permissionName)->first();
 
@@ -100,7 +97,7 @@ class RolesSeeder extends Seeder
         }
         $roleTrainer = Role::findByName('Trainer');
           // Find or create specific permissions
-          $permissions = ['view-dasboard-trainer','view-reports-menu','view-results-menu','view-question-bank-menu','view-conduct-menu','view-course-menu','view-global-reports','view-service-reports','view-productivity-reports','view-percentile-reports','view-autofail-reports','view-category-reports','view-course-report','view-livecall-report','view-global-button-reports','	view-service-button-reports','view-productivity-button-reports','view-percentile-button-reports','view-autofail-button-reports','view-category-button-reports','view-course-button-report','	view-livecall-button-report','view-results-audit-menu','view-results-exam-menu','view-results-autofail-menu','view-results-audit-button-menu','view-results-exam-button-menu','view-results-autofail-button-menu','view-results-audit-button','view-results-audit-edit','view-results-audit-delete','view-results-autofail-button','view-results-autofail-button-view','view-create-course-button','view-edit-delete-course-button','view-new-conduct-page-button','view-edit-view-delete-conduct--button','view-submit-course-button','view-scheduling-exam-button','view-edit-course-button','view-edit-conduct-menu','view-create-question-page','view-edit-view-delete-button-question','view-edit-question-button','view-create-question-button','view-exam-results-question-with-answers','view-export-PDF-coaching-button','view-export-PDF-alert-button'];
+          $permissions = ['view-dasboard-trainer','view-reports-menu','view-results-menu','view-question-bank-menu','view-conduct-menu','view-course-menu','view-global-reports','view-service-reports','view-productivity-reports','view-percentile-reports','view-autofail-reports','view-category-reports','view-course-report','view-livecall-report','view-global-button-reports','view-service-button-reports','view-productivity-button-reports','view-percentile-button-reports','view-autofail-button-reports','view-category-button-reports','view-course-button-report','view-livecall-button-report','view-results-audit-menu','view-results-exam-menu','view-results-autofail-menu','view-results-audit-button-menu','view-results-exam-button-menu','view-results-autofail-button-menu','view-results-audit-button','view-results-audit-edit','view-results-audit-delete','view-results-autofail-button','view-results-autofail-button-view','view-create-course-button','view-edit-delete-course-button','view-new-conduct-page-button','view-edit-view-delete-conduct--button','view-submit-course-button','view-scheduling-exam-button','view-edit-course-button','view-edit-conduct-menu','view-create-question-page','view-edit-view-delete-button-question','view-edit-question-button','view-create-question-button','view-exam-results-question-with-answers','view-export-PDF-coaching-button','view-export-PDF-alert-button','trainer-report-request'];
           foreach ($permissions as $permissionName) {
           $permission = Permission::where('name', $permissionName)->first();
 

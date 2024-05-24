@@ -20,6 +20,6 @@ return [
     'subject' => 'Monitoring Ticket Raised',
     'body' => 'You have been audited by :auditor_name. Please contact your supervisor :supervisor_name for more information.',
     'no_reply_message' => 'This is an automated message. Please do not reply.',
-    'from_address' => 'no-reply@ke.wananchi.com',
+    'from_address' => 'jkatibi@gmail.com',
     'from_name' => 'Monitoring Tool',
 ];

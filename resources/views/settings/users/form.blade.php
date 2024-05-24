@@ -80,7 +80,8 @@
                 <fieldset>
                     <div class="form-group">
                         {{ Form::label('category', 'Category *',['class'=>'control-label label-left']) }}
-                        {{ Form::select('category[]', $category->pluck('category_name', 'id') , old('category_name', $user->category_id)  ,['class' => 'form-control select2', 'multiple' => true ]) }}
+                        {{-- {{ Form::select('category[]', $category->pluck('category_name', 'id') , old('category_name[]', $user->category_id)  ,['class' => 'form-control select2', 'multiple' => true ]) }} --}}
+                        {{ Form::select('category[]', $category->pluck('category_name', 'id'), old('category_name[]', $selectedCategoryIds) , ['class' => 'form-control select2', 'multiple' => true]) }}
                     </div>
 
                 </fieldset>

@@ -212,6 +212,12 @@ class PermissionsSeeder extends Seeder
                 'description' => 'View All view results',
                 'name' => 'view-results-autofail-button-view'
             ],
+            [
+                'module' => 'Results',
+                'sub_module' => 'View Audit Results results',
+                'description' => 'View Audit Results results',
+                'name' => 'trainer-report-request'
+            ],
 
             //Users
 

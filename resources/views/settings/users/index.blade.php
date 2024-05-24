@@ -96,6 +96,10 @@
                                         data-row="{{  json_encode($row) }}" class="btn btn-sm btn-info">
                                         <i class="glyphicon glyphicon-edit"></i> Edit
                                     </a>
+                                    <a href="{{ url('settings/users/'. $row->id .'/view') }}"
+                                        data-row="{{  json_encode($row) }}" class="btn btn-sm btn-warning">
+                                        <i class="glyphicon glyphicon-eye"></i> view
+                                    </a>
                                     <a class="btn btn-sm btn-danger" href='{{ url('settings/users/'. $row->id
                                         .'/deactivate') }}'
                                         data-row="{{ json_encode($row) }}">

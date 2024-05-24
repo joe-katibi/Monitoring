@@ -14,6 +14,7 @@
         <input  type="hidden" name="created_by" id="createdBy" data-created-by="{{ Auth::user()->id  }}" value="{{ Auth::user()->id }}">
         <input type="hidden" name="reporttype" value="{{ $reporttype['type_id']}}">
         <input type="hidden" name="examId" id="scheduleId" value="{{ $examID['schedule_id']}}">
+        <input type="hidden" name="timeRemaining" id="timeRemaining" value="{{$timeRemaining}}">
 
         @if (session('status'))
             <div class="alert alert-success">
@@ -124,7 +125,6 @@
 @stop
 
 @section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
@@ -188,9 +188,10 @@
         if (endTime && !isNaN(endTime) && parseInt(endTime) > Date.now()) {
             endTime = parseInt(endTime); // Parse the stored end time as an integer
         } else {
+
             // Set a new end time (e.g., 30 minutes from now)
             // endTime = Date.now() + (30 * 60 * 1000); // 30 minutes in milliseconds $timeRemaining
-            endTime = Date.now() + ($timeRemaining); // 30 minutes in milliseconds
+            endTime = Date.now() + (parseInt({{ $conduct->duration }}) * 60 * 1000); // 30 minutes in milliseconds
             localStorage.setItem('examEnd', endTime); // Store the end time in local storage
         }
 
@@ -222,10 +223,13 @@
         function saveAnswersAndRedirect() {
             clearInterval(countdownInterval);
 
+
+
             // Collect data from the form
             const formData = new FormData(document.forms.namedItem("listForm"));
-
             console.log(formData);
+
+            dd(formData);
 
             // Perform an AJAX request to save answers
             fetch("{{ route('examination.store', $conduct->id) }}", {
@@ -234,6 +238,7 @@
                 headers: {
                     "X-CSRF-TOKEN": "{{ csrf_token() }}",
                 },
+
             })
             .then((response) => {
                 if (response.ok) {

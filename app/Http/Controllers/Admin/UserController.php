@@ -163,9 +163,15 @@ class UserController extends Controller
         $department = Departments::all();
         $service = Services::all();
         $category = Categories::all();
-        $userCategory = UserCategory::select('user_categories.user_id','user_categories.category_id','categories.category_name',)
-                                       ->join('categories','categories.id','=','user_categories.category_id')->get();
         $country = Countries::all();
+
+        $userCategory = UserCategory::select('user_categories.user_id','user_categories.category_id','categories.category_name',)
+                                       ->join('categories','categories.id','=','user_categories.category_id')
+                                       ->where('user_categories.user_id','=',Auth::user()->id)->get();
+
+          // Extract category IDs for use in the select input
+        $selectedCategoryIds = $userCategory->pluck('category_id')->toArray();
+
 
 
         return view('settings.users.profile', [
@@ -175,6 +181,7 @@ class UserController extends Controller
             'country' => $country,
             'category' => $category,
             'userCategory' => $userCategory,
+            'selectedCategoryIds' => $selectedCategoryIds,
             'roles' => Role::all(),
             'permission_modules' => Permission::modules(),
             'permissions' => $permissions,
@@ -215,7 +222,12 @@ class UserController extends Controller
         $service = Services::all();
         $category = Categories::all();
         $userCategory = UserCategory::select('user_categories.user_id','user_categories.category_id','categories.category_name',)
-                                       ->join('categories','categories.id','=','user_categories.category_id')->get();
+                                      ->join('categories','categories.id','=','user_categories.category_id')
+                                     ->where('user_categories.user_id','=',Auth::user()->id)->get();
+
+         // Extract category IDs for use in the select input
+        $selectedCategoryIds = $userCategory->pluck('category_id')->toArray();
+
         $country = Countries::all();
 
 
@@ -226,6 +238,7 @@ class UserController extends Controller
             'country' => $country,
             'category' => $category,
             'userCategory' => $userCategory,
+            'selectedCategoryIds' => $selectedCategoryIds,
             'roles' => Role::all(),
             'permission_modules' => Permission::modules(),
             'permissions' => $permissions,
@@ -290,9 +303,14 @@ class UserController extends Controller
         $input = $request->all();
 
         $validator = Validator::make($request->all(), [
-            'email' => 'email|required|unique:users,email,' . $id, ',id',
+            'email' => 'email|required|unique:users,email,' . $id,
             'name' => 'required'
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
         /** @var User $user */
         $user = User::findOrFail($id);
 
@@ -304,33 +322,30 @@ class UserController extends Controller
         $user->country = $request->input('country');
         $user->services = $request->input('service');
 
-         $user->save();
+        $user->save();
 
-        $roles = $request->input('roles');
+        $roles = $request->input('roles', []);
+        $user->syncRoles($roles);
 
-        if ($roles == null) {
-            $roles = [];
-        }
-        if (isset($roles)) {
-            $user->syncRoles($roles);
-        }
+        // Get new categories from the request
+        $newCategories = $request->input('category', []);
 
-        $category = $request->input('category');
+        // Delete existing user categories
+        UserCategory::where('user_id', $id)->delete();
 
-        foreach($category as $key => $value){
-
-            $category_user = new UserCategory();
-
-            $category_user->user_id = $id;
-            $category_user->category_id = $value;
-            $category_user->created_by = Auth::user()->id;
-            $category_user->save();
-
+        // Insert new categories
+        foreach ($newCategories as $categoryId) {
+            $categoryUser = new UserCategory();
+            $categoryUser->user_id = $id;
+            $categoryUser->category_id = $categoryId;
+            $categoryUser->created_by = Auth::user()->id;
+            $categoryUser->save();
         }
 
         toast('User updated', 'success')->position('top-end');
         return redirect('/settings/users');
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -451,6 +466,64 @@ class UserController extends Controller
         $user->update();
         return redirect('home');
 
+
+    }
+
+        /**
+     * Show the specified resource.
+     * @return \Illuminate\Contracts\View\Factory|Response|\Illuminate\View\View
+     */
+    public function view($id)
+    {
+
+             /** @var User $user */
+      // $user = User::findOrFail($id);
+
+        $user = User::select('users.id','users.name','users.username','users.email','users.country','users.services','users.department_id','users.user_status','users.created_at',
+                           'users.position','user_categories.category_id','categories.category_name',
+                         'model_has_roles.model_id'
+                           )
+                         ->join('user_categories','user_categories.user_id','=', 'users.id')
+                        ->join('categories','categories.id','=','user_categories.category_id')
+                       ->join('model_has_roles','model_has_roles.model_id','=','users.id')
+                        ->where('users.id','=',$id)
+                        ->first();
+
+
+        if ($user->roles()) {
+            $user->roles = $user->roles()->get()->pluck('name');
+        } else {
+            $user->roles = new Collection();
+        }
+
+        $permissions = Permission::all();
+        $department = Departments::all();
+        $service = Services::all();
+        $category = Categories::all();
+        $country = Countries::all();
+
+        $userCategory = UserCategory::select('user_categories.user_id','user_categories.category_id','categories.category_name',)
+                                       ->join('categories','categories.id','=','user_categories.category_id')
+                                       ->where('user_categories.user_id','=',$id)->get();
+
+          // Extract category IDs for use in the select input
+        $selectedCategoryIds = $userCategory->pluck('category_id')->toArray();
+
+
+
+        return view('settings.users.view', [
+            'user' => $user,
+            'department' => $department,
+            'service' => $service,
+            'country' => $country,
+            'category' => $category,
+            'userCategory' => $userCategory,
+            'selectedCategoryIds' => $selectedCategoryIds,
+            'roles' => Role::all(),
+            'permission_modules' => Permission::modules(),
+            'permissions' => $permissions,
+            'user_permissions' => $user->permissions()->get()
+        ]);
 
     }
 

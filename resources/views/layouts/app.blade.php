@@ -12,7 +12,8 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-    <link rel="stylesheet" href="sweetalert2.min.css">
+    <link rel="stylesheet" href="sweetalert2.min.css"> 
+    <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
 
 
 

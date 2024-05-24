@@ -1,0 +1,10 @@
+body {
+    font-size: 11px; /* or your desired font size */
+    transform: scale(0.8);
+    transform-origin: top left;
+    width: 125%; /* 1 / 0.8 = 1.25 */
+}
+
+.content-wrapper, .main-footer, .main-header, .navbar, .sidebar, .control-sidebar {
+    font-size: inherit; /* Ensures all parts of AdminLTE use the base font size */
+}
