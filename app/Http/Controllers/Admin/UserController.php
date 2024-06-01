@@ -107,6 +107,7 @@ class UserController extends Controller
        // $user->category = json_encode($request->input('category'));
         $user->department_id = $request->input('department');
         $user->password = bcrypt(uniqid());
+        $user->created_by = Auth::user()->id;
 
         $user->save();
 
@@ -223,7 +224,7 @@ class UserController extends Controller
         $category = Categories::all();
         $userCategory = UserCategory::select('user_categories.user_id','user_categories.category_id','categories.category_name',)
                                       ->join('categories','categories.id','=','user_categories.category_id')
-                                     ->where('user_categories.user_id','=',Auth::user()->id)->get();
+                                      ->where('user_categories.user_id',$id)->get();
 
          // Extract category IDs for use in the select input
         $selectedCategoryIds = $userCategory->pluck('category_id')->toArray();
@@ -272,8 +273,12 @@ class UserController extends Controller
         $service = Services::all();
         $category = Categories::all();
         $userCategory = UserCategory::select('user_categories.user_id','user_categories.category_id','categories.category_name',)
-                                       ->join('categories','categories.id','=','user_categories.category_id')->get();
+                                       ->join('categories','categories.id','=','user_categories.category_id')
+                                       ->where('user_categories.user_id',$id)->get();
         $country = Countries::all();
+
+                 // Extract category IDs for use in the select input
+         $selectedCategoryIds = $userCategory->pluck('category_id')->toArray();
 
         $userPermissions = [];
         if ($user) {
@@ -286,6 +291,7 @@ class UserController extends Controller
             'country' => $country,
             'category' => $category,
             'userCategory' => $userCategory,
+            'selectedCategoryIds' => $selectedCategoryIds,
             'roles' => Role::all(),
             'permission_modules' => Permission::modules(),
             'permissions' => $permissions,
@@ -321,6 +327,7 @@ class UserController extends Controller
         $user->department_id = $request->input('department');
         $user->country = $request->input('country');
         $user->services = $request->input('service');
+        $user->updated_by = Auth::user()->id;
 
         $user->save();
 
@@ -439,6 +446,9 @@ class UserController extends Controller
         $user->user_status = 0;
 
         $user->save();
+
+         // Delete existing user categories
+         UserCategory::where('user_id', $id)->delete();
 
         return back();
     }

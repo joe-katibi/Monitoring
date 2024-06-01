@@ -1,17 +1,18 @@
 <?php
 
+use App\Models\Role;
 use App\Models\User;
 use App\Models\Courses;
 use App\Models\AlertForm;
 use App\Models\Categories;
 use App\Models\FiberWelcomeQuestion;
-use App\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Exams\CourseController;
 use App\Http\Controllers\Exams\ExamBankController;
 use App\Http\Controllers\Admin\PermissionsController;
@@ -60,9 +61,10 @@ use App\Http\Controllers\FiberQuestions\ServiceSupportQuestionController;
 |
 */
 
-Route::get('/', function () {
-    return view('auth.login');
-});
+// Route::get('/', function () {
+//     return view('auth.login');
+// });
+Route::get('/', [App\Http\Controllers\CELinks\CELinksController::class, 'show'])->name('CEdashboard.show');
 Route::post('/authenticate/user', [App\Http\Controllers\Auth\LoginController::class, 'authenticateUser'])->name('user.authenticate');
 
 // Route::post('/authenticate/user', [AuthenticationController::class, 'login'])->name('user.authenticate');
@@ -81,6 +83,7 @@ Route::post('/home/{id}/edit', [App\Http\Controllers\HomeController::class, 'edi
 Route::delete('/home/{id}/destroy', [App\Http\Controllers\HomeController::class, 'destroy'])->name('home.destroy');
 Route::get('home/{id}/activate', [App\Http\Controllers\HomeController::class, 'activate'])->name('home.activate');
 Route::get('home/{id}/deactivate',[App\Http\Controllers\HomeController::class,  'deactivate'])->name('home.deactivate');
+Route::get('/home/destroy', [App\Http\Controllers\HomeController::class, 'show'])->name('home.show');
 
 
 // setting --- roles -- permissions---departments//
@@ -136,6 +139,11 @@ Route::delete('admin/edit_parametors/Fiber/welcomequestionedit/{parametors}', [A
 
 
 Route::get('/admin/dashboard', [App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('dashboard');
+
+Route::get('/system_links/dashboard_link', [App\Http\Controllers\CELinks\CELinksController::class, 'index'])->name('CEdashboard');
+Route::post('/system_links/dashboard_link', [App\Http\Controllers\CELinks\CELinksController::class, 'store'])->name('link.store');
+Route::resource('systemLinks', CELinksController::class);
+
 
 /* QA Category and Results Routes */
 Route::get('quality_analyst/category', [App\Http\Controllers\QualityAnalyst\CategoryController::class, 'index'])->name('category');
@@ -322,6 +330,8 @@ Route::get('category/{id}', function ($id) {
  Route::post('coaching_forms/{coaching}/edit', [App\Http\Controllers\CoachingController::class, 'supervisorUpdate'])->name('coaching.supervisorUpdate');
  Route::get('coaching_forms/coaching_pdf',[App\Http\Controllers\CoachingController::class, 'generatePDF'])->name('coaching.pdf');
  Route::get('/coaching_forms/coaching_pdf/{coaching}/{results_id}', [App\Http\Controllers\CoachingController::class, 'generatePDF'])->name('coaching.generatePDF');
+//  Route::get('coaching_forms/view/', [App\Http\Controllers\CoachingController::class, 'quality'])->name('coaching.quality');
+
 
 
 

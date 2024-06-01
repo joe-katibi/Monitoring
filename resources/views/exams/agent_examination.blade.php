@@ -63,7 +63,7 @@
                                   <!-- The user has already taken the exam, hide the start button and show the results button -->
                                  @can('view-start-results-exam-buttons')
                                 <a style="display:none;" href="{{ route('examination.index', $row->id) }}" class="btn btn-success"><i class="fas fa-play"></i>Start</a>
-                                <a href="{{ route('examresult.viewResults', ['conductid' => $examId, 'examresult' => $created_by, 'examid' => $scheduleId]) }}" class="btn btn-info"><i class="fas fa-eye"></i>Results</a>
+                                <a href="{{ route('examresult.viewResults', ['conductid' => $examId, 'examresult' => $created_by, 'examid' => $scheduleId]) }}" class="btn btn-info"><i class="fas fa-eye"></i>Marks</a>
                                  @endcan
                                  @can('view-exam-results-question-with-answers')
                                 <a href="{{ route('examresult.show', ['examresult' => $examId, 'schedule_id' => $scheduleId]) }}" class="btn btn-info"><i class="fas fa-eye"></i>Results</a>

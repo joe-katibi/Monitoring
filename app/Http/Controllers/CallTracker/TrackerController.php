@@ -120,7 +120,7 @@ class TrackerController extends Controller
 
             DB::commit();
 
-            return redirect('call_tracker/create');
+            return redirect('system_links.dashboard_link');
 
         }catch (\Throwable $e) {
 
@@ -156,7 +156,7 @@ class TrackerController extends Controller
                                          // No questions found, display the error/alert message
                                                     $message = "No SubcallTracker/s found. Please create subcategory for call Tracker called {$callTracker->call_tracker}.";
                                                      toast( $message , 'warning')->position('center');
-                                  
+
                                                     return redirect()->back()->with('message', $message);
                                                     }
 

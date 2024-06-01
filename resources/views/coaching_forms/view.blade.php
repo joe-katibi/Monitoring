@@ -8,6 +8,130 @@
 
 @section('content')
 @include('sweetalert::alert')
+{{-- @can('supervisor-report-request')
+<div class="card card-success ">
+    <div class="card-header">
+    <input readonly class="form-control" style="color: green" name="category" value="Coaching Forms">
+    </div>
+         <div class="card-body">
+          <form method="" action="{{ route('coaching.coach') }}" accept-charset="UTF-8" class="form" enctype="multipart/form-data"><input name="_token" type="hidden" value="">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="section">Supervisor</label>
+                <select class="form-control" required="required" id="supervisor1" name="supervisor"><option selected="selected" value="">--Select Supervisor--</option>
+                 <option value="{{$userlogged['id']}}">{{ $userlogged['name'] }}</option>
+               </select>
+            </div>
+            </div>
+            <div class="col-md-2">
+                <label for="section">Select Agent</label>
+                <div class="form-group">
+                   <select class="form-control" required="required" id="agents" name="agent"><option selected="selected" value="">--Select Agent--</option>
+                    {{-- @foreach ($agents as $agent)
+                    <option value="{{ $agent['id'] }}">{{$agent['name'] }}</option>
+                    @endforeach --}}
+                {{-- </select>
+                </div>
+                </div>
+    <div class="col-md-3">
+        <!-- Date range -->
+             <div class="form-group">
+               <label>Date range:</label>
+               <div class="input-group">
+                <div class="input-group-prepend">
+                 <span class="input-group-text">
+                   <i class="far fa-calendar-alt"></i>
+                 </span>
+                </div>
+                 <input type="text" name="created_at" class="form-control daterange" id="reservation">
+               </div>
+              <!-- /.input group -->
+         </div>
+        </div>
+      </div>
+      @can('view-results-autofail-button')
+  <div class="col">
+    <button type="submit" class="btn btn-success float-right" ><strong>Search</strong></button>
+ </div>
+ @endcan
+</form>
+</div>
+</div>
+@endcan
+@can('quality-analysts-report-request')
+<div class="card card-success ">
+    <div class="card-header">
+    <input readonly class="form-control" style="color: green" name="category" value="Coaching Forms">
+    </div>
+         <div class="card-body">
+          <form method="" action="{{ route('coaching.coach') }}" accept-charset="UTF-8" class="form" enctype="multipart/form-data"><input name="_token" type="hidden" value="">
+    <div class="row">
+        <div class="col-md-2">
+            <label for="section">Select service</label>
+            <div class="form-group">
+               <select class="form-control" required="required" id="service" name="service">
+                <option selected="selected" value="">--Select service--</option>
+                @foreach ($services as $service)
+                <option value="{{ $service['id'] }}">{{$service['service_name'] }}</option>
+                @endforeach
+            </select>
+            </div>
+            </div>
+            <div class="col-md-2">
+                <label for="service[]">Select Category</label>
+                <div class="form-group">
+                    <select class="form-control" required="required" id="category" name="category">
+                        <option  value="">--Select Category--</option>
+                    </select>
+                </div>
+            </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="section">Supervisor</label>
+                <select class="form-control" required="required" id="supervisor" name="supervisor"><option selected="selected" value="">--Select Supervisor--</option>
+                 <option value="{{$userlogged['id']}}">{{ $userlogged['name'] }}</option>
+               </select>
+            </div>
+            </div>
+            <div class="col-md-2">
+                <label for="section">Select Agent</label>
+                <div class="form-group">
+                   <select class="form-control" required="required" id="agent" name="agent"><option selected="selected" value="">--Select Agent--</option> --}}
+                    {{-- @foreach ($agents as $agent)
+                    <option value="{{ $agent['id'] }}">{{$agent['name'] }}</option>
+                    @endforeach --}}
+                {{-- </select>
+                </div>
+                </div>
+    <div class="col-md-3">
+        <!-- Date range -->
+             <div class="form-group">
+               <label>Date range:</label>
+               <div class="input-group">
+                <div class="input-group-prepend">
+                 <span class="input-group-text">
+                   <i class="far fa-calendar-alt"></i>
+                 </span>
+                </div>
+                 <input type="text" name="created_at" class="form-control daterange" id="reservation">
+               </div>
+              <!-- /.input group -->
+         </div>
+        </div>
+      </div>
+      @can('view-results-autofail-button')
+  <div class="col">
+    <button type="submit" class="btn btn-success float-right" ><strong>Search</strong></button>
+ </div>
+ @endcan
+</form>
+</div>
+</div>
+@endcan --}}
+
+
+
 <div class="card card-success ">
     <div class="card-header">
     <input readonly class="form-control" style="color: green" name="category" value="Coaching Forms">
@@ -20,18 +144,20 @@
             <div class="form-group">
                <select class="form-control" required="required" id="category" name="category"><option selected="selected" value="">--Select Category--</option>
                 @foreach ($category as $categorys)
-                <option value="{{ $categorys['id'] }}">{{$categorys['category_name'] }}</option>
+
+                <option value="{{ $categorys['id'] }}">{{$categorys['category_name']}}</option>
                 @endforeach
             </select>
             </div>
             </div>
+
             <div class="col-md-2">
                 <label for="section">Select Agent</label>
                 <div class="form-group">
                    <select class="form-control" required="required" id="agent" name="agent"><option selected="selected" value="">--Select Agent--</option>
-                    {{-- @foreach ($agents as $agent)
+                     @foreach ($agents as $agent)
                     <option value="{{ $agent['id'] }}">{{$agent['name'] }}</option>
-                    @endforeach --}}
+                    @endforeach
                 </select>
                 </div>
                 </div>
@@ -194,7 +320,115 @@
 
         /*------------------------------------------
         --------------------------------------------
-        Crm Dropdown Change Event
+        Supervisor Coaching Request Agent drop down Change Event
+        --------------------------------------------
+        --------------------------------------------*/
+        $('#supervisor1').on('change', function () {
+            var qaa_call_category = this.value;
+            //console.log(qaa_call_category);
+            $("#agents").html('');
+            $.ajax({
+                url: '/categoryliveagent/'+qaa_call_category,
+                type: "GET",
+                data: {
+                    category: qaa_call_category,
+                    _token: '{{csrf_token()}}'
+                },
+                dataType: 'json',
+                success: function (result) {
+                    $('#agents').html('<option value="">-- Select --</option>');
+                    console.log(result);
+                    $.each(result, function (key, value) {
+                        $("#agents").append('<option value="' + value
+                            .id + '">' + value.name + '</option>');
+                    });
+
+                }
+            });
+        });
+
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+
+        /*------------------------------------------
+        --------------------------------------------
+        Service Dropdown Change Event
+        --------------------------------------------
+        --------------------------------------------*/
+        $('#service').on('change', function () {
+            var qaa_call_category = this.value;
+            //console.log(qaa_call_category);
+            $("#category").html('');
+            $.ajax({
+                url: '/auto-fail/'+qaa_call_category,
+                type: "GET",
+                data: {
+                    service: qaa_call_category,
+                    _token: '{{csrf_token()}}'
+                },
+                dataType: 'json',
+                success: function (result) {
+                    $('#category').html('<option value="">-- Select --</option>');
+                    console.log(result);
+                    $.each(result, function (key, value) {
+                        $("#category").append('<option value="' + value
+                            .id + '">' + value.category_name + '</option>');
+                    });
+
+                }
+            });
+        });
+
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        /*------------------------------------------
+        --------------------------------------------
+        Supervisor Dropdown Change Event
+        --------------------------------------------
+        --------------------------------------------*/
+        $('#category').on('change', function () {
+            var qaa_call_category = this.value;
+            //console.log(qaa_call_category);
+            $("#supervisor").html('');
+            $.ajax({
+                url: '/categorylivesupervisor/'+qaa_call_category,
+                type: "GET",
+                data: {
+                    category: qaa_call_category,
+                    _token: '{{csrf_token()}}'
+                },
+                dataType: 'json',
+                success: function (result) {
+                    $('#supervisor').html('<option value="">-- Select --</option>');
+                    console.log(result);
+                    $.each(result, function (key, value) {
+                        $("#supervisor").append('<option value="' + value
+                            .id + '">' + value.name + '</option>');
+                    });
+
+                }
+            });
+        });
+
+    });
+</script>
+
+
+
+<script>
+    $(document).ready(function () {
+
+        /*------------------------------------------
+        --------------------------------------------
+        Agent drop down Change Event
         --------------------------------------------
         --------------------------------------------*/
         $('#category').on('change', function () {
@@ -202,7 +436,7 @@
             //console.log(qaa_call_category);
             $("#agent").html('');
             $.ajax({
-                url: '/category/'+qaa_call_category,
+                url: '/categoryliveagent/'+qaa_call_category,
                 type: "GET",
                 data: {
                     category: qaa_call_category,
@@ -214,7 +448,7 @@
                     console.log(result);
                     $.each(result, function (key, value) {
                         $("#agent").append('<option value="' + value
-                            .user_id + '">' + value.name + '</option>');
+                            .id + '">' + value.name + '</option>');
                     });
 
                 }

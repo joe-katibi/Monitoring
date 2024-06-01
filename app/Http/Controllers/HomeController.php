@@ -31,17 +31,6 @@ class HomeController extends Controller
                              ->where('briefs.status','=', 1)
                              ->get();
 
-        // $agents = User::take(8)
-        //                ->join('countries','users.country', '=', 'countries.id')
-        //                ->join('upload_calls','upload_calls.agent_name','=','users.id')
-        //                ->join('departments', 'departments.id','=','users.department_id')
-        //                ->join('user_categories','user_categories.user_id','=','users.id')
-        //                ->join('services','services.id','=','users.services')
-        //                ->join('categories','categories.id','=','user_categories.category_id')
-        //                ->join('results','results.agent_name','=','users.id')
-        //                ->get();
-
-
 
         $services = ['DTH', 'Cable'];
         $countries = ['Kenya', 'Uganda', 'Tanzania', 'Zambia', 'Malawi'];
@@ -94,20 +83,20 @@ class HomeController extends Controller
                            $endOfMonth = $currentDate->copy()->endOfMonth();
 
                            // Retrieve the results from the database for the specified date range
-                           $results = Result::select('results.agent_name', 'results.final_results', 'results.created_at', 'users.country', 'countries.country_name')
+                           $results = Result::select('results.agent_name', 'results.final_results', 'results.created_at', 'users.country', 'countries.country_name','services.service_name')
                                ->join('users', 'users.id', '=', 'results.agent_name')
                                ->join('countries', 'countries.id', '=', 'users.country')
+                               ->join('services', 'services.id', '=', 'users.services')
                                ->whereBetween('results.created_at', [$startOfWeek, $endOfWeek])
                                ->orWhereBetween('results.created_at', [$startOfMonth, $endOfMonth])
                                ->orderBy('results.created_at')
                                ->get();
 
-                              // print_pre($results, true);
-
                            $averages = [];
 
                            foreach ($results as $result) {
                                $countryName = $result->country_name;
+                               $serviceName = $result->service_name;
                                $date = Carbon::parse($result->created_at);
 
                                $weekNumber = $date->weekOfYear;
@@ -122,21 +111,17 @@ class HomeController extends Controller
                                }
                                $averages[$countryName]['months'][$monthYear][] = $result->final_results;
                            }
-                                                      // Prepare the weeks and months arrays for the table headers
-                                // $weekHeaders  = array_map(function ($week) {
-                                //                      return 'Week' . $week;
-                                //                     }, array_keys($averages[array_key_first($averages)]['weeks']));
-                                                    
+
                                                     $weekHeaders = [];
 
-                                               if (!empty($averages)) {
-                                                    $firstKey = array_key_first($averages);
-                                               if ($firstKey !== null && isset($averages[$firstKey]['weeks'])) {
-                                                $weekHeaders = array_map(function ($week) {
-                                                return 'Week' . $week;
-                                           }, array_keys($averages[$firstKey]['weeks']));
-                                             }
-                                        }
+
+                                                    if (!empty($averages)) {
+                                                        $firstKey = array_key_first($averages);
+                                                   if ($firstKey !== null && isset($averages[$firstKey]['weeks'])) {
+                                                       $weekHeaders = array_keys($averages[$firstKey]['weeks']);
+
+                                                 }
+                                            }
                                         $monthHeaders = [];
 
                                         if (!empty($averages)) {
@@ -145,7 +130,7 @@ class HomeController extends Controller
                                                 $monthHeaders = array_keys($averages[$firstKey]['months']);
                                             }
                                         }
-                                        
+
                                                  //   $monthHeaders  = array_keys($averages[array_key_first($averages)]['months']);
 
                            foreach ($averages as $country => $data) {
@@ -169,11 +154,6 @@ class HomeController extends Controller
                                 $averages[$country]['months'][$month] = count($values) > 0 ? round(array_sum($values) / count($values), 2) : 0;
                             }
                         }
-
-
-
-
-
 
 
                            return view('home', compact('agents', 'briefs', 'briefView', 'results', 'weekHeaders', 'monthHeaders', 'averages'));
@@ -275,8 +255,105 @@ class HomeController extends Controller
      * Remove the specified resource from storage.
      * @return Response
      */
-    public function destroy()
+    public function show()
     {
+
+                    // Get the current date
+                    $currentDate = Carbon::now();
+
+                    // Calculate the start and end dates for the weeks
+                    $startOfWeek = $currentDate->copy()->subWeeks(10)->startOfWeek();
+                    $endOfWeek = $currentDate->copy()->endOfWeek();
+
+                    // Calculate the start and end dates for the months
+                    $startOfMonth = $currentDate->copy()->startOfMonth()->subMonths(12);
+                    $endOfMonth = $currentDate->copy()->endOfMonth();
+
+                    // Retrieve the results from the database for the specified date range
+                    $results = Result::select('results.agent_name', 'results.final_results', 'results.created_at', 'users.country', 'countries.country_name')
+                        ->join('users', 'users.id', '=', 'results.agent_name')
+                        ->join('countries', 'countries.id', '=', 'users.country')
+                        ->whereBetween('results.created_at', [$startOfWeek, $endOfWeek])
+                        ->orWhereBetween('results.created_at', [$startOfMonth, $endOfMonth])
+                        ->orderBy('results.created_at')
+                        ->get();
+
+                       // print_pre($results, true);
+
+                    $averages = [];
+
+                    foreach ($results as $result) {
+                        $countryName = $result->country_name;
+                        $date = Carbon::parse($result->created_at);
+
+                        $weekNumber = $date->weekOfYear;
+                        if (!isset($averages[$countryName]['weeks'][$weekNumber])) {
+                            $averages[$countryName]['weeks'][$weekNumber] = [];
+                        }
+                        $averages[$countryName]['weeks'][$weekNumber][] = $result->final_results;
+
+                        $monthYear = $date->format('F Y');
+                        if (!isset($averages[$countryName]['months'][$monthYear])) {
+                            $averages[$countryName]['months'][$monthYear] = [];
+                        }
+                        $averages[$countryName]['months'][$monthYear][] = $result->final_results;
+                    }
+                                               // Prepare the weeks and months arrays for the table headers
+                         // $weekHeaders  = array_map(function ($week) {
+                         //                      return 'Week' . $week;
+                         //                     }, array_keys($averages[array_key_first($averages)]['weeks']));
+
+                                             $weekHeaders = [];
+
+                                        if (!empty($averages)) {
+                                             $firstKey = array_key_first($averages);
+                                        if ($firstKey !== null && isset($averages[$firstKey]['weeks'])) {
+                                            $weekHeaders = array_keys($averages[$firstKey]['weeks']);
+
+                                      }
+                                 }
+
+                                 $monthHeaders = [];
+
+                                 if (!empty($averages)) {
+                                     $firstKey = array_key_first($averages);
+                                     if ($firstKey !== null && isset($averages[$firstKey]['months'])) {
+                                         $monthHeaders = array_keys($averages[$firstKey]['months']);
+                                     }
+                                 }
+
+                                          //   $monthHeaders  = array_keys($averages[array_key_first($averages)]['months']);
+
+                    foreach ($averages as $country => $data) {
+                     foreach ($weekHeaders as $week) {
+                         if (!isset($data['weeks'][$week])) {
+                             $averages[$country]['weeks'][$week] = 0;
+                         }
+                     }
+
+                     foreach ($monthHeaders as $month) {
+                         if (!isset($data['months'][$month])) {
+                             $averages[$country]['months'][$month] = 0;
+                         }
+                     }
+
+                     foreach ($data['weeks'] as $week => $values) {
+                         $averages[$country]['weeks'][$week] = count($values) > 0 ? round(array_sum($values) / count($values), 2) : 0;
+                     }
+
+                     foreach ($data['months'] as $month => $values) {
+                         $averages[$country]['months'][$month] = count($values) > 0 ? round(array_sum($values) / count($values), 2) : 0;
+                     }
+                 }
+
+                //   dd($weekHeaders);
+
+
+
+                    return view('home2', compact( 'results', 'weekHeaders', 'monthHeaders', 'averages'));
+
+
+
     }
 
 }

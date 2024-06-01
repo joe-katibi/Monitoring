@@ -1,4 +1,6 @@
 import './bootstrap';
+import 'bootstrap-multiselect/dist/js/bootstrap-multiselect.min.js';
+import $ from 'jquery';
 
 const Toast = Swal.mixin({
     toast: true,
@@ -11,6 +13,14 @@ const Toast = Swal.mixin({
       toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
   })
+
+  $(document).ready(function() {
+    $('#country_id').multiselect({
+        includeSelectAllOption: true,
+        enableFiltering: true,
+        buttonWidth: '100%'
+    });
+});
 
   // Import components...
 import Multiselect from '@suadelabs/vue3-multiselect'

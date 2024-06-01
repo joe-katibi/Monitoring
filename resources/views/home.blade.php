@@ -24,14 +24,14 @@
 
 @section('content')
 @include('sweetalert::alert')
-<div class="card card-success">
+{{-- <div class="card card-success">
     <div class="card-header">
         <input readonly class="form-control" style="color: green"  value="Best agents of the month">
     </div>
     <div class="container-fluid ">
         <div class="row">
             @foreach($agents as $country => $services)
-            <div class="col-lg-5 mb-8">
+            <div class="col-lg-7 mb-8">
                 <div class="card card-outline border-primary" >
                     <h3 class="text-center">{{ $country }}</h3>
                     <div class="row">
@@ -45,8 +45,8 @@
                                              src="/assets/img/user1-128x128.jpg"
                                              alt="User profile picture">
                                              {{-- <img src="{{ $agent['profile_image'] }}" alt="{{ $agent['agent_name'] }}"> --}}
-                                  </div>
-                                  <div class="profile-username text-center">
+                                  {{-- </div> --}}
+                                  {{-- <div class="profile-username text-center">
                                     <h4>{{ $agent['agent_name'] }}</h4>
                                     <hr>
                                     <p>{{ $agent['department_name'] }}</p>
@@ -79,10 +79,7 @@
             </div>
             @endforeach
         </div>
-    </div>
-
-
-
+    </div> --}}
 
 
 
@@ -128,22 +125,18 @@
 
 <div class="card card-info">
     <div class="card-header">
-        <input readonly class="form-control" style="color: blue"  value="Weekly Summary">
+        <input readonly class="form-control" style="color: blue"  value="Summary">
     </div>
 </div>
 
 
   <!-- Chart containers -->
   <div class="chart-container">
-    <div class="chart" id="weekly_combo_chart"></div>
+    <div id="weekly_combo_chart"></div>
   </div>
 
-  <div class="card-header">
-    <input readonly class="form-control" style="color: blue"  value="Monthly Summary">
-</div>
-
   <div class="chart-container">
-    <div class="chart" id="monthly_combo_chart"></div>
+    <div id="monthly_combo_chart"></div>
   </div>
   </div>
 
@@ -281,12 +274,19 @@
             background-color: #fff;
         }
     </style>
+
+
+<style>
+
+    #chart {
+  max-width: 650px;
+  margin: 35px auto;
+}
+
+</style>
 @stop
 
 @section('js')
-
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
 <script type="text/javascript">
 $(document).ready(function () {
     $("#create_role").click(function (e) {
@@ -300,111 +300,161 @@ $(document).ready(function () {
 });
 </script>
 
-
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script type="text/javascript">
-    // Load the Google Charts library
-    google.charts.load('current', {'packages':['corechart']});
-
-    // Set a callback to run when the Google Charts library is loaded
-    google.charts.setOnLoadCallback(drawCharts);
-
-    function drawCharts() {
-      drawWeeklyComboChart();
-      drawMonthlyComboChart();
-    }
-
-    function drawWeeklyComboChart() {
-      // Use PHP to generate JavaScript data arrays for the weekly chart
-      var weeklyData = <?php echo json_encode($averages); ?>;
-
-      // Extract the country names from the data for the chart labels
-      var countries = Object.keys(weeklyData);
-
-      // Prepare the data for the weekly chart (percentages and averages)
-      var weeklyChartData = [['Week', 'Total'].concat(countries)];
-
-      // Extract the week labels from the data
-      var weekLabels = Object.keys(weeklyData[countries[0]]['weeks']);
-
-      for (var week of weekLabels) {
-        var weekRow = ['Week ' + week];
-        var total = 0;
-        for (var i = 0; i < countries.length; i++) {
-          var value = weeklyData[countries[i]]['weeks'][week];
-          weekRow.push(value);
-          total += value;
-        }
-        weekRow.push(total);
-        weeklyChartData.push(weekRow);
-      }
-
-      var weeklyData = google.visualization.arrayToDataTable(weeklyChartData);
-
-      var weeklyOptions = {
-        title: 'Weekly Totals and Averages',
-        curveType: 'function',
-        seriesType: 'bars',
-        series: {1: {type: 'line'}},
-        vAxis: { title: 'Percentage' }, // Customize the Y-axis title
-        hAxis: { title: 'Week' } // Customize the X-axis title
-      };
-
-      var weeklyChart = new google.visualization.ComboChart(document.getElementById('weekly_combo_chart'));
-
-      weeklyChart.draw(weeklyData, weeklyOptions);
-    }
-
-    function drawMonthlyComboChart() {
-      // Use PHP to generate JavaScript data arrays for the monthly chart
-      var monthlyData = <?php echo json_encode($averages); ?>;
-
-      // Extract the country names from the data for the chart labels
-      var countries = Object.keys(monthlyData);
-
-      // Prepare the data for the monthly chart (percentages and averages)
-      var monthlyChartData = [['Month', 'Total'].concat(countries)];
-
-      // Extract the month labels from the data
-      var monthLabels = Object.keys(monthlyData[countries[0]]['months']);
-
-      for (var month of monthLabels) {
-        var monthShortLabel = formatMonthLabel(month);
-        var monthRow = [monthShortLabel];
-        var total = 0;
-        for (var i = 0; i < countries.length; i++) {
-          var value = monthlyData[countries[i]]['months'][month];
-          monthRow.push(value);
-          total += value;
-        }
-        monthRow.push(total);
-        monthlyChartData.push(monthRow);
-      }
-
-      var monthlyData = google.visualization.arrayToDataTable(monthlyChartData);
-
-      var monthlyOptions = {
-        title: 'Monthly Totals and Averages',
-        curveType: 'function',
-        seriesType: 'bars',
-        series: {1: {type: 'line'}},
-        vAxis: { title: 'Percentage' }, // Customize the Y-axis title
-        hAxis: { title: 'Month' } // Customize the X-axis title
-      };
-
-      var monthlyChart = new google.visualization.ComboChart(document.getElementById('monthly_combo_chart'));
-
-      monthlyChart.draw(monthlyData, monthlyOptions);
-    }
-
-    // Function to format month labels (e.g., "Jan-23")
-    function formatMonthLabel(month) {
-      var date = new Date(month);
-      var monthName = date.toLocaleString('default', { month: 'short' });
-      var year = date.getFullYear().toString().substr(-2); // Extract last 2 digits of the year
-      return monthName + '-' + year;
-    }
+<script>
+    window.Promise ||
+      document.write(
+        '<script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"><\/script>'
+      )
+    window.Promise ||
+      document.write(
+        '<script src="https://cdn.jsdelivr.net/npm/eligrey-classlist-js-polyfill@1.2.20171210/classList.min.js"><\/script>'
+      )
+    window.Promise ||
+      document.write(
+        '<script src="https://cdn.jsdelivr.net/npm/findindex_polyfill_mdn"><\/script>'
+      )
   </script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+
+  <script>
+    // Replace Math.random() with a pseudo-random number generator to get reproducible results in e2e tests
+    // Based on https://gist.github.com/blixt/f17b47c62508be59987b
+    var _seed = 42;
+    Math.random = function() {
+      _seed = _seed * 16807 % 2147483647;
+      return (_seed - 1) / 2147483646;
+    };
+  </script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    drawCharts();
+  });
+
+  function drawCharts() {
+    drawWeeklyComboChart();
+    drawMonthlyComboChart();
+  }
+
+  function drawWeeklyComboChart() {
+    var weeklyData = <?php echo json_encode($averages); ?>;
+    var countries = Object.keys(weeklyData);
+    var weekLabels = Object.keys(weeklyData[countries[0]]['weeks']);
+
+    var seriesData = countries.map(country => ({
+      name: country,
+      type: 'column',
+      data: weekLabels.map(week => weeklyData[country]['weeks'][week])
+    }));
+
+    var totalSeries = {
+      name: 'Total',
+      type: 'line',
+      data: weekLabels.map(week => countries.reduce((sum, country) => sum + weeklyData[country]['weeks'][week], 0))
+    };
+    seriesData.push(totalSeries);
+
+    var options = {
+      series: seriesData,
+      chart: {
+        height: 350,
+        type: 'line'
+      },
+      stroke: {
+        width: [0, 4]
+      },
+      title: {
+        text: 'Weekly Totals and Averages'
+      },
+      dataLabels: {
+        enabled: true,
+        enabledOnSeries: [seriesData.length - 1]
+      },
+      labels: weekLabels.map(week => 'Week ' + week),
+      xaxis: {
+        type: 'category',
+        title: {
+          text: 'Week'
+        }
+      },
+      yaxis: {
+        title: {
+          text: 'Percentage'
+        }
+      }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#weekly_combo_chart"), options);
+    chart.render();
+  }
+
+  function drawMonthlyComboChart() {
+    var monthlyData = <?php echo json_encode($averages); ?>;
+    var countries = Object.keys(monthlyData);
+    var monthLabels = Object.keys(monthlyData[countries[0]]['months']);
+
+    var seriesData = countries.map(country => ({
+      name: country,
+      type: 'column',
+      data: monthLabels.map(month => monthlyData[country]['months'][month])
+    }));
+
+    var totalSeries = {
+      name: 'Total',
+      type: 'line',
+      data: monthLabels.map(month => countries.reduce((sum, country) => sum + monthlyData[country]['months'][month], 0))
+    };
+    seriesData.push(totalSeries);
+
+    var options = {
+      series: seriesData,
+      chart: {
+        height: 350,
+        type: 'line'
+      },
+      stroke: {
+        width: [0, 4]
+      },
+      title: {
+        text: 'Monthly Totals and Averages'
+      },
+      dataLabels: {
+        enabled: true,
+        enabledOnSeries: [seriesData.length - 1]
+      },
+      labels: monthLabels.map(formatMonthLabel),
+      xaxis: {
+        type: 'category',
+        title: {
+          text: 'Month'
+        }
+      },
+      yaxis: {
+        title: {
+          text: 'Percentage'
+        }
+      }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#monthly_combo_chart"), options);
+    chart.render();
+  }
+
+  function formatMonthLabel(month) {
+    var date = new Date(month);
+    var monthName = date.toLocaleString('default', { month: 'short' });
+    var year = date.getFullYear().toString().substr(-2);
+    return monthName + '-' + year;
+  }
+</script>
+
+
+
 
 
 

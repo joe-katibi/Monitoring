@@ -65,6 +65,8 @@ class CoachingController extends Controller
         $category = Categories::select('Categories.id','Categories.category_name',)->get();
 
         $agentRole_id = Role::select('roles.id',)->where('name', '=', 'Agent')->first();
+        $services = Services::select('services.id','services.service_name')->get();
+
 
         $user_id = auth()->user()->id;
 
@@ -93,7 +95,9 @@ class CoachingController extends Controller
         $data['qualitylogged']  = $qualitylogged;
         $data['trainierlogged']  = $trainierlogged;
         $data['userlogged']  = $userlogged;
+        $data['services']= $services;
 
+         //dd($category);
 
         return view('coaching_forms/view')->with($data);
     }

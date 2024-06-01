@@ -91,7 +91,6 @@ class QaDashboardController extends Controller
                                      })->values();
 
 
-
         $data['auditSlipping'] = $auditSlipping;
         $data['auditPending'] = $auditPending;
         $data['auditCompleted'] = $auditCompleted;
@@ -105,13 +104,6 @@ class QaDashboardController extends Controller
         $data['weeklyLabels'] = $weeklyLabels;
         $data['monthlyData'] = $monthlyData;
         $data['monthlyLabels'] = $monthlyLabels;
-
-
-       // dd($weekChart);
-
-        // print_pre($autoSlipping   , true);
-
-
 
         return view('quality_analyst/qadashboard')->with($data);
     }

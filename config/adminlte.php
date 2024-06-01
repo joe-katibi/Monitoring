@@ -416,6 +416,12 @@ return [
             'icon' => 'fas fa-folder',
             'can'  => 'view-upload-calls-menu',
         ],
+        [
+            'text' => 'CE Systems',
+            'url'  => 'system_links/dashboard_link',
+            'icon' => 'fas fa-folder',
+            'can'  => 'view-parameter-menu',
+        ],
 
 
 

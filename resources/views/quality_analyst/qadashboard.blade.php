@@ -132,14 +132,11 @@
             <input readonly class="form-control" style="color: green" value="Graph">
            </div>
 
-    <div class="row" >
-        <div class="col" style="width: 750px; height: 500px;">
-            <canvas id="weekly-chart" ></canvas>
+    <div>
 
-        </div>
+            <div id="chart"></div>
 
-        <div class="col" style="width: 750px; height: 500px;">
-            <canvas id="monthly-chart"></canvas>
+            <div id="monthly-chart"></div>
 
         </div>
 
@@ -156,151 +153,199 @@
 
 @section('css')
 
+
+<style>
+
+    #chart {
+  max-width: 650px;
+  margin: 35px auto;
+}
+
+</style>
+
+
 @stop
 
 @section('js')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    var weeklyData = {!! json_encode($weeklyData) !!};
-    var weeklyLabels = {!! json_encode($weeklyLabels) !!};
 
-    var ctx = document.getElementById('weekly-chart').getContext('2d');
-    var chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: weeklyLabels,
-            datasets: [{
-                label: 'Weekly Final Results',
-                data: weeklyData,
-                backgroundColor: 'orange',
-                borderColor: 'orange',
-                borderWidth: 1,
-                type: 'bar'
-            }, ]
-        },
-        options: {
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        autoSkip: false,
-                        maxRotation: 90,
-                        minRotation: 90
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        callback: function(value, index, values) {
-                            return value.toLocaleString() + ' (' + (value/chart.config.data.datasets[0].data.reduce((a,b) => a + b, 0) * 100).toFixed(2) + '%)';
-                        }
-                    }
-                }]
-            },
-            tooltips: {
-                mode: 'index',
-                intersect: false,
-                callbacks: {
-                    label: function(tooltipItem, data) {
-                        var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
-                        var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                        var label = data.labels[tooltipItem.index];
-                        return datasetLabel + ': ' + value.toLocaleString() + ' (' + (value/chart.config.data.datasets[0].data.reduce((a,b) => a + b, 0) * 100).toFixed(2) + '%)';
-                    }
-                }
-            },
-            plugins: {
-                datalabels: {
-                    anchor: 'end',
-                    align: 'end',
-                    font: {
-                        size: 14,
-                    },
-                    formatter: function(value, context) {
-                        return value.toLocaleString();
-                    }
-                }
-            },
-            legend: {
-                display: true,
-                position: 'top',
-                labels: {
-                    fontColor: 'black',
-                    fontSize: 14
-                }
-            }
-        }
-    });
-</script>
+<script>
+    window.Promise ||
+      document.write(
+        '<script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"><\/script>'
+      )
+    window.Promise ||
+      document.write(
+        '<script src="https://cdn.jsdelivr.net/npm/eligrey-classlist-js-polyfill@1.2.20171210/classList.min.js"><\/script>'
+      )
+    window.Promise ||
+      document.write(
+        '<script src="https://cdn.jsdelivr.net/npm/findindex_polyfill_mdn"><\/script>'
+      )
+  </script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+  <script>
+      var weeklyData = {!! json_encode($weeklyData) !!};
+      var weeklyLabels = {!! json_encode($weeklyLabels) !!};
+
+      var totalDataSum = weeklyData.reduce((a, b) => a + b, 0);
+
+      var options = {
+          series: [{
+              name: 'Weekly Final Results',
+              data: weeklyData
+          }],
+          chart: {
+              type: 'bar',
+              height: 350
+          },
+          plotOptions: {
+              bar: {
+                  horizontal: false,
+              }
+          },
+          dataLabels: {
+              enabled: true,
+              formatter: function (value) {
+                  return value.toLocaleString();
+              },
+              style: {
+                  fontSize: '14px'
+              }
+          },
+          xaxis: {
+              categories: weeklyLabels,
+              labels: {
+                  rotate: -90,
+                  rotateAlways: true,
+                  formatter: function (val) {
+                      return val;
+                  }
+              }
+          },
+          yaxis: {
+              title: {
+                  text: 'Values'
+              },
+              labels: {
+                  formatter: function (value) {
+                      return value.toLocaleString() + ' (' + ((value / totalDataSum) * 100).toFixed(2) + '%)';
+                  }
+              }
+          },
+          tooltip: {
+              y: {
+                  formatter: function (value) {
+                      return value.toLocaleString() + ' (' + ((value / totalDataSum) * 100).toFixed(2) + '%)';
+                  }
+              }
+          },
+          title: {
+              text: 'Weekly Final Results',
+              align: 'center',
+              style: {
+                  fontSize: '20px',
+                  color: '#263238'
+              }
+          },
+          legend: {
+              position: 'top',
+              horizontalAlign: 'center',
+              floating: false,
+              fontSize: '14px',
+              labels: {
+                  colors: ['black'],
+                  useSeriesColors: false
+              }
+          }
+      };
+
+      var chart = new ApexCharts(document.querySelector("#chart"), options);
+      chart.render();
+  </script>
 
 <script>
     var monthlyData = {!! json_encode($monthlyData) !!};
     var monthlyLabels = {!! json_encode($monthlyLabels) !!};
 
-    var ctx = document.getElementById('monthly-chart').getContext('2d');
-    var chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: monthlyLabels,
-            datasets: [{
-                label: 'Monthly Final Results',
-                data: monthlyData,
-                backgroundColor: 'green',
-                borderColor: 'green',
-                borderWidth: 1,
-                type: 'bar'
-            }, ]
+    var totalMonthlyDataSum = monthlyData.reduce((a, b) => a + b, 0);
+
+    var options = {
+        series: [{
+            name: 'Monthly Final Results',
+            data: monthlyData
+        }],
+        chart: {
+            type: 'bar',
+            height: 350
         },
-        options: {
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        autoSkip: false,
-                        maxRotation: 90,
-                        minRotation: 90
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        callback: function(value, index, values) {
-                            return value.toLocaleString() + ' (' + (value/chart.config.data.datasets[0].data.reduce((a,b) => a + b, 0) * 100).toFixed(2) + '%)';
-                        }
-                    }
-                }]
+        plotOptions: {
+            bar: {
+                horizontal: false,
+            }
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function (value) {
+                return value.toLocaleString();
             },
-            tooltips: {
-                mode: 'index',
-                intersect: false,
-                callbacks: {
-                    label: function(tooltipItem, data) {
-                        var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
-                        var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                        var label = data.labels[tooltipItem.index];
-                        return datasetLabel + ': ' + value.toLocaleString() + ' (' + (value/chart.config.data.datasets[0].data.reduce((a,b) => a + b, 0) * 100).toFixed(2) + '%)';
-                    }
-                }
-            },
-            plugins: {
-                datalabels: {
-                    anchor: 'end',
-                    align: 'end',
-                    font: {
-                        size: 14,
-                    },
-                    formatter: function(value, context) {
-                        return value.toLocaleString();
-                    }
-                }
-            },
-            legend: {
-                display: true,
-                position: 'top',
-                labels: {
-                    fontColor: 'black',
-                    fontSize: 14
+            style: {
+                fontSize: '14px'
+            }
+        },
+        xaxis: {
+            categories: monthlyLabels,
+            labels: {
+                rotate: -90,
+                rotateAlways: true,
+                formatter: function (val) {
+                    return val;
                 }
             }
+        },
+        yaxis: {
+            title: {
+                text: 'Values'
+            },
+            labels: {
+                formatter: function (value) {
+                    return value.toLocaleString() + ' (' + ((value / totalMonthlyDataSum) * 100).toFixed(2) + '%)';
+                }
+            }
+        },
+        tooltip: {
+            y: {
+                formatter: function (value) {
+                    return value.toLocaleString() + ' (' + ((value / totalMonthlyDataSum) * 100).toFixed(2) + '%)';
+                }
+            }
+        },
+        title: {
+            text: 'Monthly Final Results',
+            align: 'center',
+            style: {
+                fontSize: '20px',
+                color: '#263238'
+            }
+        },
+        legend: {
+            position: 'top',
+            horizontalAlign: 'center',
+            floating: false,
+            fontSize: '14px',
+            labels: {
+                colors: ['black'],
+                useSeriesColors: false
+            }
         }
-    });
+    };
+
+    var chart = new ApexCharts(document.querySelector("#monthly-chart"), options);
+    chart.render();
 </script>
+
+
+
 @stop
