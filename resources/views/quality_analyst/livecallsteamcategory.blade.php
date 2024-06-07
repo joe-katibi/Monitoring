@@ -108,7 +108,7 @@
          <div class="row">
                   <div class="col-sm-6">
                     <label for="">Gaps Identifted Summary</label>
-                    <select class="custom-select"id="gaps_summary" multiple="true" taggable="true" name="gaps_summary[]" required data-placeholder="select" >
+                    <select required class="custom-select"id="gaps_summary" multiple="true" taggable="true" name="gaps_summary[]" required data-placeholder="select" >
                         @foreach ($sumgap as $key=>$item)
                    <option value="{{$item['id']}}">{{$item['gap_name']}}</option>
                     @endforeach
@@ -117,7 +117,7 @@
                    </div>
               <div class="col-sm-6">
                       <label for="">Voice of Customer Summary</label>
-                     <select class="custom-select"id="voc_summary" name="voc_summary" data-placeholder="select" required >
+                     <select required class="custom-select"id="voc_summary" name="voc_summary" data-placeholder="select" required >
                         <option disabled selected> Select VOC</option>
                         @foreach ($sumvoc as $row)
                       <option value="{{$row->summary_name}}">{{$row->summary_name}}</option>
@@ -131,12 +131,12 @@
                <div class="row">
                   <div class="col-6">
                   <label for=""> Gaps identified Description:</label>
-                  <textarea  name="gaps_description" class="form-control float-center" rows="3" placeholder="Enter a question ..." required  ></textarea>
+                  <textarea  required name="gaps_description" class="form-control float-center" rows="3" placeholder="Enter a question ..." required  ></textarea>
                   <span style="color:red">@error('gaps_description'){{ $message }}@enderror</span>
                 </div>
               <div class="col-6">
                   <label for="">VOC Description:</label>
-                  <textarea  name="voc_description" class="form-control float-center" rows="3" placeholder="Enter a question ..." required  ></textarea>
+                  <textarea required  name="voc_description" class="form-control float-center" rows="3" placeholder="Enter a question ..." required  ></textarea>
                  <span style="color:red">@error('voc_description'){{ $message }}@enderror</span>
                </div>
             </div>

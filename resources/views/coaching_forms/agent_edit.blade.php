@@ -91,8 +91,8 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
-                <label class="form-label">Action points to be taken: (Agent)</label>
-                <input class="form-control" name="agent_action" rows="3" >
+                <label  class="form-label">Action points to be taken: (Agent)</label>
+                <input required class="form-control" name="agent_action" rows="3" >
             </div>
        </div>
     </div>

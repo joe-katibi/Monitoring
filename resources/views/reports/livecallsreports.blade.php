@@ -9,7 +9,7 @@
 @section('content')
 <div class="card card-success ">
     <div class="card-header">
-    <input readonly class="form-control" style="color: green" name="category" value="Live Calls Report">
+    <input readonly class="form-control" style="color: green" name="category" value="Quality Analyst Productivity">
     </div>
     <form method="GET" action="{{ route('livecallsreport.show') }}" accept-charset="UTF-8" class="form" ><input name="_token" type="hidden" value="">
         @csrf
@@ -36,29 +36,12 @@
                 </select>
                 </div>
                 </div>
-                <div class="col-md-2">
-                    <label for="service[]">Select Category</label>
-                    <div class="form-group">
-                        <select class="form-control" required="required" id="category" required name="category"><option  value="">--Select Category--</option>
-                            {{-- @foreach ($category as $item)
-                            <option value="{{ $item['id'] }}">{{ $item['category_name'] }}</option>
-                            @endforeach --}}
-                        </select>
-                    </div>
-                </div>
                     <div class="col-md-2">
-                        <label>Supervisor</label>
+                        <label>Quality Analyst</label>
                         <select class="custom-select"id="supervisor" name="supervisor" data-placeholder="select" required value="{{ old('supervisor') }}">
-                          <option  value="">--Select Supervisor--</option>
+                          <option  value="">--Select Quality Analyst--</option>
                         </select>
                         <span style="color:red">@error('supervisor'){{ $message }}@enderror</span>
-                    </div>
-                    <div class="col-md-2">
-                      <label>Agent</label>
-                      <select class="custom-select"id="agent" name="agent" data-placeholder="select" required value="{{ old('agent') }}">
-                          <option  value="">--Select Agent--</option>
-                     </select>
-                     <span style="color:red">@error('agent'){{ $message }}@enderror</span>
                     </div>
 
                     <div class="col-md-6">
@@ -107,15 +90,14 @@
                                             <th>date</th>
                                             <th>Week</th>
                                             <th>Month</th>
-                                            <th>Action</th>
+                                            {{-- <th>Action</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($livecallreport as $key=> $livecall)
-
+                                        @foreach ($productivityQa as $key=> $livecall)
 
                                         <tr>
-                                            <td>{{ $livecall['account_number'] }}</td>
+                                            <td>{{ $livecall['customer_account'] }}</td>
                                             <td>{{ $livecall['recording_id'] }}</td>
                                             <td>{{ $livecall['agentName'] }}</td>
                                             <td>{{ $livecall['SupervisorName'] }}</td>
@@ -132,13 +114,13 @@
 
                                             </td>
                                             <td>{{ $livecall['country_name'] }}</td>
-                                            <td> {{ $livecall['date'] }} </td>
+                                            <td> {{ $livecall['date_recorded'] }} </td>
                                             <td>{{ $livecall['weekNumberWithPrefix'] }}</td>
                                             <td>{{ $livecall['monthName'] }}</td>
-                                            <td>
+                                            {{-- <td>
                                                 <a href="{{ route('livecalls.index',$livecall['id']) }}" class="btn btn-info"><i class="fas fa-eye"></i></a>
 
-                                            </td>
+                                            </td> --}}
 
                                         </tr>
                                         @endforeach
@@ -208,47 +190,12 @@
         $('#service').on('change', function () {
             var qaa_call_category = this.value;
             //console.log(qaa_call_category);
-            $("#category").html('');
+            $("#supervisor").html('');
             $.ajax({
-                url: '/auto-fail/'+qaa_call_category,
+                url: '/Quality-analyst/'+qaa_call_category,
                 type: "GET",
                 data: {
                     service: qaa_call_category,
-                    _token: '{{csrf_token()}}'
-                },
-                dataType: 'json',
-                success: function (result) {
-                    $('#category').html('<option value="">-- Select --</option>');
-                    console.log(result);
-                    $.each(result, function (key, value) {
-                        $("#category").append('<option value="' + value
-                            .id + '">' + value.category_name + '</option>');
-                    });
-
-                }
-            });
-        });
-
-    });
-</script>
-
-<script>
-    $(document).ready(function () {
-
-        /*------------------------------------------
-        --------------------------------------------
-        Supervisor Dropdown Change Event
-        --------------------------------------------
-        --------------------------------------------*/
-        $('#category').on('change', function () {
-            var qaa_call_category = this.value;
-            //console.log(qaa_call_category);
-            $("#supervisor").html('');
-            $.ajax({
-                url: '/categorylivesupervisor/'+qaa_call_category,
-                type: "GET",
-                data: {
-                    category: qaa_call_category,
                     _token: '{{csrf_token()}}'
                 },
                 dataType: 'json',
@@ -257,7 +204,7 @@
                     console.log(result);
                     $.each(result, function (key, value) {
                         $("#supervisor").append('<option value="' + value
-                            .model_id + '">' + value.name + '</option>');
+                            .id + '">' + value.name + '</option>');
                     });
 
                 }
@@ -266,6 +213,8 @@
 
     });
 </script>
+
+
 
 
 

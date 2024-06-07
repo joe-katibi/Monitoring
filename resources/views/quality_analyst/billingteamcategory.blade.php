@@ -23,7 +23,7 @@
                     <div class="col-2">
                         <label>Supervisor</label>
                         <select class="custom-select" required id="final" name="supervisor" aria-placeholder="select an option">
-                            <option disabled selected>Select Agent</option>
+                            <option disabled selected>Select Supervisor</option>
                             @foreach ($supervisor as $supervisors)
                                 <option value="{{ $supervisors->id }}">{{ $supervisors->name }}</option>
                                 <span style="color:red">  @error('select an option')   {{ $message }}    @enderror </span>
@@ -104,7 +104,7 @@
                             <div class="col-2">
                                 <label>QA-Call Category</label>
                                 <select class="custom-select" id="qa_call_category" name="qa_call_category"
-                                    value="qa_call_category" aria-placeholder="select an option">
+                                    value="qa_call_category" aria-placeholder="select an option" required>
                                     <option disabled selected>select an option</option>
                                     @foreach ($crm as $row)
                                     <option value="{{$row['id']}}">{{$row['call_tracker']}}</option>
@@ -120,13 +120,13 @@
                             <div class="col-2">
                                 <label>QA-Call Nature</label>
                                 <select class="custom-select" id="qa_call_nature" name="qa_call_nature"
-                                    value="qa_call_nature"aria-placeholder="select an option">
+                                    value="qa_call_nature"aria-placeholder="select an option" required>
                                 </select>
                             </div>
                             <div class="col-2">
                                 <label>Agent-Call Category</label>
                                 <select class="custom-select" id="agent_call_category" name="agent_call_category"
-                                value="agent_call_category" aria-placeholder="select an option">
+                                value="agent_call_category" aria-placeholder="select an option" required>
                                 <option disabled selected>select an option</option>
                                 @foreach ($crm as $row)
                                 <option value="{{$row['id']}}">{{$row['call_tracker']}}</option>
@@ -141,13 +141,13 @@
                             <div class="col-2">
                                 <label>Agent-Call Nature</label>
                                 <select class="custom-select" id="agent_call_nature" name="agent_call_nature"
-                                value="agent_call_nature"a ria-placeholder="select an option">
+                                value="agent_call_nature"a ria-placeholder="select an option" required>
                             </select>
                             </div>
                             <div class="col-2">
                                 <label>General Issue</label>
                                 <select class="custom-select" id="gen_call_nature" name="gen_call_nature"
-                                value="gen_call_nature"a ria-placeholder="select an option">
+                                value="gen_call_nature"a ria-placeholder="select an option" required>
                                 <option disabled selected>select an option</option>
                                 @foreach($general_issue as $row)
                                 <option value="{{$row['id']}}">{{$row['name']}}</option>
@@ -163,7 +163,7 @@
                             <div class="col-2">
                                 <label>Specific Issue</label>
                                 <select class="custom-select" id="specific_issue" name="specific_issue"
-                                    value="specific_issue" aria-placeholder="select an option">
+                                    value="specific_issue" aria-placeholder="select an option" required>
 
                                 </select>
 
@@ -174,7 +174,7 @@
                     <div class="col">
                         <label>Feedback From QC</label>
                         <textarea class="form-control float-center" rows="3" name="feedback_from_qc" value="feedback_from_qc"
-                            placeholder="Enter ..."></textarea>
+                            placeholder="Enter ..." required></textarea>
                             <span style="color:red">  @error('feedback_from_qc') {{ $message }}  @enderror </span>
                     </div>
                 </div>

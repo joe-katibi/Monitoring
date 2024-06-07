@@ -46,6 +46,8 @@ class LiveCallReportController extends Controller
         $data['country']= $country;
         $data['category']= $category;
 
+
+
         return view('reports/livecallsreports')->with($data);
     }
 
@@ -85,6 +87,86 @@ class LiveCallReportController extends Controller
         $category = Categories::select('Categories.id','Categories.category_name')->get();
 
         $input = $request->all();
+
+
+        $countryname = $request->input('country');
+
+        $service = $request->input('service');
+
+        $supervisor = $request->input('supervisor');
+
+        $start_end_date = explode(' - ', $request->input('created_at'));
+        $start_date = $start_end_date[0];
+        $end_date = $start_end_date[1];
+
+
+        $productivityQa =Result::select('results.id','results.report_type_id','results.supervisor','results.agent_name','results.quality_analysts','results.date_recorded','results.customer_account',
+                                             'results.recording_id','results.final_results','results.category','results.status','users.category','users.name','users.services','users.country','services.service_name','services.id as s_id', 'categories.category_name','countries.country_name','report_types.type_name'
+                                      )
+                                      ->join('user_categories','user_categories.category_id','=','results.category')
+                                      ->join('users','users.id','=','user_categories.user_id')
+                                      ->join('categories','categories.id','=','user_categories.category_id')
+                                      ->join('services','services.id','=','users.services')
+                                      ->join('countries','countries.id','=','users.country')
+                                      ->join('report_types','report_types.id','=','results.report_type_id')
+                                      ->where('users.country','=',$countryname)
+                                      ->where('users.services','=',$service )
+                                     ->where('results.quality_analysts','=',$supervisor)
+                                      ->where('results.date_recorded','>=',$start_date)
+                                      ->where('results.date_recorded','<=',$end_date)
+                                     ->get();
+
+
+   foreach($productivityQa as $key => $value){
+
+           $agentName = User::where('id','=', $value['agent_name'])->first();
+            $value['agentName'] =  isset($agentName)  ?  $agentName->name : '';
+
+            $SupervisorName = User::where('id','=', $value['supervisor'])->first();
+            $value['SupervisorName'] =  isset($SupervisorName)  ?  $SupervisorName->name : '';
+
+            $qualityName = User::where('id','=', $value['quality_analysts'])->first();
+            $value['qualityName'] =  isset($qualityName)  ?  $qualityName->name : '';
+
+
+            $createdAt = $value->date_recorded;
+
+            $monthName = Carbon::parse($createdAt)->format('F');
+            $value['monthName'] =  isset($createdAt)  ?  $monthName: '';
+
+            $weekNumber = Carbon::parse($createdAt)->format('W');
+            $weekNumberWithPrefix = "week " . $weekNumber;
+            $value['weekNumberWithPrefix'] =  isset($createdAt)  ?  $weekNumberWithPrefix: '';
+
+        }
+
+
+                                            $data['services']= $services;
+                                            $data['productivityQa']= $productivityQa;
+                                            $data['country']= $country;
+                                            $data['category']= $category;
+                                           // dd($data);
+
+        return view('reports/livecallsreports')->with($data);
+    }
+
+        /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show2(Request $request)
+    {
+        $services = Services::select('services.id','services.service_name')->get();
+
+        $country = Countries::select('countries.id','countries.country_name')->get();
+
+        $category = Categories::select('Categories.id','Categories.category_name')->get();
+
+        $input = $request->all();
+
+        dd($input );
 
         $countryname = $request->input('country');
 

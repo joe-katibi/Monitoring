@@ -72,14 +72,16 @@ Auth::routes();
 
 Route::get('/auth/notActivated', [App\Http\Controllers\Auth\NotActivatedController::class, 'showNotActivated'])->name('notActivated');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// Route::get('/home2', [App\Http\Controllers\HomeController::class, 'show'])->name('home2');
 
 
 Route::group(['middleware' => ['auth']], function () {
-
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::post('/home/store', [App\Http\Controllers\HomeController::class, 'store'])->name('home.store');
 Route::resource('home', HomeController::class);
 Route::post('/home/{id}/edit', [App\Http\Controllers\HomeController::class, 'edit'])->name('home.edit');
+Route::post('/home/{id}', [App\Http\Controllers\HomeController::class, 'update'])->name('home.update');
 Route::delete('/home/{id}/destroy', [App\Http\Controllers\HomeController::class, 'destroy'])->name('home.destroy');
 Route::get('home/{id}/activate', [App\Http\Controllers\HomeController::class, 'activate'])->name('home.activate');
 Route::get('home/{id}/deactivate',[App\Http\Controllers\HomeController::class,  'deactivate'])->name('home.deactivate');
@@ -142,6 +144,10 @@ Route::get('/admin/dashboard', [App\Http\Controllers\Admin\AdminDashboardControl
 
 Route::get('/system_links/dashboard_link', [App\Http\Controllers\CELinks\CELinksController::class, 'index'])->name('CEdashboard');
 Route::post('/system_links/dashboard_link', [App\Http\Controllers\CELinks\CELinksController::class, 'store'])->name('link.store');
+Route::get('/system_links/{systemLinks}/edit', [App\Http\Controllers\CELinks\CELinksController::class, 'edit'])->name('link.edit');
+Route::get('/system_links/{systemLinks}/activate', [App\Http\Controllers\CELinks\CELinksController::class, 'activate'])->name('link.activate');
+Route::get('/system_links/{systemLinks}/deactivate', [App\Http\Controllers\CELinks\CELinksController::class, 'deactivate'])->name('link.deactivate');
+Route::post('/system_links/{systemLinks}/update', [App\Http\Controllers\CELinks\CELinksController::class, 'update'])->name('link.update');
 Route::resource('systemLinks', CELinksController::class);
 
 
@@ -465,6 +471,15 @@ Route::get('trainer-exam/{id}', function ($id) {
     } else {
         return response()->json(['error' => 'Trainer not found'], 404);
     }
+});
+
+Route::get('Quality-analyst/{id}', function ($id) {
+    $categoryName = App\Models\User::where('services',$id)
+    ->select('users.name','users.id','model_has_roles.model_id','model_has_roles.role_id')
+    ->join('model_has_roles','model_has_roles.model_id','=','users.id')
+    ->where('model_has_roles.role_id','=','3')
+    ->get();
+    return response()->json($categoryName);
 });
 
 

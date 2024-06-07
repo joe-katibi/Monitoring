@@ -39,7 +39,7 @@
             </div>
             <div class="col-2">
                 <label>Category</label>
-                <select class="custom-select"id="category" name="category" data-placeholder="select" value="{{ old('category') }}">
+                <select class="custom-select"id="category" name="category" required data-placeholder="select" value="{{ old('category') }}">
                   <option disabled selected>Select a Category</option>
                  @foreach ($cat as $cats)
                  <option value="{{ $cats['id'] }}">{{$cats['category_name']}}</option>
@@ -50,7 +50,7 @@
             <div class="row">
             <div class="col-6">
                 <label>Supervisor</label>
-                <select class="custom-select"id="supervisor" name="supervisor" data-placeholder="select" value="{{ old('supervisor') }}">
+                <select class="custom-select"id="supervisor" name="supervisor" data-placeholder="select" value="{{ old('supervisor') }}" required>
                     <option  value="">--Select Supervisor--</option>
 
                 </select>
@@ -59,7 +59,7 @@
             <div class="col-6">
               <label>Agent</label>
               <select class="custom-select"id="agent" name="agent" data-placeholder="select" value="{{ old('agent') }}">
-                <option  value="">--Select Agent--</option>
+                <option  value="" required>--Select Agent--</option>
 
              </select>
              <span style="color:red">@error('agent'){{ $message }}@enderror</span>
@@ -81,7 +81,7 @@
                        </div>
                   <div class="col-sm-6">
                        <label for="">Strength Summary</label>
-                       <select class="custom-select" id="strength_summary" multiple="true" taggable="true" name="strength_summary[]" required placeholder="select Strength" value="{{ old('strength_summary') }}">
+                       <select class="custom-select" id="strength_summary" multiple="true" taggable="true" name="strength_summary[]" required placeholder="select Strength" value="{{ old('strength_summary') }}"required>
                         @foreach ($sumry as $key=>$item)
                        <option value="{{$item['id']}}">{{$item['summary_name']}}</option>
                         @endforeach
@@ -94,12 +94,12 @@
                   <div class="row">
                       <div class="col-6">
                       <label for="">Issue Description:</label>
-                      <textarea  name="issue_description" class="form-control float-center" rows="3" placeholder="Enter a question ..." value="{{ old('issue_description') }}" ></textarea>
+                      <textarea  name="issue_description" class="form-control float-center" rows="3" placeholder="Enter a question ..." value="{{ old('issue_description') }}" required ></textarea>
                       <span style="color:red">@error('issue_description'){{ $message }}@enderror</span>
                       </div>
                   <div class="col-6">
                        <label for="">Strength Description:</label>
-                       <textarea  name="strength_description" class="form-control float-center" rows="3" placeholder="Enter a question ..." value="{{ old('strength_description') }}" ></textarea>
+                       <textarea  name="strength_description" class="form-control float-center" rows="3" placeholder="Enter a question ..." value="{{ old('strength_description') }}" required></textarea>
                        <span style="color:red">@error('strength_description'){{ $message }}@enderror</span>
                       </div>
                   </div>
@@ -108,7 +108,7 @@
              <div class="row">
                       <div class="col-sm-6">
                         <label for="">Gaps Identifted Summary</label>
-                        <select class="custom-select"id="gaps_summary" multiple="true" taggable="true" name="gaps_summary[]"  data-placeholder="select" value="{{ old('gaps_summary') }}">
+                        <select class="custom-select"id="gaps_summary" multiple="true" taggable="true" name="gaps_summary[]"  data-placeholder="select" value="{{ old('gaps_summary') }} " required>
                             @foreach ($sumgap as $key=>$item)
                             <option value="{{$item['id']}}">{{$item['gap_name']}}</option>>
                         @endforeach
@@ -117,7 +117,7 @@
                        </div>
                   <div class="col-sm-6">
                           <label for="">Voice of Customer Summary</label>
-                          <select class="custom-select"id="voc_summary" name="voc_summary" data-placeholder="select" value="{{ old('voc_summary') }}">
+                          <select class="custom-select"id="voc_summary" name="voc_summary" data-placeholder="select" value="{{ old('voc_summary') }}" required>
                             <option disabled selected> Select VOC</option>
                             @foreach ($sumvoc as $row)
                           <option value="{{$row->id}}">{{$row->summary_name}}</option>
@@ -131,12 +131,12 @@
                    <div class="row">
                       <div class="col-6">
                       <label for=""> Gaps identified Description:</label>
-                      <textarea  name="gaps_description" class="form-control float-center" rows="3" placeholder="Enter a question ..." value="{{ old('gaps_description') }}" ></textarea>
+                      <textarea  name="gaps_description" class="form-control float-center" rows="3" placeholder="Enter a question ..." value="{{ old('gaps_description') }}" required></textarea>
                       <span style="color:red">@error('gaps_description'){{ $message }}@enderror</span>
                     </div>
                   <div class="col-6">
                       <label for="">VOC Description:</label>
-                      <textarea  name="voc_description" class="form-control float-center" rows="3" placeholder="Enter a question ..." value="{{ old('voc_description') }}" ></textarea>
+                      <textarea  name="voc_description" class="form-control float-center" rows="3" placeholder="Enter a question ..." value="{{ old('voc_description') }}" required ></textarea>
                      <span style="color:red">@error('voc_description'){{ $message }}@enderror</span>
                    </div>
                 </div>

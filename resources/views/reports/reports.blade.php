@@ -91,8 +91,8 @@
                 <div class="col-md-3 col-sm-6">
                     <a href="{{ route('livecallsreport.index') }}" >  <div class="card  bg-success">
                         <div class="card-body text-center">
-                            <h3><b>Live Calls</b></h3>
-                           <p>All Live Calls</p>
+                            <h3><b>Quality Productivity</b></h3>
+                           <p>Quality Productivity</p>
                         </div>
                     </div></a>
                 </div>

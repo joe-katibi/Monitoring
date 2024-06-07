@@ -126,13 +126,10 @@ class BillingCategoryController extends Controller
         $data['general_issue'] = $general_issue;
         $data['reporttype'] = $reporttype;
 
-
-        //print_pre($teamleader,true);
-
-        // dd($Agentnew);
-
         // Return a view based on the category
-        return view(($category == 8 )?'quality_analyst/livecallsteamcategory':'quality_analyst/billingteamcategory')->with($data);
+        return view('quality_analyst/billingteamcategory')->with($data);
+
+        // return view(($category == 8 )?'quality_analyst/livecallsteamcategory':'quality_analyst/billingteamcategory')->with($data);
     }
 
     /**

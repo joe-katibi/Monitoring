@@ -88,7 +88,7 @@
                   <div class="form-group row">
                     <div class="col">
                         <label>Agent Comments</label>
-                        <input class="form-control float-center" rows="3" placeholder="Enter ...">
+                        <input class="form-control float-center" rows="3" placeholder="Enter ..." required>
                       </div>
 
               </div>

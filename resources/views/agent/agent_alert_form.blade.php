@@ -71,7 +71,7 @@
                         <div class="col-sm">
                           <div class="form-group">
                             <label>Comments by the supervisor:</label>
-                            <input class="form-control" rows="2" readonly value="{{ $showalert[0]['supervisor_comment'] }}"  >
+                            <input class="form-control" rows="2" readonly value="{{ $showalert[0]['supervisor_comment'] }}"   >
                           </div>
                         </div>
                       </div>

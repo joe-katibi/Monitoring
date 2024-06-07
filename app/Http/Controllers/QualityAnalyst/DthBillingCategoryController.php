@@ -126,7 +126,9 @@ class DthBillingCategoryController extends Controller
         $data['reporttype'] = $reporttype;
 
         // Return a view based on the category
-        return view(($category == 18 )?'quality_analyst/dthlivecallsteamcategory':'quality_analyst/dthbillingteamcategory')->with($data);
+        return view('quality_analyst/dthbillingteamcategory')->with($data);
+
+        // return view(($category == 18 )?'quality_analyst/dthlivecallsteamcategory':'quality_analyst/dthbillingteamcategory')->with($data);
 
     }
 

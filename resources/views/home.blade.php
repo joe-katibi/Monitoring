@@ -221,7 +221,7 @@
                                                     <td>  <div class="btn-group btn-group-sm">
                                                         @can('view-results-audit-edit')
 
-                                                        <a  href="{{ route('home.edit',$brief['id']) }}" class="btn btn-success"><i class="fas fa-edit"></i></a>
+                                                        <a  href="{{ route('home.edit',$brief['id']) }}" data-toggle="modal" data-target="#exampleModal3"  class="btn btn-success"><i class="fas fa-edit"></i></a>
                                                         @endcan
                                                          @can('view-results-audit-delete')
                                                          <a href="{{ route('home.destroy',$brief['id']) }}" class="btn btn-info"><i class="fa fa-trash-alt"></i></a>
@@ -240,6 +240,46 @@
                                                 @endforeach
                                             </tbody>
                                         </table>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                                </div>
+                              </div>
+                            </div>
+                             </div>
+
+                                                       <!-- Modal  3-->
+                          <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLabel">Edit Brief</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                  <form action="{{ route('home.update',$brief['id']) }}" method="POST">
+                                    {{csrf_field()}}
+                                    <label for="name">Brief Topic</label>
+                                    <input required type="text" name="brief_topic" value="{{ $brief['brief_topic']}}"  class="form-control">
+                                    <label for="name">Brief Description</label>
+                                    <input required type="text" name="brief_description" value="{{ $brief['brief_description']}}"  class="form-control" style="height: 100px;">
+
+                                    <div class="col-ms-3">
+                                      <div class="card-body">
+                                          <div class="row">
+                                            @can('view-save-voc-summary-button')
+                                              <div class="col">
+                                    <button type="submit" class="btn btn-success float-right">Save</button>
+                                        </div>
+                                        @endcan
+                                        </div>
+                                  </div>
+
+                                  </div>
+                                  </form>
                                 </div>
                                 <div class="modal-footer">
                                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -332,126 +372,164 @@ $(document).ready(function () {
 
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    drawCharts();
-  });
+    document.addEventListener('DOMContentLoaded', function() {
+        drawCharts();
+    });
 
-  function drawCharts() {
-    drawWeeklyComboChart();
-    drawMonthlyComboChart();
-  }
+    function drawCharts() {
+        drawWeeklyComboChart();
+        drawMonthlyComboChart();
+    }
 
-  function drawWeeklyComboChart() {
-    var weeklyData = <?php echo json_encode($averages); ?>;
-    var countries = Object.keys(weeklyData);
-    var weekLabels = Object.keys(weeklyData[countries[0]]['weeks']);
+    function drawWeeklyComboChart() {
+        var weeklyData = <?php echo json_encode($averages); ?>;
+        var countries = Object.keys(weeklyData);
+        var weekLabels = Object.keys(weeklyData[countries[0]][Object.keys(weeklyData[countries[0]])[0]]['weeks']);
 
-    var seriesData = countries.map(country => ({
-      name: country,
-      type: 'column',
-      data: weekLabels.map(week => weeklyData[country]['weeks'][week])
-    }));
+        var seriesData = [];
 
-    var totalSeries = {
-      name: 'Total',
-      type: 'line',
-      data: weekLabels.map(week => countries.reduce((sum, country) => sum + weeklyData[country]['weeks'][week], 0))
-    };
-    seriesData.push(totalSeries);
+        countries.forEach(country => {
+            var services = Object.keys(weeklyData[country]);
+            services.forEach(service => {
+                seriesData.push({
+                    name: country + ' - ' + service,
+                    type: 'column',
+                    data: weekLabels.map(week => weeklyData[country][service]['weeks'][week])
+                });
+            });
+        });
 
-    var options = {
-      series: seriesData,
-      chart: {
-        height: 350,
-        type: 'line'
-      },
-      stroke: {
-        width: [0, 4]
-      },
-      title: {
-        text: 'Weekly Totals and Averages'
-      },
-      dataLabels: {
-        enabled: true,
-        enabledOnSeries: [seriesData.length - 1]
-      },
-      labels: weekLabels.map(week => 'Week ' + week),
-      xaxis: {
-        type: 'category',
-        title: {
-          text: 'Week'
-        }
-      },
-      yaxis: {
-        title: {
-          text: 'Percentage'
-        }
-      }
-    };
+        var totalSeries = {
+            name: 'Average',
+            type: 'line',
+            data: weekLabels.map(week => {
+                var sum = 0;
+                var count = 0;
+                countries.forEach(country => {
+                    Object.keys(weeklyData[country]).forEach(service => {
+                        sum += weeklyData[country][service]['weeks'][week];
+                        count++;
+                    });
+                });
+                return count > 0 ? round(sum / count, 2) : 0;
+            })
+        };
+        seriesData.push(totalSeries);
 
-    var chart = new ApexCharts(document.querySelector("#weekly_combo_chart"), options);
-    chart.render();
-  }
+        var options = {
+            series: seriesData,
+            chart: {
+                height: 350,
+                type: 'line'
+            },
+            stroke: {
+                width: [0, 4]
+            },
+            title: {
+                text: 'Weekly Averages'
+            },
+            dataLabels: {
+                enabled: true,
+                enabledOnSeries: [seriesData.length - 1]
+            },
+            labels: weekLabels.map(week => 'Week ' + week),
+            xaxis: {
+                type: 'category',
+                title: {
+                    text: 'Week'
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Percentage'
+                }
+            }
+        };
 
-  function drawMonthlyComboChart() {
-    var monthlyData = <?php echo json_encode($averages); ?>;
-    var countries = Object.keys(monthlyData);
-    var monthLabels = Object.keys(monthlyData[countries[0]]['months']);
+        var chart = new ApexCharts(document.querySelector("#weekly_combo_chart"), options);
+        chart.render();
+    }
 
-    var seriesData = countries.map(country => ({
-      name: country,
-      type: 'column',
-      data: monthLabels.map(month => monthlyData[country]['months'][month])
-    }));
+    function drawMonthlyComboChart() {
+        var monthlyData = <?php echo json_encode($averages); ?>;
+        var countries = Object.keys(monthlyData);
+        var monthLabels = Object.keys(monthlyData[countries[0]][Object.keys(monthlyData[countries[0]])[0]]['months']);
 
-    var totalSeries = {
-      name: 'Total',
-      type: 'line',
-      data: monthLabels.map(month => countries.reduce((sum, country) => sum + monthlyData[country]['months'][month], 0))
-    };
-    seriesData.push(totalSeries);
+        var seriesData = [];
 
-    var options = {
-      series: seriesData,
-      chart: {
-        height: 350,
-        type: 'line'
-      },
-      stroke: {
-        width: [0, 4]
-      },
-      title: {
-        text: 'Monthly Totals and Averages'
-      },
-      dataLabels: {
-        enabled: true,
-        enabledOnSeries: [seriesData.length - 1]
-      },
-      labels: monthLabels.map(formatMonthLabel),
-      xaxis: {
-        type: 'category',
-        title: {
-          text: 'Month'
-        }
-      },
-      yaxis: {
-        title: {
-          text: 'Percentage'
-        }
-      }
-    };
+        countries.forEach(country => {
+            var services = Object.keys(monthlyData[country]);
+            services.forEach(service => {
+                seriesData.push({
+                    name: country + ' - ' + service,
+                    type: 'column',
+                    data: monthLabels.map(month => monthlyData[country][service]['months'][month])
+                });
+            });
+        });
 
-    var chart = new ApexCharts(document.querySelector("#monthly_combo_chart"), options);
-    chart.render();
-  }
+        var totalSeries = {
+            name: 'Average',
+            type: 'line',
+            data: monthLabels.map(month => {
+                var sum = 0;
+                var count = 0;
+                countries.forEach(country => {
+                    Object.keys(monthlyData[country]).forEach(service => {
+                        sum += monthlyData[country][service]['months'][month];
+                        count++;
+                    });
+                });
+                return count > 0 ? round(sum / count, 2) : 0;
+            })
+        };
+        seriesData.push(totalSeries);
 
-  function formatMonthLabel(month) {
-    var date = new Date(month);
-    var monthName = date.toLocaleString('default', { month: 'short' });
-    var year = date.getFullYear().toString().substr(-2);
-    return monthName + '-' + year;
-  }
-</script>
+        var options = {
+            series: seriesData,
+            chart: {
+                height: 350,
+                type: 'line'
+            },
+            stroke: {
+                width: [0, 4]
+            },
+            title: {
+                text: 'Monthly Averages'
+            },
+            dataLabels: {
+                enabled: true,
+                enabledOnSeries: [seriesData.length - 1]
+            },
+            labels: monthLabels.map(formatMonthLabel),
+            xaxis: {
+                type: 'category',
+                title: {
+                    text: 'Month'
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Percentage'
+                }
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#monthly_combo_chart"), options);
+        chart.render();
+    }
+
+    function formatMonthLabel(month) {
+        var date = new Date(month);
+        var monthName = date.toLocaleString('default', { month: 'short' });
+        var year = date.getFullYear().toString().substr(-2);
+        return monthName + '-' + year;
+    }
+
+    function round(value, decimals) {
+        return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+    }
+    </script>
 
 
 
