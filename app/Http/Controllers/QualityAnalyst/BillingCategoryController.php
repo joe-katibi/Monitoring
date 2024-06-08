@@ -259,6 +259,10 @@ class BillingCategoryController extends Controller
             // Check if the total marks are 5
             if ($autofail->marks == 'Auto Fail') {
 
+                $autoFailMarks = Result::find($results->id);
+                $autoFailMarks->final_results = 5;
+                $autoFailMarks->save();
+
                    // Get the current date and time
                     $currentDateTime = Carbon::today();
 

@@ -101,7 +101,7 @@
             <div class="col-sm">
               <div class="form-group">
                 <label>Comments by the supervisor:</label>
-                <input class="form-control" name="supervisor_comment" rows="2" placeholder="supervisor committed ..." >
+                <input readonly class="form-control" name="supervisor_comment" rows="2" placeholder="supervisor committed ..." >
               </div>
             </div>
           </div>

@@ -32,7 +32,8 @@ class AlertResultsController extends Controller
           // Get the authenticated user's ID
           $userId = auth()->id();
 
-          $userlogged = User::select('users.name','users.id',)->where('users.id','=',$userId)->first();
+
+        $userlogged = User::select('users.name','users.id',)->where('users.id','=',$userId)->first();
 
         $supervisorlogged = Role::select('roles.id',)->where('name', '=', 'team-leader')->first();
 
@@ -145,11 +146,10 @@ class AlertResultsController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
+     *@param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit()
     {
         //
     }

@@ -29,10 +29,10 @@
                 <div class="col-md-2">
                     <label for="section">Select Agent</label>
                     <div class="form-group">
-                       <select class="form-control" required="required" id="agent" name="agent"><option selected="selected" value="">--Select Agent--</option>
-                        {{-- @foreach ($agents as $agent)
+                       <select class="form-control" required="required"  name="agent"><option selected="selected" value="">--Select Agent--</option>
+                        @foreach ($agents as $agent)
                         <option value="{{ $agent['id'] }}">{{$agent['name'] }}</option>
-                        @endforeach --}}
+                        @endforeach
                     </select>
                     </div>
                     </div>
