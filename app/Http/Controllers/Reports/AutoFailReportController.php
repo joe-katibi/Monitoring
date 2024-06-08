@@ -118,17 +118,18 @@ class AutoFailReportController extends Controller
         $start_date = $start_end_date[0];
         $end_date = $start_end_date[1];
 
-        $autofailreports = AlertForm::select('alert_forms.agent_name','alert_forms.supervisor_name','alert_forms.qa_name','alert_forms.auto_status','alert_forms.created_at','alert_forms.results_id',
-                                         'users.name','users.country','users.services','users.category','countries.country_name','services.service_name','categories.category_name', 'results.customer_account','results.category','services.id as s_id','users.id as user_id',)
+        $autofailreports = AlertForm::select('alert_forms.agent_name','alert_forms.supervisor_name','alert_forms.qa_name','alert_forms.auto_status',
+                                        'alert_forms.created_at','alert_forms.results_id','alert_forms.category_id','users.name','users.country','users.services','users.category','countries.country_name','categories.category_name','services.service_name','services.id as s_id','results.customer_account',
+                                        //'results.category','users.id as user_id',
+                                        )
                                          ->join('users','users.id','=','alert_forms.agent_name')
                                          ->join('countries','countries.id','=','users.country')
-                                         ->join('user_categories','user_categories.user_id','=','users.id')
-                                         ->join('categories','categories.id','=','user_categories.category_id')
+                                        ->join('categories','categories.id','=','alert_forms.category_id')
                                          ->join('services','services.id','=','users.services')
                                          ->join('results','results.id','=','alert_forms.results_id')
                                          ->where('users.country','=',$countryname)
                                           ->where('users.services','=',$service )
-                                         // ->where('results.category','=',$categoryname)
+                                         ->where('alert_forms.category_id','=',$categoryname)
                                          ->where('results.date_recorded','>=',$start_date)
                                          ->where('results.date_recorded','<=',$end_date)
                                         // ->where('alert_forms.agent_name','=', $agents->id )
@@ -168,7 +169,7 @@ class AutoFailReportController extends Controller
             $data['country']= $country;
             $data['category']= $category;
 
-        
+
 
         return view('reports/auto_fail_report')->with($data);
     }

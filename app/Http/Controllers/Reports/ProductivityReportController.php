@@ -127,11 +127,11 @@ class ProductivityReportController extends Controller
 
 
         $productivityresults =Result::select('results.id','results.report_type_id','results.supervisor','results.agent_name','results.quality_analysts','results.date_recorded','results.customer_account',
-                                             'results.recording_id','results.final_results','results.category','results.status','users.category','users.name','users.services','users.country','services.service_name','services.id as s_id', 'categories.category_name','countries.country_name','report_types.type_name'
+                                             'results.recording_id','results.final_results','results.category','results.status','categories.category_name','report_types.type_name',
+                                             'users.services','users.country','services.service_name','services.id as s_id', 'countries.country_name',
                                       )
-                                      ->join('user_categories','user_categories.category_id','=','results.category')
-                                      ->join('users','users.id','=','user_categories.user_id')
-                                      ->join('categories','categories.id','=','user_categories.category_id')
+                                     ->join('users','users.id','=','results.agent_name')
+                                     ->join('categories','categories.id','=','results.category')
                                       ->join('services','services.id','=','users.services')
                                       ->join('countries','countries.id','=','users.country')
                                       ->join('report_types','report_types.id','=','results.report_type_id')
@@ -229,7 +229,7 @@ class ProductivityReportController extends Controller
             $data['productivityexams']= $productivityexams;
 
 
-             //print_pre([$productivityexams] , true);
+            //  dd([$productivityexams]);
 
 
         return view('reports/productivity')->with($data);
