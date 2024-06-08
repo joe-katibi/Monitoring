@@ -39,10 +39,10 @@ class LiveCallReportController extends Controller
 
         $category = Categories::select('Categories.id','Categories.category_name')->get();
 
-        $livecallreport = [];
+        $productivityQa = [];
 
         $data['services']= $services;
-        $data['livecallreport']= $livecallreport;
+        $data['productivityQa']= $productivityQa;
         $data['country']= $country;
         $data['category']= $category;
 
@@ -145,7 +145,7 @@ class LiveCallReportController extends Controller
                                             $data['productivityQa']= $productivityQa;
                                             $data['country']= $country;
                                             $data['category']= $category;
-                                           // dd($data);
+                                            dd($data);
 
         return view('reports/livecallsreports')->with($data);
     }

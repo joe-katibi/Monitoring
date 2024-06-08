@@ -75,8 +75,8 @@ class agentActionResultsController extends Controller
          $data['agentlogged']=$agentlogged;
          $data['userlogged']=$userlogged;
 
-         
 
+  
         return view('team_leader/agents_actions_results')->with($data);
     }
     /**
@@ -321,7 +321,7 @@ class agentActionResultsController extends Controller
            // Display a success message using the toast function
            toast('Audit Updated successfully','success');
 
-                
+
 
         return view('team_leader/Teamleader_action_results')->with($data);
     }

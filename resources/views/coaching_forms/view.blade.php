@@ -8,14 +8,25 @@
 
 @section('content')
 @include('sweetalert::alert')
-{{-- @can('supervisor-report-request')
+@can('supervisor-report-request')
 <div class="card card-success ">
     <div class="card-header">
     <input readonly class="form-control" style="color: green" name="category" value="Coaching Forms">
     </div>
          <div class="card-body">
-          <form method="" action="{{ route('coaching.coach') }}" accept-charset="UTF-8" class="form" enctype="multipart/form-data"><input name="_token" type="hidden" value="">
+          <form method="" action="{{ route('coaching.supervisor') }}" accept-charset="UTF-8" class="form" enctype="multipart/form-data"><input name="_token" type="hidden" value="">
     <div class="row">
+        <div class="col-md-2">
+            <label for="section">Select Category</label>
+            <div class="form-group">
+               <select class="form-control" required="required" id="category" name="category"><option selected="selected" value="">--Select Category--</option>
+                @foreach ($category as $categorys)
+
+                <option value="{{ $categorys['id'] }}">{{$categorys['category_name']}}</option>
+                @endforeach
+            </select>
+            </div>
+            </div>
         <div class="col-md-2">
             <div class="form-group">
                 <label for="section">Supervisor</label>
@@ -28,10 +39,10 @@
                 <label for="section">Select Agent</label>
                 <div class="form-group">
                    <select class="form-control" required="required" id="agents" name="agent"><option selected="selected" value="">--Select Agent--</option>
-                    {{-- @foreach ($agents as $agent)
+                    @foreach ($agents as $agent)
                     <option value="{{ $agent['id'] }}">{{$agent['name'] }}</option>
-                    @endforeach --}}
-                {{-- </select>
+                    @endforeach
+                 </select>
                 </div>
                 </div>
     <div class="col-md-3">
@@ -65,7 +76,7 @@
     <input readonly class="form-control" style="color: green" name="category" value="Coaching Forms">
     </div>
          <div class="card-body">
-          <form method="" action="{{ route('coaching.coach') }}" accept-charset="UTF-8" class="form" enctype="multipart/form-data"><input name="_token" type="hidden" value="">
+          <form method="" action="{{ route('coaching.quality') }}" accept-charset="UTF-8" class="form" enctype="multipart/form-data"><input name="_token" type="hidden" value="">
     <div class="row">
         <div class="col-md-2">
             <label for="section">Select service</label>
@@ -82,7 +93,10 @@
                 <label for="service[]">Select Category</label>
                 <div class="form-group">
                     <select class="form-control" required="required" id="category" name="category">
-                        <option  value="">--Select Category--</option>
+                        @foreach ($category as $categorys)
+
+                        <option value="{{ $categorys['id'] }}">{{$categorys['category_name']}}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -97,11 +111,11 @@
             <div class="col-md-2">
                 <label for="section">Select Agent</label>
                 <div class="form-group">
-                   <select class="form-control" required="required" id="agent" name="agent"><option selected="selected" value="">--Select Agent--</option> --}}
-                    {{-- @foreach ($agents as $agent)
+                   <select class="form-control" required="required" id="agent" name="agent"><option selected="selected" value="">--Select Agent--</option>
+                    @foreach ($agents as $agent)
                     <option value="{{ $agent['id'] }}">{{$agent['name'] }}</option>
-                    @endforeach --}}
-                {{-- </select>
+                    @endforeach
+                </select>
                 </div>
                 </div>
     <div class="col-md-3">
@@ -128,10 +142,10 @@
 </form>
 </div>
 </div>
-@endcan --}}
+@endcan
 
 
-
+    @can('agent-report-request')
 <div class="card card-success ">
     <div class="card-header">
     <input readonly class="form-control" style="color: green" name="category" value="Coaching Forms">
@@ -154,7 +168,7 @@
             <div class="col-md-2">
                 <label for="section">Select Agent</label>
                 <div class="form-group">
-                   <select class="form-control" required="required" id="agent" name="agent"><option selected="selected" value="">--Select Agent--</option>
+                   <select class="form-control" required="required"  name="agent"><option selected="selected" value="">--Select Agent--</option>
                      @foreach ($agents as $agent)
                     <option value="{{ $agent['id'] }}">{{$agent['name'] }}</option>
                     @endforeach
@@ -185,7 +199,7 @@
 </form>
 </div>
 </div>
-
+@endcan
 <div class="card">
     <div class="card-body">
       @if ($categorys['id'] > 0)

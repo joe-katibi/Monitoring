@@ -95,7 +95,7 @@ class LoginController extends Controller
                 );
 
                 if (Auth::attempt($credentials, $request->has('remember'))) {
-                    return redirect('/auth/notActivated');
+                    return redirect('/home');
                 } else {
                 }
             }

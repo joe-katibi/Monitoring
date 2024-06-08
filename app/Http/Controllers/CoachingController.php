@@ -111,15 +111,23 @@ class CoachingController extends Controller
     public function coach(Request $request)
     {
 
-        $category = Categories::select('Categories.id','Categories.category_name')->get();
-
-        $agentRole_id = Role::select('roles.id',)->where('name', '=', 'Agent')->first();
 
         $user_id = auth()->user()->id;
 
+        $category = Categories::select('Categories.id','Categories.category_name','user_categories.user_id')
+                                ->join('user_categories','user_categories.category_id','=','Categories.id')
+                                ->where('user_categories.user_id','=',$user_id)->get();
+
+        $services = Services::select('services.id','services.service_name')->get();
+
+
+        $agentRole_id = Role::select('roles.id',)->where('name', '=', 'Agent')->first();
+
+
         $userlogged = User::select('users.name','users.id',)->where('users.id','=',$user_id)->first();
 
-        $supervisorlogged = Role::select('roles.id','model_has_roles.model_id')->join('model_has_roles','role_id','=','roles.id')->where('name', '=', 'team-leader')->first();
+        $supervisorlogged = Role::select('roles.id','model_has_roles.model_id')->join('model_has_roles','role_id','=','roles.id')
+                         ->where('name', '=', 'team-leader')->first();
 
         $agentlogged = Role::select('roles.id','model_has_roles.model_id')->join('model_has_roles','role_id','=','roles.id')->where('name', '=', 'Agent')->first();
 
@@ -130,6 +138,7 @@ class CoachingController extends Controller
         $agents = User::select('users.name','users.id','model_has_roles.role_id')
                         ->join('model_has_roles','model_id','=','users.id')
                        ->where('model_has_roles.role_id','=',$agentRole_id->id)
+                       ->where('users.id','=',$user_id)
                         ->get();
 
         $input = $request->all();
@@ -177,6 +186,184 @@ class CoachingController extends Controller
                             $data['qualitylogged']  = $qualitylogged;
                             $data['trainierlogged']  = $trainierlogged;
                             $data['userlogged']  = $userlogged;
+                            $data['services']= $services;
+
+                          //  dd($data);
+
+
+                            return view('coaching_forms/view')->with($data);
+    }
+
+            /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function qualityCoach(Request $request)
+    {
+
+
+        $user_id = auth()->user()->id;
+
+        $category = Categories::select('Categories.id','Categories.category_name')->get();
+
+        $services = Services::select('services.id','services.service_name')->get();
+
+        $agentRole_id = Role::select('roles.id',)->where('name', '=', 'Agent')->first();
+
+        $userlogged = User::select('users.name','users.id',)->where('users.id','=',$user_id)->first();
+
+        $supervisorlogged = Role::select('roles.id','model_has_roles.model_id')->join('model_has_roles','role_id','=','roles.id')
+                         ->where('name', '=', 'team-leader')->first();
+
+        $agentlogged = Role::select('roles.id','model_has_roles.model_id')->join('model_has_roles','role_id','=','roles.id')->where('name', '=', 'Agent')->first();
+
+        $qualitylogged = Role::select('roles.id','model_has_roles.model_id')->join('model_has_roles','role_id','=','roles.id')->where('name', '=', 'quality-analyst')->first();
+
+        $trainierlogged = Role::select('roles.id','model_has_roles.model_id')->join('model_has_roles','role_id','=','roles.id')->where('name', '=', 'trainer')->first();
+
+        $agents = User::select('users.name','users.id','model_has_roles.role_id')
+                        ->join('model_has_roles','model_id','=','users.id')
+                       ->where('model_has_roles.role_id','=',$agentRole_id->id)
+                        ->get();
+
+        $input = $request->all();
+
+        $agent = $request->input('agent');
+        $categoryName = $request->input('category');
+        $service = $request->input('service');
+        $supervisor = $request->input('supervisor');
+
+        $start_end_date = explode(' - ', $request->input('created_at'));
+        $start_date = $start_end_date[0];
+        $end_date = $start_end_date[1];
+
+
+        $coachingview = Coaching::Select('coachings.id','coachings.agent','coachings.record_id','coachings.supervisor','coachings.quality_analyst',
+                                      'coachings.scores','coachings.results_id','coachings.category_id','coachings.date_coaching','coachings.scores', 'coachings.coaching_status','coachings.areas_of_strength','coachings.pervious_actions','coachings.current_areas_improvement','coachings.action_points_taken','coachings.agent_signature','coachings.agent_date_sign','coachings.supervisor_signature','coachings.supervisor_date_sign','coachings.quality_analyst_signature','coachings.quality_analyst_date_sign','coachings.created_at'
+                                       )
+                                 ->where('coachings.agent','=',$agent )
+                                 ->where('coachings.category_id','=',$categoryName)
+                                ->where('coachings.supervisor','=',$supervisor)
+                                ->where('coachings.created_at','>=',$start_date)
+                                ->where('coachings.created_at','<=',$end_date)
+                                ->get();
+        foreach($coachingview as $key => $value){
+
+                                $agentName = User::where('id','=', $value['agent'])->first();
+                                $value['agentName'] =  isset($agentName)  ?  $agentName->name : '';
+
+                                $SupervisorName = User::where('id','=', $value['supervisor'])->first();
+                                $value['SupervisorName'] =  isset($SupervisorName)  ?  $SupervisorName->name : '';
+
+                                $qualityName = User::where('id','=', $value['quality_analyst'])->first();
+                                $value['qualityName'] =  isset($qualityName)  ?  $qualityName->name : '';
+
+                            }
+
+                            $data['category']  = $category;
+                            $data['coachingview']  = $coachingview;
+                            $data['agents']  = $agents;
+                            $data['user_id']  = $user_id;
+                            $data['supervisorlogged']  = $supervisorlogged;
+                            $data['agentlogged']  = $agentlogged;
+                            $data['qualitylogged']  = $qualitylogged;
+                            $data['trainierlogged']  = $trainierlogged;
+                            $data['userlogged']  = $userlogged;
+                            $data['services']= $services;
+
+                          //  dd($data);
+
+
+                            return view('coaching_forms/view')->with($data);
+    }
+
+        /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function supervisorCoach(Request $request)
+    {
+
+
+        $user_id = auth()->user()->id;
+
+        $category = Categories::select('Categories.id','Categories.category_name','user_categories.user_id')
+                                ->join('user_categories','user_categories.category_id','=','Categories.id')
+                                ->where('user_categories.user_id','=',$user_id)->get();
+
+        $services = Services::select('services.id','services.service_name')->get();
+
+
+        $agentRole_id = Role::select('roles.id',)->where('name', '=', 'Agent')->first();
+
+
+        $userlogged = User::select('users.name','users.id',)->where('users.id','=',$user_id)->first();
+
+        $supervisorlogged = Role::select('roles.id','model_has_roles.model_id')->join('model_has_roles','role_id','=','roles.id')
+                         ->where('name', '=', 'team-leader')->first();
+
+        $agentlogged = Role::select('roles.id','model_has_roles.model_id')->join('model_has_roles','role_id','=','roles.id')->where('name', '=', 'Agent')->first();
+
+        $qualitylogged = Role::select('roles.id','model_has_roles.model_id')->join('model_has_roles','role_id','=','roles.id')->where('name', '=', 'quality-analyst')->first();
+
+        $trainierlogged = Role::select('roles.id','model_has_roles.model_id')->join('model_has_roles','role_id','=','roles.id')->where('name', '=', 'trainer')->first();
+
+        $agents = User::select('users.name','users.id','model_has_roles.role_id')
+                        ->join('model_has_roles','model_id','=','users.id')
+                       ->where('model_has_roles.role_id','=',$agentRole_id->id)
+                       ->where('users.id','=',$user_id)
+                        ->get();
+
+        $input = $request->all();
+
+        $agent = $request->input('agent');
+        $categoryName = $request->input('category');
+        $service = $request->input('service');
+        $supervisor = $request->input('supervisor');
+
+        $start_end_date = explode(' - ', $request->input('created_at'));
+        $start_date = $start_end_date[0];
+        $end_date = $start_end_date[1];
+
+
+        $coachingview = Coaching::Select('coachings.id','coachings.agent','coachings.record_id','coachings.supervisor','coachings.quality_analyst',
+                                       'coachings.scores','coachings.results_id','coachings.category_id', 'coachings.date_coaching','coachings.scores', 'coachings.coaching_status','coachings.areas_of_strength','coachings.pervious_actions','coachings.current_areas_improvement','coachings.action_points_taken','coachings.agent_signature','coachings.agent_date_sign','coachings.supervisor_signature','coachings.supervisor_date_sign','coachings.quality_analyst_signature','coachings.quality_analyst_date_sign','coachings.created_at',
+
+                                       )
+                                ->where('coachings.agent','=',$agent )
+                                ->where('coachings.category_id','=',$categoryName)
+                                ->where('coachings.supervisor','=',$supervisor)
+                                ->where('coachings.created_at','>=',$start_date)
+                                ->where('coachings.created_at','<=',$end_date)
+                               ->get();
+
+        foreach($coachingview as $key => $value){
+
+                                $agentName = User::where('id','=', $value['agent'])->first();
+                                $value['agentName'] =  isset($agentName)  ?  $agentName->name : '';
+
+                                $SupervisorName = User::where('id','=', $value['supervisor'])->first();
+                                $value['SupervisorName'] =  isset($SupervisorName)  ?  $SupervisorName->name : '';
+
+                                $qualityName = User::where('id','=', $value['quality_analyst'])->first();
+                                $value['qualityName'] =  isset($qualityName)  ?  $qualityName->name : '';
+
+                            }
+
+                            $data['category']  = $category;
+                            $data['coachingview']  = $coachingview;
+                            $data['agents']  = $agents;
+                            $data['user_id']  = $user_id;
+                            $data['supervisorlogged']  = $supervisorlogged;
+                            $data['agentlogged']  = $agentlogged;
+                            $data['qualitylogged']  = $qualitylogged;
+                            $data['trainierlogged']  = $trainierlogged;
+                            $data['userlogged']  = $userlogged;
+                            $data['services']= $services;
 
 
                             return view('coaching_forms/view')->with($data);
