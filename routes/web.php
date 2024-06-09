@@ -332,12 +332,12 @@ Route::get('category/{id}', function ($id) {
  Route::post('coaching_forms/agent_edit/{coaching}', [App\Http\Controllers\CoachingController::class, 'update'])->name('coaching.update');
  Route::get('coaching_forms/show/{coaching}/{results_id}',[App\Http\Controllers\CoachingController::class, 'show'])->name('coaching.show');
  Route::post('/coaching_forms/index/', [App\Http\Controllers\CoachingController::class, 'store'])->name('coaching.store');
- Route::get('coaching_forms/view/', [App\Http\Controllers\CoachingController::class, 'supervisorCoach'])->name('coaching.supervisor');
+ Route::get('coaching_forms/view/supervisor', [App\Http\Controllers\CoachingController::class, 'supervisor'])->name('supervisor');
  Route::get('coaching_forms/{coaching}/edit', [App\Http\Controllers\CoachingController::class, 'edit'])->name('coaching.edit');
  Route::post('coaching_forms/{coaching}/edit', [App\Http\Controllers\CoachingController::class, 'supervisorUpdate'])->name('coaching.supervisorUpdate');
  Route::get('coaching_forms/coaching_pdf',[App\Http\Controllers\CoachingController::class, 'generatePDF'])->name('coaching.pdf');
  Route::get('/coaching_forms/coaching_pdf/{coaching}/{results_id}', [App\Http\Controllers\CoachingController::class, 'generatePDF'])->name('coaching.generatePDF');
- Route::get('coaching_forms/view/', [App\Http\Controllers\CoachingController::class, 'qualityCoach'])->name('coaching.quality');
+ Route::get('coaching_forms/view/quality', [App\Http\Controllers\CoachingController::class, 'qualityCoach'])->name('coaching.quality');
 //  Route::get('coaching_forms/view/', [App\Http\Controllers\CoachingController::class, 'quality'])->name('coaching.quality');
 
 

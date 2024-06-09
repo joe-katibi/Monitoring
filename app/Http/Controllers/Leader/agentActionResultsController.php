@@ -74,9 +74,7 @@ class agentActionResultsController extends Controller
          $data['supervisorlogged']=$supervisorlogged;
          $data['agentlogged']=$agentlogged;
          $data['userlogged']=$userlogged;
-
-
- 
+         
         return view('team_leader/agents_actions_results')->with($data);
     }
     /**

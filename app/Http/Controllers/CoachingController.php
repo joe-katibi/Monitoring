@@ -536,7 +536,7 @@ class CoachingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function supervisorCoach(Request $request)
+    public function supervisor(Request $request)
     {
 
 

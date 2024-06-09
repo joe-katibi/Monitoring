@@ -9,11 +9,11 @@
 @section('content')
 
 @can('supervisor-report-request')
+<div class="card card-success ">
+    <div class="card-header">
+         <input readonly class="form-control" style="color: green" value="Audit Results">
+        </div>
 <form method="GET" action="{{ route('qaresults.create') }}" >
-         <div class="card card-success ">
-            <div class="card-header">
-                 <input readonly class="form-control" style="color: green" value="Audit Results">
-                </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
@@ -54,14 +54,15 @@
 
         </div>
 </form>
+</div>
 @endcan
 
 @can('agent-report-request')
+<div class="card card-success ">
+    <div class="card-header">
+         <input readonly class="form-control" style="color: green" value="Audit Results">
+        </div>
 <form method="GET" action="{{ route('qaresults.qualityreport') }}" >
-    <div class="card card-success ">
-       <div class="card-header">
-            <input readonly class="form-control" style="color: green" value="Audit Results">
-           </div>
    <div class="card-body">
        <div class="row">
            <div class="col-md-4">
@@ -101,14 +102,15 @@
     </div>
    </div>
 </form>
+</div>
 @endcan
 
 @can('quality-analysts-report-request')
+<div class="card card-success ">
+    <div class="card-header">
+         <input readonly class="form-control" style="color: green" value="Audit Results">
+        </div>
 <form method="GET" action="{{ route('qareport') }}" >
-    <div class="card card-success ">
-       <div class="card-header">
-            <input readonly class="form-control" style="color: green" value="Audit Results">
-           </div>
    <div class="card-body">
        <div class="row">
            <div class="col-md-4">
@@ -148,13 +150,14 @@
     </div>
    </div>
 </form>
+</div>
 @endcan
 @can('trainer-report-request')
+<div class="card card-success ">
+    <div class="card-header">
+         <input readonly class="form-control" style="color: green" value="Audit Results">
+        </div>
 <form method="GET" action="{{ route('qareport') }}" >
-    <div class="card card-success ">
-       <div class="card-header">
-            <input readonly class="form-control" style="color: green" value="Audit Results">
-           </div>
    <div class="card-body">
        <div class="row">
            <div class="col-md-4">
@@ -192,9 +195,11 @@
      <div class="col">
        <button type="submit" class="btn btn-success float-right" ><strong>Search</strong></button>
     </div>
-   </div>
+</div>
 </form>
+</div>
 @endcan
+<div class="card">
 <div class="card-body">
     <table class="table table-bordered" id="questionsTable">
       <thead>
@@ -288,7 +293,7 @@
       </tbody>
     </table>
   </div>
-
+</div>
 @stop
 
 @section('css')

@@ -14,7 +14,7 @@
     <input readonly class="form-control" style="color: green" name="category" value="Coaching Forms">
     </div>
          <div class="card-body">
-          <form method="" action="{{ route('coaching.supervisor') }}" accept-charset="UTF-8" class="form" enctype="multipart/form-data"><input name="_token" type="hidden" value="">
+          <form method="" action="{{ route('supervisor') }}" accept-charset="UTF-8" class="form" enctype="multipart/form-data"><input name="_token" type="hidden" value="">
     <div class="row">
         <div class="col-md-2">
             <label for="section">Select Category</label>
