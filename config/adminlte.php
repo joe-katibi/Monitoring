@@ -66,9 +66,9 @@ return [
     'logo' => '',
     'logo_img' => '',
     'logo_img_class' => 'brand-image img-circle elevation-3',
-    'logo_img_xl' => asset('assets/img/Zuku_customer_support_monitoring_system.png'),
+    'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => '',
+    'logo_img_alt' => 'Admin Logo',
 
     /*
     |--------------------------------------------------------------------------
@@ -86,7 +86,7 @@ return [
     'auth_logo' => [
         'enabled' => true,
         'img' => [
-            'path' => asset('assets/img/logo_wananchi.png'),
+            'path' => '/assets/img/logo_wananchi.png',
             'class' => '',
             'width' => 200,
             'height' => 50,
@@ -108,7 +108,7 @@ return [
     'preloader' => [
         'enabled' => false,
         'img' => [
-            'path' => asset('assets/img/logo_wananchi.png'),
+            'path' => '/assets/img/logo_wananchi.png',
             'alt' => 'AdminLTE Preloader Image',
             'effect' => 'animation__shake',
             'width' => 200,

@@ -19,11 +19,11 @@
     <div class="{{ $auth_type ?? 'login' }}-box">
 
         {{-- Logo --}}
-        <div class="{{ $auth_type ?? 'login' }}-logo">
-            <a href="{{ $dashboard_url }}">
+        {{-- <div class="{{ $auth_type ?? 'login' }}-logo">
+            <a href="{{ $dashboard_url }}"> --}}
 
                 {{-- Logo Image --}}
-                @if (config('adminlte.auth_logo.enabled', true))
+                {{-- @if (config('adminlte.auth_logo.enabled', true))
                     <img src="{{ asset(config('assets/img/zuku-logo.png')) }}"
                          alt="{{ config('adminlte.auth_logo.img.alt') }}"
                          @if (config('adminlte.auth_logo.img.class', null))
@@ -38,13 +38,13 @@
                 @else
                     <img src="{{ asset('assets/img/zuku-logo.png') }}"
                          alt="{{ config('assets/img/zuku-logo.png') }}" height="50">
-                @endif
+                @endif --}}
 
                 {{-- Logo Label --}}
-                {!! config('adminlte.logo', '<b>Admin</b>LTE') !!}
+                {{-- {!! config('adminlte.logo', '<b>Admin</b>LTE') !!} --}}
 
-            </a>
-        </div>
+            {{-- </a>
+        </div> --}}
 
         {{-- Card Box --}}
         <div class="card {{ config('adminlte.classes_auth_card', 'card-outline card-primary') }}">

@@ -31,7 +31,7 @@ class CELinksController extends Controller
             'countries.id as country_id',
             'countries.country_name',
             'services.service_name as service'
-    
+
         )
         ->join('countries_system_link', 'countries_system_link.system_link_id', '=', 'system_links.id')
         ->join('services_system_link', 'services_system_link.system_link_id', '=', 'system_links.id')
@@ -105,7 +105,8 @@ class CELinksController extends Controller
                 'system_links.site_image as image',
                 'countries.id as country_id',
                 'countries.country_name',
-                'services.service_name as service'
+                'services.service_name as service',
+               // 'services.id'
             )
             ->join('countries_system_link', 'countries_system_link.system_link_id', '=', 'system_links.id')
             ->join('services_system_link', 'services_system_link.system_link_id', '=', 'system_links.id')
@@ -256,11 +257,11 @@ class CELinksController extends Controller
             ->where('system_links.id', $id)
             ->groupBy('system_links.id', 'system_links.site_name', 'system_links.site_url', 'system_links.site_image', 'system_links.link_status')
             ->get();
-      
-    
-    
+
+
+
     }
-    
+
          /**
      * Update the specified resource in storage.
      *
