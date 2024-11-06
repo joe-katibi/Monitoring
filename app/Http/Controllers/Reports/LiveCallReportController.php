@@ -145,7 +145,7 @@ class LiveCallReportController extends Controller
                                             $data['productivityQa']= $productivityQa;
                                             $data['country']= $country;
                                             $data['category']= $category;
-                                            dd($data);
+                                            // dd($data);
 
         return view('reports/livecallsreports')->with($data);
     }
@@ -166,7 +166,7 @@ class LiveCallReportController extends Controller
 
         $input = $request->all();
 
-        dd($input );
+        // dd($input );
 
         $countryname = $request->input('country');
 

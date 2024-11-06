@@ -210,6 +210,7 @@
                 </button>
             </div>
             <div class="modal-body">
+                @foreach ($linksEdit as $linkedit)
                 <form action="{{route('link.update',$linkedit->id)  }}" method="POST" enctype="multipart/form-data">
                     @csrf
                 <div class="row">
@@ -274,6 +275,7 @@
                         @can('view-submit-course-button')
                         <button type="submit" class="btn btn-success float-right">Submit</button>
                         @endcan
+                        @endforeach
                     </form>
                     </div>
                     <div class="modal-footer">
