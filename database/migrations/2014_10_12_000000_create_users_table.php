@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('services')->nullable();
             $table->integer('category')->nullable();
             $table->integer('position')->nullable();
-            $table->integer('user_status')->nullable()->default(1);
+            $table->integer('user_status')->nullable()->default(0);
             $table->integer('department_id')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

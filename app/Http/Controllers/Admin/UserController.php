@@ -202,14 +202,18 @@ class UserController extends Controller
       // $user = User::findOrFail($id);
 
         $user = User::select('users.id','users.name','users.username','users.email','users.country','users.services','users.department_id','users.user_status','users.created_at',
-                           'users.position','user_categories.category_id','categories.category_name',
+                           'users.position',
+                           //'user_categories.category_id',
+                           //'categories.category_name',
                          'model_has_roles.model_id'
                            )
-                         ->join('user_categories','user_categories.user_id','=', 'users.id')
-                        ->join('categories','categories.id','=','user_categories.category_id')
+                      //   ->join('user_categories','user_categories.user_id','=', 'users.id')
+                     //   ->join('categories','categories.id','=','user_categories.category_id')
                        ->join('model_has_roles','model_has_roles.model_id','=','users.id')
                         ->where('users.id','=',$id)
                         ->first();
+
+                       
 
 
         if ($user->roles()) {
@@ -218,7 +222,9 @@ class UserController extends Controller
             $user->roles = new Collection();
         }
 
+
         $permissions = Permission::all();
+        $userRoles = Role::all();
         $department = Departments::all();
         $service = Services::all();
         $category = Categories::all();
@@ -240,7 +246,7 @@ class UserController extends Controller
             'category' => $category,
             'userCategory' => $userCategory,
             'selectedCategoryIds' => $selectedCategoryIds,
-            'roles' => Role::all(),
+            'roles' => $userRoles,
             'permission_modules' => Permission::modules(),
             'permissions' => $permissions,
             'user_permissions' => $user->permissions()->get()

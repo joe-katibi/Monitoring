@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\JsonResponse;
-
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -28,7 +28,15 @@ class LoginController extends Controller
     |
     */
 
-   //use AuthenticatesUsers;
+   use AuthenticatesUsers;
+
+   
+    /**
+     * Where to redirect users after login.
+     *
+     * @var string
+     */
+    protected $redirectTo = RouteServiceProvider::HOME;
 
     public function showLoginForm()
     {
@@ -36,6 +44,17 @@ class LoginController extends Controller
 
         return view('auth.login');
     }
+
+        /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('guest')->except('logout');
+    }
+
 
     public function authenticateUser(Request $request)
     {
@@ -89,10 +108,18 @@ class LoginController extends Controller
                 $user->password = Hash::make($password);
                 $user->save();
 
-                $credentials = $request->only(
-                    'username',
-                    'password'
+                $user_id = $user->id;
+
+                $user_role = array(
+                    "model_id" => $user_id,
+                    "model_type" => "App\Models\User",
+                    "role_id" => 4
                 );
+
+                $save_user_role = DB::table('model_has_roles')->insert($user_role);
+                Artisan::call('permission:cache-reset');
+
+                $credentials = $request->only(  'username', 'password'  );
 
                 if (Auth::attempt($credentials, $request->has('remember'))) {
                     return redirect('/home');
@@ -105,12 +132,6 @@ class LoginController extends Controller
     }
 
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = RouteServiceProvider::HOME;
 
 
     public function logout(Request $request)
@@ -131,15 +152,6 @@ class LoginController extends Controller
     }
 
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('guest')->except('logout');
-    }
 
      protected function authenticated(Request $request, $user)
      {
